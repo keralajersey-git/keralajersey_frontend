@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ProductModal from './ProductModal';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -7,6 +8,7 @@ const Products = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const productsPerPage = 6;
 
   useEffect(() => {
@@ -206,6 +208,7 @@ const Products = () => {
                       </div>
                     </div>
                     <button
+                      onClick={() => setSelectedProduct(product)}
                       disabled={!product.stock}
                       className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wide transition-all duration-300 overflow-hidden relative ${
                         product.stock
@@ -263,6 +266,13 @@ const Products = () => {
             )}
           </>
         )}
+
+        {/* Product Modal */}
+        <ProductModal
+          product={selectedProduct}
+          isOpen={!!selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
       </div>
     </div>
   );
