@@ -264,24 +264,78 @@ const ProductModal = ({ product, isOpen, onClose }) => {
           </div>
 
           <div className="px-5 pb-8">
-            {/* Product Image */}
-            <div className="mb-6 -mx-5">
-              {product.image1 ? (
-                <img
-                  src={product.image1}
-                  alt={product.title}
-                  className="w-full h-80 object-cover rounded-b-3xl"
-                />
-              ) : (
-                <div className="w-full h-80 bg-gradient-to-br from-gray-100 to-gray-200 rounded-b-3xl flex items-center justify-center">
-                  <div className="text-center">
-                    <svg className="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span className="text-gray-400 text-sm">No image</span>
+            {/* Product Image Carousel */}
+            <div className="mb-6 -mx-5 relative bg-gradient-to-br from-gray-50 to-gray-100 rounded-b-3xl overflow-hidden">
+              <div className="relative h-80 flex items-center justify-center">
+                {images.length > 0 ? (
+                  <>
+                    <img
+                      key={currentImageIndex}
+                      src={images[currentImageIndex]}
+                      alt={`${product.title} - Image ${currentImageIndex + 1}`}
+                      className="image-transition w-full h-full object-cover"
+                    />
+                    
+                    {/* Overlay Gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none"></div>
+                    
+                    {/* Navigation Buttons */}
+                    {images.length > 1 && (
+                      <>
+                        <button
+                          onClick={goToPrevImage}
+                          className="absolute left-3 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
+                        >
+                          <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={goToNextImage}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
+                        >
+                          <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      </>
+                    )}
+
+                    {/* Image Counter */}
+                    {images.length > 1 && (
+                      <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white px-2.5 py-1 rounded-full text-xs font-semibold">
+                        {currentImageIndex + 1} / {images.length}
+                      </div>
+                    )}
+
+                    {/* Image Indicators */}
+                    {images.length > 1 && (
+                      <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+                        {images.map((_, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setCurrentImageIndex(idx)}
+                            className={`h-1.5 rounded-full transition-all duration-300 backdrop-blur-sm ${
+                              idx === currentImageIndex 
+                                ? 'w-6 bg-white shadow-lg' 
+                                : 'w-1.5 bg-white/50 hover:bg-white/80'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                    <div className="text-center">
+                      <svg className="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span className="text-gray-400 text-sm">No image</span>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Product Details */}
