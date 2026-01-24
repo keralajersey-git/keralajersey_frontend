@@ -254,7 +254,7 @@ const Products = () => {
                               }`}
                           >
                             <span className="relative z-10">
-                              {product.stock ? 'Explore' : 'Sold Out'}
+                              {product.stock ? 'View' : 'Sold Out'}
                             </span>
                           </button>
                         </div>
