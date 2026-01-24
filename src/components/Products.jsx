@@ -176,19 +176,19 @@ const Products = () => {
                 .map((product, index) => (
                   <div
                     key={index}
-                    className="group flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-gray-300"
+                    className="group flex flex-col h-full bg-white/40 backdrop-blur-xl rounded-md overflow-hidden border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:-translate-y-2 transition-all duration-500 ease-out"
                   >
                     {/* Product Image Container */}
-                    <div className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100 aspect-square flex items-center justify-center">
+                    <div className="relative overflow-hidden bg-white/20 aspect-square flex items-center justify-center m-3 rounded-md">
                       {product.image1 ? (
                         <>
                           <img
                             src={product.image1}
                             alt={product.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                           />
                           {/* Subtle overlay on hover */}
-                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                          <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </>
                       ) : (
                         <div className="flex items-center justify-center h-full">
@@ -199,7 +199,7 @@ const Products = () => {
                       {/* Badge Container */}
                       <div className="absolute top-4 right-4 flex flex-col gap-2">
                         {product.free_delivery && (
-                          <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold text-gray-900 shadow-lg border border-gray-200">
+                          <div className="bg-gray-900/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-white shadow-lg border border-white/10">
                             Free Delivery
                           </div>
                         )}
@@ -207,62 +207,56 @@ const Products = () => {
                     </div>
 
                     {/* Product Info */}
-                    <div className="flex-1 flex flex-col p-5 bg-yellow-50">
+                    <div className="flex-1 flex flex-col p-8 pt-4">
+                      {/* Category if available */}
+                      {product.category && (
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-yellow-600 mb-2">
+                          {product.category.replace('-', ' ')}
+                        </span>
+                      )}
+
                       {/* Title */}
-                      <h3 className="text-base font-semibold text-gray-900 mb-2 leading-tight group-hover:text-gray-700 transition-colors duration-200 line-clamp-2">
+                      <h3 className="text-xl font-black text-gray-900 mb-2 leading-tight tracking-tighter line-clamp-1">
                         {product.title}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-gray-600 text-xs font-light mb-3 flex-1 line-clamp-1 leading-relaxed opacity-80">
-                        {product.description}
+                      <p className="text-gray-600 text-sm font-light mb-6 line-clamp-2 leading-relaxed opacity-80 italic">
+                        "{product.description}"
                       </p>
 
-                      {/* Size Pills */}
-                      <div className="mb-4 pt-3 border-t border-gray-200">
-                        <div className="flex gap-2 flex-wrap">
-                          {product.available_sizes && product.available_sizes.map((size) => (
-                            <button
-                              key={size}
-                              className="h-8 px-3 flex items-center justify-center border-2 border-gray-300 rounded-lg text-xs font-semibold text-gray-700 hover:border-gray-900 hover:bg-gray-900 hover:text-white group-hover:border-gray-400 transition-all duration-200"
-                            >
-                              {size}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
+                      
 
-                      {/* Stock Indicator & Badge */}
-                      {product.stock && (
-                        <div className="mb-4 flex items-center justify-between">
-                          <div className="text-xs text-gray-600 font-medium">
-                            <span className="text-gray-700 font-semibold">{product.stock_left}</span> pieces available
+                      {/* Stock & Bottom Row */}
+                      <div className="mt-auto space-y-4">
+                        {product.stock && (
+                          <div className="flex items-center space-x-2 text-[10px] font-bold uppercase tracking-widest text-gray-500">
+                            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                            <span>{product.stock_left} Pieces Left</span>
                           </div>
-                          <div className="bg-gray-900/90 px-2.5 mt-[-6px] rounded-md">
-                            <span className="text-xs text-white">In Stock</span>
-                          </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Price and CTA */}
-                      <div className="flex items-center justify-between gap-3 pt-3 border-t border-gray-200 mt-auto">
-                        <div className="flex flex-col">
-                          <div className="text-2xl font-bold text-gray-900">
-                            ₹{product.price.toFixed(0)}
+                        {/* Price and CTA */}
+                        <div className="flex items-center justify-between gap-4 pt-4 border-t border-gray-900/5">
+                          <div className="flex flex-col">
+                            <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-1">Price</span>
+                            <div className="text-3xl font-black text-gray-900 tracking-tighter">
+                              ₹{product.price.toFixed(0)}
+                            </div>
                           </div>
+                          <button
+                            onClick={() => setSelectedProduct(product)}
+                            disabled={!product.stock}
+                            className={`flex-1 h-14 rounded-md font-black text-[11px] uppercase tracking-[0.15em] transition-all duration-300 relative ${product.stock
+                              ? 'bg-gray-900 text-white hover:bg-yellow-500 hover:text-gray-900 hover:shadow-xl active:scale-95'
+                              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              }`}
+                          >
+                            <span className="relative z-10">
+                              {product.stock ? 'Explore' : 'Sold Out'}
+                            </span>
+                          </button>
                         </div>
-                        <button
-                          onClick={() => setSelectedProduct(product)}
-                          disabled={!product.stock}
-                          className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wide transition-all duration-300 overflow-hidden relative ${product.stock
-                            ? 'bg-gray-900 text-white hover:bg-gray-800 hover:shadow-lg hover:shadow-gray-900/30 active:scale-95'
-                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                            }`}
-                        >
-                          <span className="relative z-10">
-                            {product.stock ? 'View' : 'Out'}
-                          </span>
-                        </button>
                       </div>
                     </div>
                   </div>

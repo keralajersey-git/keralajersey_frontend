@@ -35,7 +35,7 @@ const FloatingActions = () => {
     ];
 
     return (
-        <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-[9999]">
+        <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-[9999] floating-actions-container">
             {actions.map((action) => (
                 <a
                     key={action.id}

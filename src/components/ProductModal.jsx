@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const ProductModal = ({ product, isOpen, onClose }) => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => document.body.classList.remove('modal-open');
+  }, [isOpen]);
 
   if (!isOpen || !product) return null;
 
@@ -50,6 +59,12 @@ const ProductModal = ({ product, isOpen, onClose }) => {
         opacity: 1;
       }
     }
+    body.modal-open .floating-actions-container {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(20px);
+      transition: all 0.3s ease;
+    }
   `;
 
   const handleWhatsAppClick = () => {
@@ -67,9 +82,9 @@ const ProductModal = ({ product, isOpen, onClose }) => {
   return (
     <>
       <style>{scrollbarStyles}</style>
-      
+
       {/* Desktop Modal */}
-      <div className="hidden md:flex fixed inset-0 z-50 items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 backdrop-blur-md p-4">
+      <div className="hidden md:flex fixed inset-0 z-[10001] items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 backdrop-blur-md p-4">
         <div className="modal-content bg-white rounded-xl overflow-hidden shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto modal-scrollbar">
           <div className="grid grid-cols-5 gap-0">
             {/* Image Section - Wider */}
@@ -83,10 +98,10 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                       alt={`${product.title} - Image ${currentImageIndex + 1}`}
                       className="image-transition w-full h-full object-cover"
                     />
-                    
+
                     {/* Overlay Gradient */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none"></div>
-                    
+
                     {/* Navigation Buttons */}
                     {images.length > 1 && (
                       <>
@@ -123,11 +138,10 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                           <button
                             key={idx}
                             onClick={() => setCurrentImageIndex(idx)}
-                            className={`h-2 rounded-full transition-all duration-300 backdrop-blur-sm ${
-                              idx === currentImageIndex 
-                                ? 'w-8 bg-white shadow-lg' 
-                                : 'w-2 bg-white/50 hover:bg-white/80'
-                            }`}
+                            className={`h-2 rounded-full transition-all duration-300 backdrop-blur-sm ${idx === currentImageIndex
+                              ? 'w-8 bg-white shadow-lg'
+                              : 'w-2 bg-white/50 hover:bg-white/80'
+                              }`}
                           />
                         ))}
                       </div>
@@ -211,11 +225,10 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                         <button
                           key={size}
                           onClick={() => setSelectedSize(selectedSize === size ? null : size)}
-                          className={`py-2.5 rounded-lg font-bold text-sm transition-all duration-300 border-2 ${
-                            selectedSize === size
-                              ? 'border-black bg-black text-white shadow-lg shadow-black/30 scale-105'
-                              : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white hover:bg-gray-50'
-                          }`}
+                          className={`py-2.5 rounded-lg font-bold text-sm transition-all duration-300 border-2 ${selectedSize === size
+                            ? 'border-black bg-black text-white shadow-lg shadow-black/30 scale-105'
+                            : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white hover:bg-gray-50'
+                            }`}
                         >
                           {size}
                         </button>
@@ -232,7 +245,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                   className="w-full py-3.5 bg-gradient-to-r from-gray-900 to-black text-white font-bold text-base rounded-xl hover:shadow-xl hover:shadow-black/40 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 shadow-lg hover:from-black hover:to-gray-900"
                 >
                   <img src="/whatsapp.svg" alt="WhatsApp" className="w-5 h-5" />
-                 Order Now
+                  Order Now
                 </button>
               </div>
             </div>
@@ -241,8 +254,8 @@ const ProductModal = ({ product, isOpen, onClose }) => {
       </div>
 
       {/* Mobile Drawer */}
-      <div className="md:hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" onClick={handleClose}>
-        <div 
+      <div className="md:hidden fixed inset-0 z-[10001] bg-black/50 backdrop-blur-sm" onClick={handleClose}>
+        <div
           className="absolute bottom-0 left-0 right-0 bg-white rounded-t-4xl shadow-2xl max-h-[95vh] overflow-y-auto animate-in slide-in-from-bottom modal-scrollbar"
           onClick={(e) => e.stopPropagation()}
         >
@@ -275,10 +288,10 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                       alt={`${product.title} - Image ${currentImageIndex + 1}`}
                       className="image-transition w-full h-full object-cover"
                     />
-                    
+
                     {/* Overlay Gradient */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none"></div>
-                    
+
                     {/* Navigation Buttons */}
                     {images.length > 1 && (
                       <>
@@ -315,11 +328,10 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                           <button
                             key={idx}
                             onClick={() => setCurrentImageIndex(idx)}
-                            className={`h-1.5 rounded-full transition-all duration-300 backdrop-blur-sm ${
-                              idx === currentImageIndex 
-                                ? 'w-6 bg-white shadow-lg' 
-                                : 'w-1.5 bg-white/50 hover:bg-white/80'
-                            }`}
+                            className={`h-1.5 rounded-full transition-all duration-300 backdrop-blur-sm ${idx === currentImageIndex
+                              ? 'w-6 bg-white shadow-lg'
+                              : 'w-1.5 bg-white/50 hover:bg-white/80'
+                              }`}
                           />
                         ))}
                       </div>
@@ -343,7 +355,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
               <h2 className="text-2xl font-black text-gray-900 mb-2 leading-tight tracking-tight">
                 {product.title}
               </h2>
-              
+
               {/* Price */}
               <div className="text-3xl font-black text-black mb-5">₹{product.price.toFixed(0)}</div>
 
@@ -381,11 +393,10 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                       <button
                         key={size}
                         onClick={() => setSelectedSize(selectedSize === size ? null : size)}
-                        className={`flex-1 min-w-[60px] py-2.5 rounded-lg font-bold text-sm transition-all duration-300 border-2 ${
-                          selectedSize === size
-                            ? 'border-black bg-black text-white shadow-lg shadow-black/30'
-                            : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white hover:bg-gray-50'
-                        }`}
+                        className={`flex-1 min-w-[60px] py-2.5 rounded-lg font-bold text-sm transition-all duration-300 border-2 ${selectedSize === size
+                          ? 'border-black bg-black text-white shadow-lg shadow-black/30'
+                          : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white hover:bg-gray-50'
+                          }`}
                       >
                         {size}
                       </button>
@@ -400,7 +411,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                 className="w-full py-3.5 bg-gradient-to-r from-gray-900 to-black text-white font-bold text-base rounded-xl hover:shadow-xl hover:shadow-black/40 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 shadow-lg hover:from-black hover:to-gray-900 mb-2"
               >
                 <img src="/whatsapp.svg" alt="WhatsApp" className="w-5 h-5" />
-                Inquire on WhatsApp
+                Order Now
               </button>
             </div>
           </div>
