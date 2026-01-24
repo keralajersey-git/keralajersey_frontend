@@ -167,7 +167,7 @@ const Hero = () => {
           <div className="inline-flex items-center space-x-2 bg-gray-900/5 backdrop-blur-sm border border-gray-900/10 px-4 py-1.5 rounded-full">
             <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
             <p className="text-xs font-semibold uppercase tracking-widest text-gray-800">
-              New Season 2024 Collection
+              2026 Collection
             </p>
           </div>
 
@@ -185,11 +185,9 @@ const Hero = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="px-10 py-4 bg-gray-900 text-white font-bold rounded-md hover:bg-gray-800 hover:shadow-2xl hover:shadow-gray-900/20 transition-all duration-300 transform hover:-translate-y-1">
-              Shop Collection
-            </button>
-            <button className="px-10 py-4 border-2 border-gray-900 text-gray-900 font-bold rounded-md hover:bg-gray-50 transition-all duration-300 transform hover:-translate-y-1">
-              View Premiums
+            
+            <button className="px-10 py-4 border-2 border-gray-900 text-gray-900 font-bold rounded-sm hover:bg-gray-50 transition-all duration-300 transform hover:-translate-y-1">
+              Collections
             </button>
           </div>
         </div>
