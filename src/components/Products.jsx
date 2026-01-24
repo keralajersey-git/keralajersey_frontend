@@ -7,18 +7,25 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const productsPerPage = 6;
+  const API_URL = import.meta.env.VITE_API_URL || 'https://keralajersey-backend.vercel.app';
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://keralajersey-backend.vercel.app/products/');
+        const response = await fetch(`${API_URL}/products/`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
         
         if (!response.ok) {
-          throw new Error(`Failed to fetch products: ${response.statusText}`);
+          throw new Error(`Failed to fetch products: ${response.status} ${response.statusText}`);
         }
         
         const data = await response.json();
@@ -27,7 +34,15 @@ const Products = () => {
         setError(null);
       } catch (err) {
         console.error('Error fetching products:', err);
-        setError('Failed to load products. Please try again later.');
+        
+        // Provide specific error messages
+        if (err.message.includes('Failed to fetch') || err.message.includes('CORS')) {
+          setError('⚠️ Backend Connection Error: The backend server is not accessible. Please ensure the backend is running and CORS is properly configured.');
+        } else if (err.message.includes('500')) {
+          setError('⚠️ Server Error: The backend encountered an error. Please contact support.');
+        } else {
+          setError('Failed to load products. Please try again later.');
+        }
       } finally {
         setLoading(false);
       }
@@ -36,15 +51,20 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  // Handle search
+  // Handle search and category filter
   useEffect(() => {
-    const results = products.filter((product) =>
+    let results = products.filter((product) =>
       product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    
+    if (selectedCategory) {
+      results = results.filter((product) => product.category && product.category === selectedCategory);
+    }
+    
     setFilteredProducts(results);
     setCurrentPage(1);
-  }, [searchTerm, products]);
+  }, [searchTerm, selectedCategory, products]);
 
   if (loading) {
     return (
@@ -115,6 +135,51 @@ const Products = () => {
               />
             </svg>
           </div>
+        </div>
+
+        {/* Category Filter */}
+        <div className="mb-12 flex items-center justify-center gap-4">
+          <button
+            onClick={() => setSelectedCategory(null)}
+            className={`p-3 rounded-full transition-all duration-300 border-2 ${
+              selectedCategory === null
+                ? 'bg-gray-900 border-gray-900 shadow-lg text-white'
+                : 'bg-white border-gray-300 hover:border-gray-900 text-gray-600 hover:text-gray-900'
+            }`}
+            title="All Products"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
+          </button>
+
+          <button
+            onClick={() => setSelectedCategory('top-quality')}
+            className={`p-3 rounded-full transition-all duration-300 border-2 ${
+              selectedCategory === 'top-quality'
+                ? 'bg-gray-900 border-gray-900 shadow-lg text-white'
+                : 'bg-white border-gray-300 hover:border-gray-900 text-gray-600 hover:text-gray-900'
+            }`}
+            title="Top Quality"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+            </svg>
+          </button>
+
+          <button
+            onClick={() => setSelectedCategory('standard quality')}
+            className={`p-3 rounded-full transition-all duration-300 border-2 ${
+              selectedCategory === 'standard quality'
+                ? 'bg-gray-900 border-gray-900 shadow-lg text-white'
+                : 'bg-white border-gray-300 hover:border-gray-900 text-gray-600 hover:text-gray-900'
+            }`}
+            title="Standard Quality"
+          >
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M9 12l2 2 4-4m7 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </button>
         </div>
 
         {/* Products Grid */}
