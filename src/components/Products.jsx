@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ProductModal from './ProductModal';
 
+// Updated filter UI with dropdown
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -23,18 +24,18 @@ const Products = () => {
             'Content-Type': 'application/json',
           },
         });
-        
+
         if (!response.ok) {
           throw new Error(`Failed to fetch products: ${response.status} ${response.statusText}`);
         }
-        
+
         const data = await response.json();
         setProducts(data);
         setFilteredProducts(data);
         setError(null);
       } catch (err) {
         console.error('Error fetching products:', err);
-        
+
         // Provide specific error messages
         if (err.message.includes('Failed to fetch') || err.message.includes('CORS')) {
           setError('⚠️ Backend Connection Error: The backend server is not accessible. Please ensure the backend is running and CORS is properly configured.');
@@ -57,11 +58,11 @@ const Products = () => {
       product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    
+
     if (selectedCategory) {
       results = results.filter((product) => product.category && product.category === selectedCategory);
     }
-    
+
     setFilteredProducts(results);
     setCurrentPage(1);
   }, [searchTerm, selectedCategory, products]);
@@ -82,7 +83,7 @@ const Products = () => {
       <div className="flex items-center justify-center py-20">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error}</p>
-          <button 
+          <button
             onClick={() => window.location.reload()}
             className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200"
           >
@@ -111,75 +112,53 @@ const Products = () => {
           </p>
         </div>
 
-        {/* Search Bar */}
-        <div className="mb-12 max-w-2xl mx-auto">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-5 py-3 border-2 border-gray-200 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:border-gray-900 transition-all duration-200"
-            />
-            <svg
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        {/* Search Bar and Filter */}
+        <div className="mb-12 max-w-4xl mx-auto">
+          <div className="flex flex-row gap-4">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-5 py-3 border-2 border-gray-200 rounded-lg bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:border-gray-900 transition-all duration-200"
               />
-            </svg>
+              <svg
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+
+            {/* Category Filter - Icon Only */}
+            <div className="relative">
+              <select
+                value={selectedCategory || ''}
+                onChange={(e) => setSelectedCategory(e.target.value || null)}
+                className="w-14 h-[50px] pl-3 pr-2 border-2 border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:border-gray-900 transition-all duration-200 appearance-none cursor-pointer hover:border-gray-400"
+                style={{ textIndent: '-9999px' }}
+              >
+                <option value="">All</option>
+                <option value="top-quality">Top Quality</option>
+                <option value="standard-quality">Standard Quality</option>
+              </select>
+              {/* Filter Icon */}
+              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+              </div>
+            </div>
           </div>
-        </div>
-
-        {/* Category Filter */}
-        <div className="mb-12 flex items-center justify-center gap-4">
-          <button
-            onClick={() => setSelectedCategory(null)}
-            className={`p-3 rounded-full transition-all duration-300 border-2 ${
-              selectedCategory === null
-                ? 'bg-gray-900 border-gray-900 shadow-lg text-white'
-                : 'bg-white border-gray-300 hover:border-gray-900 text-gray-600 hover:text-gray-900'
-            }`}
-            title="All Products"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-            </svg>
-          </button>
-
-          <button
-            onClick={() => setSelectedCategory('top-quality')}
-            className={`p-3 rounded-full transition-all duration-300 border-2 ${
-              selectedCategory === 'top-quality'
-                ? 'bg-gray-900 border-gray-900 shadow-lg text-white'
-                : 'bg-white border-gray-300 hover:border-gray-900 text-gray-600 hover:text-gray-900'
-            }`}
-            title="Top Quality"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
-          </button>
-
-          <button
-            onClick={() => setSelectedCategory('standard quality')}
-            className={`p-3 rounded-full transition-all duration-300 border-2 ${
-              selectedCategory === 'standard quality'
-                ? 'bg-gray-900 border-gray-900 shadow-lg text-white'
-                : 'bg-white border-gray-300 hover:border-gray-900 text-gray-600 hover:text-gray-900'
-            }`}
-            title="Standard Quality"
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M9 12l2 2 4-4m7 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </button>
         </div>
 
         {/* Products Grid */}
@@ -195,100 +174,99 @@ const Products = () => {
               {filteredProducts
                 .slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage)
                 .map((product, index) => (
-              <div
-                key={index}
-                className="group flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-gray-300"
-              >
-                {/* Product Image Container */}
-                <div className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100 aspect-square flex items-center justify-center">
-                  {product.image1 ? (
-                    <>
-                      <img
-                        src={product.image1}
-                        alt={product.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                      />
-                      {/* Subtle overlay on hover */}
-                      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
-                    </>
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <span className="text-gray-400 text-sm">No image</span>
-                    </div>
-                  )}
-                  
-                  {/* Badge Container */}
-                  <div className="absolute top-4 right-4 flex flex-col gap-2">
-                    {product.free_delivery && (
-                      <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold text-gray-900 shadow-lg border border-gray-200">
-                        Free Delivery
+                  <div
+                    key={index}
+                    className="group flex flex-col h-full bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-gray-300"
+                  >
+                    {/* Product Image Container */}
+                    <div className="relative overflow-hidden bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100 aspect-square flex items-center justify-center">
+                      {product.image1 ? (
+                        <>
+                          <img
+                            src={product.image1}
+                            alt={product.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                          />
+                          {/* Subtle overlay on hover */}
+                          <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
+                        </>
+                      ) : (
+                        <div className="flex items-center justify-center h-full">
+                          <span className="text-gray-400 text-sm">No image</span>
+                        </div>
+                      )}
+
+                      {/* Badge Container */}
+                      <div className="absolute top-4 right-4 flex flex-col gap-2">
+                        {product.free_delivery && (
+                          <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-semibold text-gray-900 shadow-lg border border-gray-200">
+                            Free Delivery
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </div>
+                    </div>
 
-                {/* Product Info */}
-                <div className="flex-1 flex flex-col p-5 bg-yellow-50">
-                  {/* Title */}
-                  <h3 className="text-base font-semibold text-gray-900 mb-2 leading-tight group-hover:text-gray-700 transition-colors duration-200 line-clamp-2">
-                    {product.title}
-                  </h3>
+                    {/* Product Info */}
+                    <div className="flex-1 flex flex-col p-5 bg-yellow-50">
+                      {/* Title */}
+                      <h3 className="text-base font-semibold text-gray-900 mb-2 leading-tight group-hover:text-gray-700 transition-colors duration-200 line-clamp-2">
+                        {product.title}
+                      </h3>
 
-                  {/* Description */}
-                  <p className="text-gray-600 text-xs font-light mb-3 flex-1 line-clamp-1 leading-relaxed opacity-80">
-                    {product.description}
-                  </p>
+                      {/* Description */}
+                      <p className="text-gray-600 text-xs font-light mb-3 flex-1 line-clamp-1 leading-relaxed opacity-80">
+                        {product.description}
+                      </p>
 
-                  {/* Size Pills */}
-                  <div className="mb-4 pt-3 border-t border-gray-200">
-                    <div className="flex gap-2 flex-wrap">
-                      {product.available_sizes && product.available_sizes.map((size) => (
+                      {/* Size Pills */}
+                      <div className="mb-4 pt-3 border-t border-gray-200">
+                        <div className="flex gap-2 flex-wrap">
+                          {product.available_sizes && product.available_sizes.map((size) => (
+                            <button
+                              key={size}
+                              className="h-8 px-3 flex items-center justify-center border-2 border-gray-300 rounded-lg text-xs font-semibold text-gray-700 hover:border-gray-900 hover:bg-gray-900 hover:text-white group-hover:border-gray-400 transition-all duration-200"
+                            >
+                              {size}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Stock Indicator & Badge */}
+                      {product.stock && (
+                        <div className="mb-4 flex items-center justify-between">
+                          <div className="text-xs text-gray-600 font-medium">
+                            <span className="text-gray-700 font-semibold">{product.stock_left}</span> pieces available
+                          </div>
+                          <div className="bg-gray-900/90 px-2.5 mt-[-6px] rounded-md">
+                            <span className="text-xs text-white">In Stock</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Price and CTA */}
+                      <div className="flex items-center justify-between gap-3 pt-3 border-t border-gray-200 mt-auto">
+                        <div className="flex flex-col">
+                          <div className="text-2xl font-bold text-gray-900">
+                            ₹{product.price.toFixed(0)}
+                          </div>
+                        </div>
                         <button
-                          key={size}
-                          className="h-8 px-3 flex items-center justify-center border-2 border-gray-300 rounded-lg text-xs font-semibold text-gray-700 hover:border-gray-900 hover:bg-gray-900 hover:text-white group-hover:border-gray-400 transition-all duration-200"
+                          onClick={() => setSelectedProduct(product)}
+                          disabled={!product.stock}
+                          className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wide transition-all duration-300 overflow-hidden relative ${product.stock
+                            ? 'bg-gray-900 text-white hover:bg-gray-800 hover:shadow-lg hover:shadow-gray-900/30 active:scale-95'
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                            }`}
                         >
-                          {size}
+                          <span className="relative z-10">
+                            {product.stock ? 'View' : 'Out'}
+                          </span>
                         </button>
-                      ))}
+                      </div>
                     </div>
                   </div>
-
-                  {/* Stock Indicator & Badge */}
-                  {product.stock && (
-                    <div className="mb-4 flex items-center justify-between">
-                      <div className="text-xs text-gray-600 font-medium">
-                        <span className="text-gray-700 font-semibold">{product.stock_left}</span> pieces available
-                      </div>
-                      <div className="bg-gray-900/90 px-2.5 mt-[-6px] rounded-md">
-                        <span className="text-xs text-white">In Stock</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Price and CTA */}
-                  <div className="flex items-center justify-between gap-3 pt-3 border-t border-gray-200 mt-auto">
-                    <div className="flex flex-col">
-                      <div className="text-2xl font-bold text-gray-900">
-                        ₹{product.price.toFixed(0)}
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setSelectedProduct(product)}
-                      disabled={!product.stock}
-                      className={`flex-1 py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wide transition-all duration-300 overflow-hidden relative ${
-                        product.stock
-                          ? 'bg-gray-900 text-white hover:bg-gray-800 hover:shadow-lg hover:shadow-gray-900/30 active:scale-95'
-                          : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      }`}
-                    >
-                      <span className="relative z-10">
-                        {product.stock ? 'View' : 'Out'}
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+                ))}
             </div>
 
             {/* Pagination */}
@@ -308,11 +286,10 @@ const Products = () => {
                       <button
                         key={page}
                         onClick={() => setCurrentPage(page)}
-                        className={`w-10 h-10 rounded-lg font-semibold text-sm transition-all duration-200 ${
-                          currentPage === page
-                            ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/30'
-                            : 'border-2 border-gray-300 text-gray-700 hover:border-gray-900 hover:bg-gray-50'
-                        }`}
+                        className={`w-10 h-10 rounded-lg font-semibold text-sm transition-all duration-200 ${currentPage === page
+                          ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/30'
+                          : 'border-2 border-gray-300 text-gray-700 hover:border-gray-900 hover:bg-gray-50'
+                          }`}
                       >
                         {page}
                       </button>

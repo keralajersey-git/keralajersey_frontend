@@ -1,5 +1,6 @@
 import React from 'react';
 import Home from './pages/Home';
+import FloatingActions from './components/FloatingActions';
 
 function App() {
   return (
@@ -15,6 +16,9 @@ function App() {
       <div className="relative z-10">
         <Home />
       </div>
+
+      {/* Floating Action Icons */}
+      <FloatingActions />
     </div>
   );
 }
