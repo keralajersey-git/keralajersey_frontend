@@ -170,7 +170,7 @@ const Products = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 md:gap-10">
               {filteredProducts
                 .slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage)
                 .map((product, index) => (
@@ -179,7 +179,7 @@ const Products = () => {
                     className="group flex flex-col h-full bg-[#faf7f2]/80 backdrop-blur-xl rounded-md overflow-hidden border border-[#e5e1da] shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 ease-out"
                   >
                     {/* Product Image Container */}
-                    <div className="relative overflow-hidden bg-white/20 aspect-square flex items-center justify-center m-3 rounded-md">
+                    <div className="relative overflow-hidden bg-white/20 aspect-square flex items-center justify-center m-1.5 sm:m-3 rounded-md">
                       {product.image1 ? (
                         <>
                           <img
@@ -197,9 +197,9 @@ const Products = () => {
                       )}
 
                       {/* Badge Container */}
-                      <div className="absolute top-4 right-4 flex flex-col gap-2">
+                      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 flex flex-col gap-1 sm:gap-2">
                         {product.free_delivery && (
-                          <div className="bg-gray-900/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-white shadow-lg border border-white/10">
+                          <div className="bg-gray-900/90 backdrop-blur-md px-1.5 sm:px-3 py-0.5 sm:py-1.5 rounded-full text-[7px] sm:text-[10px] font-black uppercase tracking-wider sm:tracking-widest text-white shadow-lg border border-white/10">
                             Free Delivery
                           </div>
                         )}
@@ -207,7 +207,7 @@ const Products = () => {
                     </div>
 
                     {/* Product Info */}
-                    <div className="flex-1 flex flex-col p-8 pt-4">
+                    <div className="flex-1 flex flex-col p-3 sm:p-8 pt-2 sm:pt-4">
                       {/* Category if available */}
                       {product.category && (
                         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-yellow-600 mb-2">
@@ -216,12 +216,12 @@ const Products = () => {
                       )}
 
                       {/* Title */}
-                      <h3 className="text-xl font-black text-gray-900 mb-2 leading-tight tracking-tighter line-clamp-1">
+                      <h3 className="text-[12px] sm:text-lg font-black text-gray-900 mb-0.5 sm:mb-2 leading-tight tracking-tight line-clamp-1">
                         {product.title}
                       </h3>
 
                       {/* Description */}
-                      <p className="text-gray-600 text-sm font-light mb-6 line-clamp-2 leading-relaxed opacity-80 italic">
+                      <p className="text-gray-500 text-[9px] sm:text-sm font-light mb-2 sm:mb-6 line-clamp-1 sm:line-clamp-2 leading-relaxed opacity-70 italic">
                         "{product.description}"
                       </p>
 
@@ -237,18 +237,19 @@ const Products = () => {
                         )}
 
                         {/* Price and CTA */}
-                        <div className="flex items-center justify-between gap-4 pt-4 border-t border-gray-900/5">
+                        {/* Price and CTA */}
+                        <div className="flex flex-row items-center justify-between gap-2 pt-2 sm:pt-4 border-t border-gray-900/5">
                           <div className="flex flex-col">
-                            <span className="text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-1">Price</span>
-                            <div className="text-3xl font-black text-gray-900 tracking-tighter">
+                            <span className="hidden sm:block text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-1">Price</span>
+                            <div className="text-[13px] sm:text-3xl font-black text-gray-900 tracking-tighter shrink-0">
                               ₹{product.price.toFixed(0)}
                             </div>
                           </div>
                           <button
                             onClick={() => setSelectedProduct(product)}
                             disabled={!product.stock}
-                            className={`flex-1 h-14 rounded-md font-black text-[11px] uppercase tracking-[0.15em] transition-all duration-300 relative ${product.stock
-                              ? 'bg-gray-900 text-white hover:bg-yellow-500 hover:text-gray-900 hover:shadow-xl active:scale-95'
+                            className={`flex-1 h-7 sm:h-14 rounded-md font-black text-[8px] sm:text-[11px] uppercase tracking-[0.05em] sm:tracking-[0.15em] transition-all duration-300 relative ${product.stock
+                              ? 'bg-gray-900 text-white hover:bg-yellow-500 hover:text-gray-900 shadow-sm active:scale-95'
                               : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                               }`}
                           >

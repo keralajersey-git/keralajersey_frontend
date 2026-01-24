@@ -4,64 +4,62 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-transparent text-gray-black mt-16">
-      <div className="max-w-6xl mx-auto px-4 py-12 md:py-16">
-        {/* Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 md:mb-12">
+    <footer className="relative mt-20 border-t border-[#e5e1da]/50 bg-transparent">
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        {/* Footer Top Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand Section */}
-          <div className="flex flex-col">
-            <h3 className="text-lg font-semibold mb-3">Kerala Jersey</h3>
-            <p className="text-black text-sm font-light leading-relaxed">
-              Premium jerseys celebrating Kerala's spirit and heritage through thoughtful design.
+          <div className="lg:col-span-2 space-y-6">
+            <h3 className="text-2xl font-black text-gray-900 tracking-tighter uppercase italic">
+              Kerala <span className="text-[#c5bbae]">Jersey</span>
+            </h3>
+            <p className="max-w-xs text-sm text-gray-500 font-light leading-relaxed">
+              Premium Kerala jerseys crafted with heritage, pulse, and peak performance fabric.
+              Elevate your game and celebrate your roots in absolute style.
             </p>
           </div>
 
           {/* Quick Links */}
-          <div className="flex flex-col">
-            <h4 className="text-base font-semibold mb-4">Quick Links</h4>
-            <div className="space-y-2">
-              <a href="#" className="text-black hover:text-white text-sm transition-colors duration-200">
-                Shop Collection
-              </a>
-              <a href="#" className="text-black hover:text-white text-sm transition-colors duration-200">
-                Custom Design
-              </a>
-              <a href="#" className="text-black hover:text-white text-sm transition-colors duration-200">
-                About Us
-              </a>
-              <a href="#" className="text-black hover:text-white text-sm transition-colors duration-200">
-                Contact
-              </a>
-            </div>
+          <div className="space-y-6">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Navigation</h4>
+            <ul className="flex flex-col space-y-3">
+              {['Shop Collection', 'Custom Design', 'About Us', 'Contact'].map((link) => (
+                <li key={link}>
+                  <a
+                    href="#"
+                    className="text-sm text-gray-600 hover:text-gray-900 transition-all duration-300 hover:translate-x-1 inline-block"
+                  >
+                    {link}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Contact Section */}
-          <div className="flex flex-col">
-            <h4 className="text-base font-semibold mb-4">Get in Touch</h4>
-            <div className="space-y-2 text-sm">
-              <a href="mailto:info@keralajersey.com" className="text-black hover:text-white transition-colors duration-200">
+          <div className="space-y-6">
+            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Connect</h4>
+            <div className="space-y-3">
+              <a href="mailto:info@keralajersey.com" className="text-sm text-gray-900 font-bold hover:text-[#c5bbae] transition-colors duration-300">
                 info@keralajersey.com
               </a>
-              <p className="text-black">
-                Free shipping across Kerala
-              </p>
-              <p className="text-black">
-                Ethically produced & sustainable
-              </p>
+              <div className="space-y-1">
+                <p className="text-[11px] text-gray-500 uppercase tracking-widest font-medium">Free shipping across Kerala</p>
+                <p className="text-[11px] text-gray-400 uppercase tracking-widest italic">Sustainable Production</p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="h-px bg-black mb-8"></div>
-
-        {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row items-center justify-center md:justify-between">
-          <p className="text-black text-sm font-light">
+        {/* Divider & Bottom Section */}
+        <div className="pt-8 border-t border-[#e5e1da] flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center md:text-left">
             © {currentYear} Kerala Jersey. All rights reserved.
           </p>
-         
-       
+          <div className="flex gap-8">
+            <span className="text-[9px] font-bold text-gray-300 uppercase tracking-[0.2em] cursor-pointer hover:text-gray-600 transition-colors">Privacy Policy</span>
+            <span className="text-[9px] font-bold text-gray-300 uppercase tracking-[0.2em] cursor-pointer hover:text-gray-600 transition-colors">Terms of Service</span>
+          </div>
         </div>
       </div>
     </footer>

@@ -150,7 +150,7 @@ export default function Testimonials() {
 
 
 
-                    <div className="flex items-center gap-3 bg-white/30 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/50 shadow-sm">
+                    <div className="flex items-center gap-3 bg-amber-100/10 shadow-md backdrop-blur-md px-6 py-3 rounded-2xl border border-white/50 shadow-sm">
                         <div className="flex -space-x-2">
                             <img
                                 src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766746071/999_11zon_p1cwr4.jpg"
