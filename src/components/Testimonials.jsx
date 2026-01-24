@@ -93,7 +93,7 @@ const TestimonialsColumn = ({ className, testimonials, duration }) => {
                                         boxShadow: "0 20px 40px -12px rgba(0, 0, 0, 0.1)",
                                         transition: { type: "spring", stiffness: 400, damping: 17 }
                                     }}
-                                    className="p-8 rounded-3xl border border-white/40 shadow-sm max-w-xs w-full bg-white/40 backdrop-blur-xl cursor-default select-none group focus:outline-none focus:ring-2 focus:ring-yellow-500/30 transition-all duration-300"
+                                    className="p-8 rounded-3xl border border-[#e5e1da] shadow-xl max-w-xs w-full bg-[#faf7f2]/80 backdrop-blur-xl cursor-default select-none group focus:outline-none focus:ring-2 focus:ring-yellow-500/30 transition-all duration-300"
                                 >
                                     <blockquote className="m-0 p-0">
                                         <p className="text-gray-600 text-sm leading-relaxed font-light m-0 line-clamp-4">
@@ -148,7 +148,7 @@ export default function Testimonials() {
                         </p>
                     </motion.div>
 
-                   
+
 
                     <div className="flex items-center gap-3 bg-white/30 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/50 shadow-sm">
                         <div className="flex -space-x-2">

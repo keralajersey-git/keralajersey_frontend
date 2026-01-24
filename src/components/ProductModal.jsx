@@ -85,7 +85,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
 
       {/* Desktop Modal */}
       <div className="hidden md:flex fixed inset-0 z-[10001] items-center justify-center bg-gradient-to-br from-black/60 via-black/50 to-black/60 backdrop-blur-md p-4">
-        <div className="modal-content bg-white rounded-xl overflow-hidden shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto modal-scrollbar">
+        <div className="modal-content bg-[#faf9f6] rounded-xl overflow-hidden shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto modal-scrollbar">
           <div className="grid grid-cols-5 gap-0">
             {/* Image Section - Wider */}
             <div className="col-span-3 bg-gradient-to-br from-gray-50 to-gray-100 sticky top-0">
@@ -163,7 +163,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
             </div>
 
             {/* Details Section */}
-            <div className="col-span-2 bg-white flex flex-col h-[600px] border-l border-gray-100">
+            <div className="col-span-2 bg-[#faf9f6] flex flex-col h-[600px] border-l border-gray-100">
               {/* Close Button */}
               <div className="flex justify-end p-5 border-b border-gray-100">
                 <button
@@ -239,7 +239,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
               </div>
 
               {/* CTA Button - Sticky Bottom */}
-              <div className="border-t border-gray-100 p-6 bg-white">
+              <div className="border-t border-gray-100 p-6 bg-[#faf9f6]">
                 <button
                   onClick={handleWhatsAppClick}
                   className="w-full py-3.5 bg-gradient-to-r from-gray-900 to-black text-white font-bold text-base rounded-xl hover:shadow-xl hover:shadow-black/40 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 shadow-lg hover:from-black hover:to-gray-900"
@@ -256,7 +256,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
       {/* Mobile Drawer */}
       <div className="md:hidden fixed inset-0 z-[10001] bg-black/50 backdrop-blur-sm" onClick={handleClose}>
         <div
-          className="absolute bottom-0 left-0 right-0 bg-white rounded-t-4xl shadow-2xl max-h-[95vh] overflow-y-auto animate-in slide-in-from-bottom modal-scrollbar"
+          className="absolute bottom-0 left-0 right-0 bg-[#faf9f6] rounded-t-4xl shadow-2xl max-h-[95vh] overflow-y-auto animate-in slide-in-from-bottom modal-scrollbar"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Handle bar */}

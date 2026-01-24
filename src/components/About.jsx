@@ -28,9 +28,9 @@ const About = () => {
                     {features.map((feature, index) => (
                         <div
                             key={index}
-                            className="group p-8 bg-white/40 backdrop-blur-md border border-white/20 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                            className="group p-8 bg-[#faf7f2]/80 backdrop-blur-md border border-[#e5e1da] rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
                         >
-                            <div className="mb-6 inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-300">
+                            <div className="mb-6 inline-flex items-center justify-center w-16 h-16 bg-[#fffcf7] rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-300">
                                 {feature.icon}
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 mb-3 tracking-snug">

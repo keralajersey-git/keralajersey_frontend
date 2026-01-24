@@ -176,7 +176,7 @@ const Products = () => {
                 .map((product, index) => (
                   <div
                     key={index}
-                    className="group flex flex-col h-full bg-white/40 backdrop-blur-xl rounded-md overflow-hidden border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:-translate-y-2 transition-all duration-500 ease-out"
+                    className="group flex flex-col h-full bg-[#faf7f2]/80 backdrop-blur-xl rounded-md overflow-hidden border border-[#e5e1da] shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 ease-out"
                   >
                     {/* Product Image Container */}
                     <div className="relative overflow-hidden bg-white/20 aspect-square flex items-center justify-center m-3 rounded-md">
@@ -225,7 +225,7 @@ const Products = () => {
                         "{product.description}"
                       </p>
 
-                      
+
 
                       {/* Stock & Bottom Row */}
                       <div className="mt-auto space-y-4">
