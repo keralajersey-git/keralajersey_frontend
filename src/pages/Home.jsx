@@ -7,6 +7,8 @@ import TeamCarousel from '../components/TeamCarousel';
 import Marquee from '../components/Marquee';
 import Footer from '../components/Footer';
 
+import Navbar from '../components/Navbar';
+
 const Home = () => {
   const [filter, setFilter] = React.useState(null);
 
@@ -20,6 +22,7 @@ const Home = () => {
 
   return (
     <div>
+      <Navbar />
       <Hero onSelectQuality={handleQualitySelect} />
       <Marquee />
       <About />

@@ -130,6 +130,7 @@ const TestimonialsColumn = ({ className, testimonials, duration }) => {
 export default function Testimonials() {
     return (
         <section
+            id="testimonials"
             aria-labelledby="testimonials-heading"
             className="bg-transparent py-24 relative overflow-hidden"
         >
