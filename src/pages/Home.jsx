@@ -6,8 +6,8 @@ import Testimonials from '../components/Testimonials';
 import TeamCarousel from '../components/TeamCarousel';
 import Marquee from '../components/Marquee';
 import Footer from '../components/Footer';
-
 import Navbar from '../components/Navbar';
+import FloatingActions from '../components/FloatingActions';
 
 const Home = () => {
   const [filter, setFilter] = React.useState(null);
@@ -30,6 +30,7 @@ const Home = () => {
       <Testimonials />
       <TeamCarousel />
       <Footer />
+      <FloatingActions />
     </div>
   );
 };
