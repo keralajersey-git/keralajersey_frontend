@@ -279,7 +279,7 @@ const Hero = ({ onSelectQuality }) => {
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-1 sm:mb-2">
-                          <h4 className="font-bold text-gray-900 text-md">Normal Quality</h4>
+                          <h4 className="font-bold text-gray-900 text-md">Standard Quality</h4>
 
                         </div>
                         <p className="text-gray-600 text-[13px] sm:text-sm mb-2 sm:mb-3">Great value with comfortable everyday wear</p>
