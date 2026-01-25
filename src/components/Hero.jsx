@@ -223,7 +223,7 @@ const Hero = ({ onSelectQuality }) => {
             >
               <div className="relative bg-white rounded-2xl border border-[#e5e1da] shadow-2xl max-w-md w-full mx-4 overflow-hidden">
                 {/* Header */}
-                <div className="p-6 pb-4 border-b border-[#e5e1da]">
+                <div className="p-4 sm:p-6 pb-2 sm:pb-4 border-b border-[#e5e1da]">
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-bold text-gray-900">Select Quality</h3>
                     <button
@@ -233,27 +233,27 @@ const Hero = ({ onSelectQuality }) => {
                       <FiX className="w-5 h-5 text-gray-500" />
                     </button>
                   </div>
-                  <p className="text-gray-600 mt-2">Choose your preferred jersey quality</p>
+                  <p className="text-gray-600 mt-1 text-sm">Choose your preferred jersey quality</p>
                 </div>
 
                 {/* Options */}
-                <div className="p-6 space-y-4">
+                <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
                   {/* Standard Quality Option */}
                   <button
                     onClick={() => {
                       onSelectQuality('top-quality');
                       setShowPopup(false);
                     }}
-                    className="w-full text-left p-5 rounded-xl border-2 border-[#e5e1da] hover:border-[#c5bbae] hover:bg-[#faf7f2] transition-all duration-300 group"
+                    className="w-full text-left p-4 sm:p-5 rounded-xl border-2 border-[#e5e1da] hover:border-[#c5bbae] hover:bg-[#faf7f2] transition-all duration-300 group"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
+                        <div className="flex items-center gap-3 mb-1 sm:mb-2">
                           <h4 className="font-bold text-gray-900 text-md">Top Quality</h4>
 
                         </div>
-                        <p className="text-gray-600 text-sm mb-3">Premium materials with enhanced durability and comfort</p>
-                        <ul className="text-xs text-gray-500 space-y-1">
+                        <p className="text-gray-600 text-[13px] sm:text-sm mb-2 sm:mb-3">Premium materials with enhanced durability and comfort</p>
+                        <ul className="hidden sm:block text-xs text-gray-500 space-y-1">
                           <li className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-[#c5bbae]" /> High-grade fabric
                           </li>
@@ -274,16 +274,16 @@ const Hero = ({ onSelectQuality }) => {
                       onSelectQuality('standard-quality');
                       setShowPopup(false);
                     }}
-                    className="w-full text-left p-5 rounded-xl border-2 border-[#e5e1da] hover:border-[#c5bbae] hover:bg-[#faf7f2] transition-all duration-300 group"
+                    className="w-full text-left p-4 sm:p-5 rounded-xl border-2 border-[#e5e1da] hover:border-[#c5bbae] hover:bg-[#faf7f2] transition-all duration-300 group"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
+                        <div className="flex items-center gap-3 mb-1 sm:mb-2">
                           <h4 className="font-bold text-gray-900 text-md">Normal Quality</h4>
 
                         </div>
-                        <p className="text-gray-600 text-sm mb-3">Great value with comfortable everyday wear</p>
-                        <ul className="text-xs text-gray-500 space-y-1">
+                        <p className="text-gray-600 text-[13px] sm:text-sm mb-2 sm:mb-3">Great value with comfortable everyday wear</p>
+                        <ul className="hidden sm:block text-xs text-gray-500 space-y-1">
                           <li className="flex items-center gap-2">
                             <div className="w-1.5 h-1.5 rounded-full bg-gray-400" /> Standard fabric
                           </li>
@@ -300,9 +300,7 @@ const Hero = ({ onSelectQuality }) => {
                 </div>
 
                 {/* Footer */}
-                <div className="p-6 pt-1 bg-gray-50">
-
-                </div>
+                <div className="p-4 sm:p-6 sm:pt-1 bg-gray-50 invisible sm:visible" />
               </div>
             </motion.div>
           </>
