@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const ProductModal = ({ product, isOpen, onClose }) => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [sizeError, setSizeError] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -18,6 +19,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
   useEffect(() => {
     setCurrentImageIndex(0);
     setSelectedSize(null);
+    setSizeError(false);
   }, [product]);
 
   // Get available images
@@ -32,6 +34,13 @@ const ProductModal = ({ product, isOpen, onClose }) => {
   };
 
   const handleWhatsAppClick = () => {
+    if (product.available_sizes && product.available_sizes.length > 0 && !selectedSize) {
+      setSizeError(true);
+      // Optional: Scroll to size selection or just show the error
+      return;
+    }
+
+    setSizeError(false);
     const sizeText = selectedSize ? ` (Size: ${selectedSize})` : '';
     const message = `Hi, I'm interested in the ${product.title}${sizeText}. Price: ₹${product.price.toFixed(0)}. Can you provide more details?`;
     const encodedMessage = encodeURIComponent(message);
@@ -230,7 +239,10 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                           {product.available_sizes.map((size) => (
                             <button
                               key={size}
-                              onClick={() => setSelectedSize(selectedSize === size ? null : size)}
+                              onClick={() => {
+                                setSelectedSize(selectedSize === size ? null : size);
+                                setSizeError(false);
+                              }}
                               className={`py-2.5 rounded-lg font-bold text-sm transition-all duration-300 border-2 ${selectedSize === size
                                 ? 'border-black bg-black text-white shadow-lg shadow-black/30 scale-105'
                                 : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white hover:bg-gray-50'
@@ -240,6 +252,18 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                             </button>
                           ))}
                         </div>
+                        <AnimatePresence>
+                          {sizeError && (
+                            <motion.p
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -10 }}
+                              className="text-red-500 text-xs font-bold mt-3 animate-pulse"
+                            >
+                              ⚠️ Please select a size before ordering
+                            </motion.p>
+                          )}
+                        </AnimatePresence>
                       </div>
                     )}
                   </div>
@@ -380,13 +404,13 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                     {/* Stock & Delivery */}
                     <div className="flex flex-col gap-2 mb-6">
                       {product.stock && (
-                        <div className="px-3 py-2.5 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl text-sm font-semibold flex items-center gap-2">
+                        <div className="px-3 py-2.5 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-md text-sm font-semibold flex items-center gap-2">
                           <span className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></span>
                           {product.stock_left} in stock
                         </div>
                       )}
                       {product.free_delivery && (
-                        <div className="px-3 py-2.5 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-xl text-sm font-semibold border border-green-200">
+                        <div className="px-3 py-2.5 bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 rounded-md text-sm font-semibold border border-green-200">
                           🚚 Free Delivery
                         </div>
                       )}
@@ -410,7 +434,10 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                           {product.available_sizes.map((size) => (
                             <button
                               key={size}
-                              onClick={() => setSelectedSize(selectedSize === size ? null : size)}
+                              onClick={() => {
+                                setSelectedSize(selectedSize === size ? null : size);
+                                setSizeError(false);
+                              }}
                               className={`flex-1 min-w-[60px] py-2.5 rounded-lg font-bold text-sm transition-all duration-300 border-2 ${selectedSize === size
                                 ? 'border-black bg-black text-white shadow-lg shadow-black/30'
                                 : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white hover:bg-gray-50'
@@ -420,6 +447,18 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                             </button>
                           ))}
                         </div>
+                        <AnimatePresence>
+                          {sizeError && (
+                            <motion.p
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -10 }}
+                              className="text-red-500 text-xs font-bold mt-3 animate-pulse"
+                            >
+                              ⚠️ Please select a size
+                            </motion.p>
+                          )}
+                        </AnimatePresence>
                       </div>
                     )}
 
@@ -431,7 +470,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
               <div className="p-5 border-t border-gray-100 bg-[#faf9f6]">
                 <button
                   onClick={handleWhatsAppClick}
-                  className="w-full py-3.5 bg-gradient-to-r from-gray-900 to-black text-white font-bold text-base rounded-xl hover:shadow-xl hover:shadow-black/40 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 shadow-lg hover:from-black hover:to-gray-900"
+                  className="w-full py-3.5 bg-gradient-to-r from-gray-900 to-black text-white font-bold text-base rounded-md hover:shadow-xl hover:shadow-black/40 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 shadow-lg hover:from-black hover:to-gray-900"
                 >
                   <img src="/whatsapp.svg" alt="WhatsApp" className="w-5 h-5" />
                   Order Now
