@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ProductModal from './ProductModal';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 // Updated filter UI with dropdown
 const Products = ({ externalFilter, setExternalFilter }) => {
@@ -13,6 +14,28 @@ const Products = ({ externalFilter, setExternalFilter }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const productsPerPage = 6;
   const API_URL = (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
+
+  const scrollToSection = () => {
+    const section = document.getElementById('products');
+    if (section) {
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    // Use a small timeout to let the DOM update before scrolling
+    setTimeout(() => {
+      const section = document.getElementById('products');
+      if (section) {
+        const offset = section.offsetTop - 80; // Offset for the fixed/sticky navbar
+        window.scrollTo({
+          top: offset,
+          behavior: 'smooth'
+        });
+      }
+    }, 50);
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -286,38 +309,27 @@ const Products = ({ externalFilter, setExternalFilter }) => {
 
             {/* Pagination */}
             {Math.ceil(filteredProducts.length / productsPerPage) > 1 && (
-              <div className="mt-12 flex items-center justify-center gap-3">
+              <div className="mt-16 flex items-center justify-center gap-4">
                 <button
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
                   disabled={currentPage === 1}
-                  className="px-4 py-2.5 border-2 border-gray-300 rounded-lg font-semibold text-sm text-gray-700 hover:border-gray-900 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  className="w-12 h-12 flex items-center justify-center border-2 border-gray-200 rounded-lg text-gray-600 hover:border-gray-900 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
                 >
-                  Previous
+                  <FiChevronLeft size={24} />
                 </button>
 
-                <div className="flex gap-2">
-                  {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }, (_, i) => i + 1).map(
-                    (page) => (
-                      <button
-                        key={page}
-                        onClick={() => setCurrentPage(page)}
-                        className={`w-10 h-10 rounded-lg font-semibold text-sm transition-all duration-200 ${currentPage === page
-                          ? 'bg-gray-900 text-white shadow-lg shadow-gray-900/30'
-                          : 'border-2 border-gray-300 text-gray-700 hover:border-gray-900 hover:bg-gray-50'
-                          }`}
-                      >
-                        {page}
-                      </button>
-                    )
-                  )}
+                <div className="px-6 h-12 bg-white border-2 border-gray-200 rounded-lg flex items-center justify-center shadow-sm min-w-[140px]">
+                  <span className="text-sm font-black text-gray-900 uppercase tracking-widest whitespace-nowrap">
+                    Page {currentPage} <span className="text-gray-400 mx-2">/</span> {Math.ceil(filteredProducts.length / productsPerPage)}
+                  </span>
                 </div>
 
                 <button
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(filteredProducts.length / productsPerPage)))}
+                  onClick={() => handlePageChange(Math.min(currentPage + 1, Math.ceil(filteredProducts.length / productsPerPage)))}
                   disabled={currentPage === Math.ceil(filteredProducts.length / productsPerPage)}
-                  className="px-4 py-2.5 border-2 border-gray-300 rounded-lg font-semibold text-sm text-gray-700 hover:border-gray-900 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  className="w-12 h-12 flex items-center justify-center border-2 border-gray-200 rounded-lg text-gray-600 hover:border-gray-900 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300"
                 >
-                  Next
+                  <FiChevronRight size={24} />
                 </button>
               </div>
             )}
