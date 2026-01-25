@@ -318,9 +318,9 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                   <FiChevronLeft size={24} />
                 </button>
 
-                <div className="px-6 h-12 bg-white border-2 border-gray-200 rounded-lg flex items-center justify-center shadow-sm min-w-[140px]">
+                <div className="px-6 h-12 bg-white border-2 border-gray-200 rounded-lg flex items-center justify-center shadow-sm min-w-[100px]">
                   <span className="text-sm font-black text-gray-900 uppercase tracking-widest whitespace-nowrap">
-                    Page {currentPage} <span className="text-gray-400 mx-2">/</span> {Math.ceil(filteredProducts.length / productsPerPage)}
+                   {currentPage} <span className="text-gray-400 mx-2">/</span> {Math.ceil(filteredProducts.length / productsPerPage)}
                   </span>
                 </div>
 
