@@ -8,12 +8,22 @@ import Marquee from '../components/Marquee';
 import Footer from '../components/Footer';
 
 const Home = () => {
+  const [filter, setFilter] = React.useState(null);
+
+  const handleQualitySelect = (quality) => {
+    setFilter(quality);
+    const productsSection = document.getElementById('products');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div>
-      <Hero />
+      <Hero onSelectQuality={handleQualitySelect} />
       <Marquee />
       <About />
-      <Products />
+      <Products externalFilter={filter} setExternalFilter={setFilter} />
       <Testimonials />
       <TeamCarousel />
       <Footer />

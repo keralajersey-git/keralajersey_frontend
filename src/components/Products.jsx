@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ProductModal from './ProductModal';
 
 // Updated filter UI with dropdown
-const Products = () => {
+const Products = ({ externalFilter, setExternalFilter }) => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,6 +67,22 @@ const Products = () => {
     setCurrentPage(1);
   }, [searchTerm, selectedCategory, products]);
 
+  // Sync external filter from Hero
+  useEffect(() => {
+    if (externalFilter) {
+      setSelectedCategory(externalFilter);
+    }
+  }, [externalFilter]);
+
+  // Reset external filter when user manually changes category
+  const handleCategoryChange = (e) => {
+    const val = e.target.value || null;
+    setSelectedCategory(val);
+    if (setExternalFilter) {
+      setExternalFilter(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -95,12 +111,16 @@ const Products = () => {
   }
 
   return (
-    <div className="py-16 md:py-24 px-4 bg-transparent">
+    <div id="products" className="py-16 md:py-24 px-4 bg-transparent">
       <div className="max-w-6xl mx-auto">
         {/* Section heading */}
         <div className="mb-16 text-center">
-          <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-4 tracking-tight">
-            Our Collection
+          <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-4 tracking-tight">
+            {selectedCategory === 'top-quality'
+              ? 'Top Collections'
+              : selectedCategory === 'standard-quality'
+                ? 'Standard Collections'
+                : 'Our Collection'}
           </h2>
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="flex-1 max-w-xs h-px bg-gradient-to-r from-transparent to-gray-400"></div>
@@ -143,7 +163,7 @@ const Products = () => {
             <div className="relative">
               <select
                 value={selectedCategory || ''}
-                onChange={(e) => setSelectedCategory(e.target.value || null)}
+                onChange={handleCategoryChange}
                 className="w-14 h-[50px] pl-3 pr-2 border-2 border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:border-gray-900 transition-all duration-200 appearance-none cursor-pointer hover:border-gray-400"
                 style={{ textIndent: '-9999px' }}
               >

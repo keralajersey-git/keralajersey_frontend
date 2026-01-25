@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MdDoubleArrow } from "react-icons/md";
-import { FiBookOpen, FiStar } from "react-icons/fi";
+import { FiBookOpen, FiStar, FiX } from "react-icons/fi";
 
-const Hero = () => {
+const Hero = ({ onSelectQuality }) => {
   const images = [
     "https://i.pinimg.com/736x/22/ca/c2/22cac27c6f4409796291a1c119e125e3.jpg",
     "https://i.pinimg.com/736x/93/76/09/9376093a29a5b68f9a7beb9cf599a90e.jpg",
@@ -12,6 +12,7 @@ const Hero = () => {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -185,8 +186,11 @@ const Hero = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            
-            <button className="px-10 py-4 border-2 border-gray-900 text-gray-900 font-bold rounded-sm hover:bg-gray-50 transition-all duration-300 transform hover:-translate-y-1">
+
+            <button
+              onClick={() => setShowPopup(true)}
+              className="px-10 py-4 border-2 border-gray-900 text-gray-900 font-bold rounded-sm hover:bg-gray-50 transition-all duration-300 transform hover:-translate-y-1"
+            >
               Collections
             </button>
           </div>
@@ -196,6 +200,114 @@ const Hero = () => {
 
       {/* Background Decorative Blur */}
       <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-yellow-100/5 rounded-full blur-[120px] -z-10"></div>
+
+      {/* Quality Selection Popup */}
+      <AnimatePresence>
+        {showPopup && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPopup(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            />
+
+            {/* Popup Content */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            >
+              <div className="relative bg-white rounded-2xl border border-[#e5e1da] shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+                {/* Header */}
+                <div className="p-6 pb-4 border-b border-[#e5e1da]">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-bold text-gray-900">Select Quality</h3>
+                    <button
+                      onClick={() => setShowPopup(false)}
+                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                      <FiX className="w-5 h-5 text-gray-500" />
+                    </button>
+                  </div>
+                  <p className="text-gray-600 mt-2">Choose your preferred jersey quality</p>
+                </div>
+
+                {/* Options */}
+                <div className="p-6 space-y-4">
+                  {/* Standard Quality Option */}
+                  <button
+                    onClick={() => {
+                      onSelectQuality('top-quality');
+                      setShowPopup(false);
+                    }}
+                    className="w-full text-left p-5 rounded-xl border-2 border-[#e5e1da] hover:border-[#c5bbae] hover:bg-[#faf7f2] transition-all duration-300 group"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="font-bold text-gray-900 text-md">Top Quality</h4>
+
+                        </div>
+                        <p className="text-gray-600 text-sm mb-3">Premium materials with enhanced durability and comfort</p>
+                        <ul className="text-xs text-gray-500 space-y-1">
+                          <li className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#c5bbae]" /> High-grade fabric
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#c5bbae]" /> Reinforced stitching
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#c5bbae]" /> Extended warranty
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </button>
+
+                  {/* Normal Quality Option */}
+                  <button
+                    onClick={() => {
+                      onSelectQuality('standard-quality');
+                      setShowPopup(false);
+                    }}
+                    className="w-full text-left p-5 rounded-xl border-2 border-[#e5e1da] hover:border-[#c5bbae] hover:bg-[#faf7f2] transition-all duration-300 group"
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="font-bold text-gray-900 text-md">Normal Quality</h4>
+
+                        </div>
+                        <p className="text-gray-600 text-sm mb-3">Great value with comfortable everyday wear</p>
+                        <ul className="text-xs text-gray-500 space-y-1">
+                          <li className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-gray-400" /> Standard fabric
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-gray-400" /> Regular stitching
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-gray-400" /> Basic warranty
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Footer */}
+                <div className="p-6 pt-1 bg-gray-50">
+
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
