@@ -475,7 +475,7 @@ const Admin = () => {
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
                             className="relative bg-white rounded-md shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
                         >
-                            <div className="p-6 sm:p-8">
+                            <div className="p-4 sm:p-8">
                                 <div className="flex justify-between items-center mb-8">
                                     <h2 className="text-2xl font-black text-gray-900 tracking-tight">
                                         {editingProduct ? 'Edit Product' : 'Add New Product'}
@@ -597,9 +597,9 @@ const Admin = () => {
                                         </h3>
                                         {[1, 2, 3].map((num) => (
                                             <div key={`img-upload-box-${num}`} className="bg-gray-50/50 p-4 rounded-md border border-gray-100">
-                                                <div className="flex gap-4 items-center">
+                                                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                                                     {/* Better Preview Area */}
-                                                    <div className="relative w-20 h-20 bg-white rounded-md border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden shrink-0 group">
+                                                    <div className="relative w-20 h-20 bg-white rounded-md border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden shrink-0 group mx-auto sm:mx-0">
                                                         {formData[`image${num}`] && formData[`image${num}`] !== 'Uploading...' ? (
                                                             <img src={formData[`image${num}`]} alt="" className="w-full h-full object-cover" />
                                                         ) : (
@@ -613,10 +613,10 @@ const Admin = () => {
                                                         )}
                                                     </div>
 
-                                                    <div className="flex-1 space-y-3">
+                                                    <div className="flex-1 w-full space-y-3">
                                                         <div className="flex justify-between items-center">
                                                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                                                                Slot {num} {num === 1 && <span className="text-red-500">*</span>}
+                                                                Slot {num} {num === 1 && <span className="text-blue-500">* (Cover Image)</span>}
                                                             </label>
                                                             {formData[`image${num}`] && (
                                                                 <button
@@ -634,13 +634,13 @@ const Admin = () => {
                                                                 type="text"
                                                                 value={formData[`image${num}`] === 'Uploading...' ? '' : formData[`image${num}`]}
                                                                 onChange={(e) => setFormData({ ...formData, [`image${num}`]: e.target.value })}
-                                                                className="flex-1 px-4 py-2.5 text-sm rounded-md border border-gray-200 focus:border-gray-900 focus:ring-0 outline-none transition-all placeholder:text-gray-300 bg-white"
+                                                                className="flex-1 min-w-0 px-4 py-2.5 text-sm rounded-md border border-gray-200 focus:border-gray-900 focus:ring-0 outline-none transition-all placeholder:text-gray-300 bg-white"
                                                                 placeholder="Paste URL..."
                                                                 disabled={formData[`image${num}`] === 'Uploading...'}
                                                             />
 
                                                             <label
-                                                                className={`w-11 h-11 flex items-center justify-center rounded-md cursor-pointer transition-all active:scale-90 ${formData[`image${num}`] === 'Uploading...' ? 'bg-gray-100 text-gray-400 cursor-wait' : 'bg-gray-900 text-white hover:bg-black shadow-lg shadow-gray-900/20'}`}
+                                                                className={`w-11 h-11 flex items-center justify-center rounded-md cursor-pointer transition-all active:scale-90 shrink-0 ${formData[`image${num}`] === 'Uploading...' ? 'bg-gray-100 text-gray-400 cursor-wait' : 'bg-gray-900 text-white hover:bg-black shadow-lg shadow-gray-900/20'}`}
                                                             >
                                                                 <FiUploadCloud className="w-5 h-5" />
                                                                 <input
@@ -662,7 +662,7 @@ const Admin = () => {
                                         <button
                                             disabled={isSubmitting}
                                             type="submit"
-                                            className="w-full bg-gray-900 text-white py-4.5 rounded-md font-black uppercase tracking-[0.2em] hover:bg-black transition-all disabled:opacity-50 shadow-xl shadow-gray-900/30 active:scale-[0.98] flex items-center justify-center gap-3"
+                                            className="w-full bg-gray-900 text-white py-4 rounded-md font-black uppercase tracking-[0.2em] hover:bg-black transition-all disabled:opacity-50 shadow-xl shadow-gray-900/30 active:scale-[0.98] flex items-center justify-center gap-3"
                                         >
                                             {isSubmitting ? (
                                                 <>
