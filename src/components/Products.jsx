@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ProductModal from './ProductModal';
-import { FiChevronLeft, FiChevronRight, FiFilter, FiCheck, FiX } from 'react-icons/fi';
+import { FiChevronLeft, FiChevronRight, FiFilter, FiCheck, FiX, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Products = ({ externalFilter, setExternalFilter }) => {
@@ -10,6 +10,8 @@ const Products = ({ externalFilter, setExternalFilter }) => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [expandedCategory, setExpandedCategory] = useState('top-quality'); // Accordion state
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -20,6 +22,14 @@ const Products = ({ externalFilter, setExternalFilter }) => {
     { id: null, label: 'All Collections' },
     { id: 'top-quality', label: 'Top Quality' },
     { id: 'standard-quality', label: 'Standard Quality' }
+  ];
+
+  const subCategories = [
+    { id: null, label: 'All Top Quality' },
+    { id: 'first quality', label: 'First Quality' },
+    { id: 'master quality', label: 'Master Quality' },
+    { id: 'player version', label: 'Player Version' },
+    { id: 'authentic retro', label: 'Authentic Retro' }
   ];
 
   const handlePageChange = (newPage) => {
@@ -62,20 +72,37 @@ const Products = ({ externalFilter, setExternalFilter }) => {
       product.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
     if (selectedCategory) {
-      results = results.filter((product) => product.category === selectedCategory);
+      results = results.filter((product) =>
+        product.category?.toLowerCase() === selectedCategory.toLowerCase()
+      );
+    }
+    if (selectedSubCategory) {
+      results = results.filter((product) =>
+        product.sub_category?.toLowerCase() === selectedSubCategory.toLowerCase()
+      );
     }
     setFilteredProducts(results);
     setCurrentPage(1);
-  }, [searchTerm, selectedCategory, products]);
+  }, [searchTerm, selectedCategory, selectedSubCategory, products]);
 
   useEffect(() => {
     if (externalFilter) {
-      setSelectedCategory(externalFilter);
+      if (typeof externalFilter === 'object') {
+        setSelectedCategory(externalFilter.category);
+        setSelectedSubCategory(externalFilter.subCategory);
+        if (externalFilter.category === 'top-quality') {
+          setExpandedCategory('top-quality');
+        }
+      } else {
+        setSelectedCategory(externalFilter);
+        setSelectedSubCategory(null);
+      }
     }
   }, [externalFilter]);
 
-  const handleCategoryChange = (val) => {
+  const handleCategoryChange = (val, subVal = null) => {
     setSelectedCategory(val);
+    setSelectedSubCategory(subVal);
     setIsFilterOpen(false);
     if (setExternalFilter) setExternalFilter(null);
   };
@@ -100,8 +127,10 @@ const Products = ({ externalFilter, setExternalFilter }) => {
       <div className="max-w-6xl mx-auto">
         {/* Section heading */}
         <div className="mb-16 text-center">
-          <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-4 tracking-tight uppercase">
-            {selectedCategory?.replace('-', ' ') || 'Our Collection'}
+          <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight uppercase">
+            {selectedSubCategory
+              ? `${selectedCategory?.replace('-', ' ')}: ${selectedSubCategory}`
+              : (selectedCategory?.replace('-', ' ') || 'Our Collection')}
           </h2>
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="flex-1 max-w-xs h-px bg-gradient-to-r from-transparent to-gray-400"></div>
@@ -256,30 +285,64 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                 </div>
 
                 {/* Options */}
-                <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+                <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 max-h-[60vh] overflow-y-auto modal-scrollbar">
                   {categories.map((category) => (
-                    <button
-                      key={category.label}
-                      onClick={() => handleCategoryChange(category.id)}
-                      className={`w-full text-left p-4 sm:p-5 rounded-xl border-2 transition-all duration-300 group ${selectedCategory === category.id
-                        ? 'border-[#c5bbae] bg-[#faf7f2] shadow-inner'
-                        : 'border-[#e5e1da] hover:border-[#c5bbae] hover:bg-[#faf7f2]'
-                        }`}
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-1 sm:mb-2">
-                            <h4 className="font-bold text-gray-900 text-md">{category.label}</h4>
-                            {selectedCategory === category.id && (
-                              <div className="bg-[#c5bbae] rounded-full p-1 shadow-lg">
-                                <FiCheck className="w-3 h-3 text-white" />
-                              </div>
-                            )}
-                          </div>
-
+                    <div key={category.id || 'all'} className="space-y-2">
+                      {/* Category Button/Heading */}
+                      <button
+                        onClick={() => {
+                          if (category.id === 'top-quality') {
+                            setExpandedCategory(expandedCategory === 'top-quality' ? null : 'top-quality');
+                          } else {
+                            handleCategoryChange(category.id);
+                          }
+                        }}
+                        className={`w-full text-left p-4 sm:p-5 rounded-xl border-2 transition-all duration-300 group flex items-center justify-between ${(selectedCategory === category.id && !selectedSubCategory) || (category.id === 'top-quality' && selectedCategory === 'top-quality')
+                          ? 'border-[#c5bbae] bg-[#faf7f2] shadow-inner'
+                          : 'border-[#e5e1da] hover:border-[#c5bbae] hover:bg-[#faf7f2]'
+                          }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <h4 className="font-bold text-gray-900 text-md">{category.label}</h4>
+                          {selectedCategory === category.id && !selectedSubCategory && category.id !== 'top-quality' && (
+                            <div className="bg-[#c5bbae] rounded-full p-1 shadow-lg">
+                              <FiCheck className="w-3 h-3 text-white" />
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    </button>
+                        {category.id === 'top-quality' && (
+                          expandedCategory === 'top-quality' ? <FiChevronUp /> : <FiChevronDown />
+                        )}
+                      </button>
+
+                      {/* Sub-categories Accordion for Top Quality */}
+                      <AnimatePresence>
+                        {category.id === 'top-quality' && expandedCategory === 'top-quality' && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="bg-gray-50/50 rounded-xl overflow-hidden ml-4 border-l-2 border-[#c5bbae]/20"
+                          >
+                            {subCategories.map((sub) => (
+                              <button
+                                key={sub.id || 'all-sub'}
+                                onClick={() => handleCategoryChange('top-quality', sub.id)}
+                                className={`w-full text-left px-6 py-3 text-sm transition-all flex items-center justify-between hover:bg-[#faf7f2] ${selectedCategory === 'top-quality' && selectedSubCategory === sub.id
+                                  ? 'text-[#c5bbae] font-bold bg-[#faf7f2]'
+                                  : 'text-gray-600'
+                                  }`}
+                              >
+                                {sub.label}
+                                {selectedCategory === 'top-quality' && selectedSubCategory === sub.id && (
+                                  <FiCheck className="w-3 h-3" />
+                                )}
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   ))}
                 </div>
 

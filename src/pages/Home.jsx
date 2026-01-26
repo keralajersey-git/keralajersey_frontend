@@ -12,8 +12,8 @@ import FloatingActions from '../components/FloatingActions';
 const Home = () => {
   const [filter, setFilter] = React.useState(null);
 
-  const handleQualitySelect = (quality) => {
-    setFilter(quality);
+  const handleQualitySelect = (category, subCategory = null) => {
+    setFilter({ category, subCategory });
     const productsSection = document.getElementById('products');
     if (productsSection) {
       productsSection.scrollIntoView({ behavior: 'smooth' });

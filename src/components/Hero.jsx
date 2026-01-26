@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MdDoubleArrow } from "react-icons/md";
-import { FiBookOpen, FiStar, FiX } from "react-icons/fi";
+import { FiBookOpen, FiStar, FiX, FiChevronDown, FiChevronUp, FiCheck } from "react-icons/fi";
 
 const Hero = ({ onSelectQuality }) => {
   const images = [
@@ -13,6 +13,7 @@ const Hero = ({ onSelectQuality }) => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState('top-quality');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -234,25 +235,50 @@ const Hero = ({ onSelectQuality }) => {
                 </div>
 
                 {/* Options */}
-                <div className="p-4 sm:p-6 space-y-3 sm:space-y-4">
-                  {/* Standard Quality Option */}
-                  <button
-                    onClick={() => {
-                      onSelectQuality('top-quality');
-                      setShowPopup(false);
-                    }}
-                    className="w-full text-left p-4 sm:p-5 rounded-xl border-2 border-[#e5e1da] hover:border-[#c5bbae] hover:bg-[#faf7f2] transition-all duration-300 group"
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-1 sm:mb-2">
-                          <h4 className="font-bold text-gray-900 text-md">Top Quality</h4>
-
-                        </div>
-
+                <div className="p-4 sm:p-6 space-y-3 sm:space-y-4 max-h-[60vh] overflow-y-auto modal-scrollbar">
+                  {/* Standard Quality Option (Top Quality with Accordion) */}
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => setExpandedCategory(expandedCategory === 'top-quality' ? null : 'top-quality')}
+                      className={`w-full text-left p-4 sm:p-5 rounded-xl border-2 transition-all duration-300 group flex items-center justify-between ${expandedCategory === 'top-quality' ? 'border-[#c5bbae] bg-[#faf7f2]' : 'border-[#e5e1da] hover:border-[#c5bbae]'
+                        }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <h4 className="font-bold text-gray-900 text-md">Top Quality</h4>
                       </div>
-                    </div>
-                  </button>
+                      {expandedCategory === 'top-quality' ? <FiChevronUp /> : <FiChevronDown />}
+                    </button>
+
+                    <AnimatePresence>
+                      {expandedCategory === 'top-quality' && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="bg-gray-50/50 rounded-xl overflow-hidden ml-4 border-l-2 border-[#c5bbae]/20"
+                        >
+                          {[
+                            { id: null, label: 'All Top Quality' },
+                            { id: 'first quality', label: 'First Quality' },
+                            { id: 'master quality', label: 'Master Quality' },
+                            { id: 'player version', label: 'Player Version' },
+                            { id: 'authentic retro', label: 'Authentic Retro' }
+                          ].map((sub) => (
+                            <button
+                              key={sub.label}
+                              onClick={() => {
+                                onSelectQuality('top-quality', sub.id);
+                                setShowPopup(false);
+                              }}
+                              className="w-full text-left px-6 py-3 text-sm text-gray-600 hover:text-[#c5bbae] hover:bg-[#faf7f2] transition-colors flex items-center justify-between"
+                            >
+                              {sub.label}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
 
                   {/* Normal Quality Option */}
                   <button
@@ -266,9 +292,7 @@ const Hero = ({ onSelectQuality }) => {
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-1 sm:mb-2">
                           <h4 className="font-bold text-gray-900 text-md">Standard Quality</h4>
-
                         </div>
-
                       </div>
                     </div>
                   </button>
