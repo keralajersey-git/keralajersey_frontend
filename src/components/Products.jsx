@@ -162,17 +162,19 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                   </div>
                   <div className="p-4 sm:p-6 flex-1 flex flex-col">
                     <div className="flex justify-between items-start mb-1">
-                      <span className="text-[10px] font-bold text-yellow-600 uppercase tracking-widest">{product.category?.replace('-', ' ')}</span>
-                      
+                      <span className="text-[10px] font-bold text-yellow-600 uppercase tracking-widest">
+                        {product.sub_category || product.category?.replace('-', ' ')}
+                      </span>
+
                     </div>
 
                     <h3 className="text-sm font-black text-gray-900 mb-2 line-clamp-1">{product.title}</h3>
                     {/* Mobile Stock Tag */}
-                      {product.stock && product.stock_left > 0 && (
-                        <span className="lg:hidden text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full uppercase tracking-tighter">
-                          {product.stock_left} Left
-                        </span>
-                      )}
+                    {product.stock && product.stock_left > 0 && (
+                      <span className="lg:hidden text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full uppercase tracking-tighter">
+                        {product.stock_left} Left
+                      </span>
+                    )}
 
                     {/* Desktop Description */}
                     <p className="hidden lg:block text-gray-500 text-[11px] mb-3 line-clamp-1 italic tracking-tight opacity-70">

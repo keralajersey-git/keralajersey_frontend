@@ -32,6 +32,7 @@ const Admin = () => {
         title: '',
         description: '',
         category: 'top-quality',
+        sub_category: '',
         price: '',
         original_price: '',
         stock: true,
@@ -103,6 +104,7 @@ const Admin = () => {
             title: product.title || '',
             description: product.description || '',
             category: product.category || 'top-quality',
+            sub_category: product.sub_category || '',
             price: product.price || '',
             original_price: product.original_price || '',
             stock: product.stock !== undefined ? product.stock : true,
@@ -121,6 +123,7 @@ const Admin = () => {
             title: '',
             description: '',
             category: 'top-quality',
+            sub_category: '',
             price: '',
             original_price: '',
             stock: true,
@@ -340,7 +343,7 @@ const Admin = () => {
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         <span className="text-xs font-bold uppercase tracking-wider text-yellow-600 bg-yellow-50 px-2 py-1 rounded-md">
-                                                            {product.category?.replace('-', ' ')}
+                                                            {product.sub_category || product.category?.replace('-', ' ')}
                                                         </span>
                                                     </td>
                                                     <td className="px-6 py-4">
@@ -398,7 +401,7 @@ const Admin = () => {
                                             />
                                             <div className="flex-1">
                                                 <div className="text-xs font-bold uppercase tracking-wider text-yellow-600 mb-1">
-                                                    {product.category?.replace('-', ' ')}
+                                                    {product.sub_category || product.category?.replace('-', ' ')}
                                                 </div>
                                                 <h3 className="font-black text-gray-900 leading-tight">{product.title}</h3>
                                                 <div className="flex items-center gap-2 mt-1">
@@ -558,13 +561,36 @@ const Admin = () => {
                                             <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Category</label>
                                             <select
                                                 value={formData.category}
-                                                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    setFormData({
+                                                        ...formData,
+                                                        category: val,
+                                                        sub_category: val === 'top-quality' ? formData.sub_category : ''
+                                                    });
+                                                }}
                                                 className="w-full px-4 py-3 rounded-md border border-gray-200 focus:border-gray-900 focus:ring-0 outline-none transition-all appearance-none bg-white"
                                             >
                                                 <option value="top-quality">Top Quality</option>
                                                 <option value="standard-quality">Standard Quality</option>
                                             </select>
                                         </div>
+                                        {formData.category === 'top-quality' && (
+                                            <div className="space-y-2">
+                                                <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Sub Category</label>
+                                                <select
+                                                    value={formData.sub_category}
+                                                    onChange={(e) => setFormData({ ...formData, sub_category: e.target.value })}
+                                                    className="w-full px-4 py-3 rounded-md border border-gray-200 focus:border-gray-900 focus:ring-0 outline-none transition-all appearance-none bg-white"
+                                                >
+                                                    <option value="">None</option>
+                                                    <option value="first quality">First Quality</option>
+                                                    <option value="master quality">Master Quality</option>
+                                                    <option value="player version">Player Version</option>
+                                                    <option value="authentic retro">Authentic Retro</option>
+                                                </select>
+                                            </div>
+                                        )}
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Stock Left</label>
                                             <input
