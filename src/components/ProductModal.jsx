@@ -198,8 +198,11 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                       <h1 className="text-2xl font-black text-gray-900 mb-3 leading-tight tracking-tight">
                         {product.title}
                       </h1>
-                      <div className="flex items-baseline gap-2">
+                      <div className="flex items-baseline gap-3">
                         <span className="text-4xl font-black text-black">₹{product.price.toFixed(0)}</span>
+                        {product.original_price && product.original_price > product.price && (
+                          <span className="text-lg text-gray-400 line-through">₹{product.original_price.toFixed(0)}</span>
+                        )}
                       </div>
                     </div>
 
@@ -230,6 +233,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                         </p>
                       </div>
                     )}
+
 
                     {/* Available Sizes */}
                     {product.available_sizes && product.available_sizes.length > 0 && (
@@ -399,7 +403,12 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                     </h2>
 
                     {/* Price */}
-                    <div className="text-3xl font-black text-black mb-5">₹{product.price.toFixed(0)}</div>
+                    <div className="flex items-baseline gap-3 mb-5">
+                      <div className="text-3xl font-black text-black">₹{product.price.toFixed(0)}</div>
+                      {product.original_price && product.original_price > product.price && (
+                        <div className="text-lg text-gray-400 line-through">₹{product.original_price.toFixed(0)}</div>
+                      )}
+                    </div>
 
                     {/* Stock & Delivery */}
                     <div className="flex flex-col gap-2 mb-6">
@@ -425,6 +434,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                         {product.description}
                       </p>
                     )}
+
 
                     {/* Available Sizes */}
                     {product.available_sizes && product.available_sizes.length > 0 && (

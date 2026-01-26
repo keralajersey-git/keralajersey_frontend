@@ -179,10 +179,7 @@ const Hero = ({ onSelectQuality }) => {
                 SPIRIT.
               </span>
             </h1>
-            <p className="max-w-lg text-lg text-gray-600 font-light leading-relaxed">
-              Premium Kerala jerseys crafted with heritage, pulse, and peak performance fabric.
-              Elevate your game and celebrate your roots in absolute style.
-            </p>
+
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
@@ -233,7 +230,7 @@ const Hero = ({ onSelectQuality }) => {
                       <FiX className="w-5 h-5 text-gray-500" />
                     </button>
                   </div>
-                  <p className="text-gray-600 mt-1 text-sm">Choose your preferred jersey quality</p>
+
                 </div>
 
                 {/* Options */}
@@ -252,18 +249,7 @@ const Hero = ({ onSelectQuality }) => {
                           <h4 className="font-bold text-gray-900 text-md">Top Quality</h4>
 
                         </div>
-                        <p className="text-gray-600 text-[13px] sm:text-sm mb-2 sm:mb-3">Premium materials with enhanced durability and comfort</p>
-                        <ul className="hidden sm:block text-xs text-gray-500 space-y-1">
-                          <li className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#c5bbae]" /> High-grade fabric
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#c5bbae]" /> Reinforced stitching
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#c5bbae]" /> Extended warranty
-                          </li>
-                        </ul>
+
                       </div>
                     </div>
                   </button>
@@ -282,18 +268,7 @@ const Hero = ({ onSelectQuality }) => {
                           <h4 className="font-bold text-gray-900 text-md">Standard Quality</h4>
 
                         </div>
-                        <p className="text-gray-600 text-[13px] sm:text-sm mb-2 sm:mb-3">Great value with comfortable everyday wear</p>
-                        <ul className="hidden sm:block text-xs text-gray-500 space-y-1">
-                          <li className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-gray-400" /> Standard fabric
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-gray-400" /> Regular stitching
-                          </li>
-                          <li className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full bg-gray-400" /> Basic warranty
-                          </li>
-                        </ul>
+
                       </div>
                     </div>
                   </button>

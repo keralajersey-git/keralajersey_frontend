@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: 'DancingScript';
+    src: url('/fonts/DancingScript-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
 @keyframes float {
     0% {
         transform: translateY(0px) rotate(0deg);

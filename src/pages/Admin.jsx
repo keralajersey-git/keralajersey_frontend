@@ -33,6 +33,7 @@ const Admin = () => {
         description: '',
         category: 'top-quality',
         price: '',
+        original_price: '',
         stock: true,
         stock_left: '',
         free_delivery: false,
@@ -103,6 +104,7 @@ const Admin = () => {
             description: product.description || '',
             category: product.category || 'top-quality',
             price: product.price || '',
+            original_price: product.original_price || '',
             stock: product.stock !== undefined ? product.stock : true,
             stock_left: product.stock_left !== null ? product.stock_left : '',
             free_delivery: product.free_delivery || false,
@@ -120,6 +122,7 @@ const Admin = () => {
             description: '',
             category: 'top-quality',
             price: '',
+            original_price: '',
             stock: true,
             stock_left: '',
             free_delivery: false,
@@ -139,6 +142,7 @@ const Admin = () => {
         const payload = {
             ...formData,
             price: parseFloat(formData.price),
+            original_price: formData.original_price ? parseFloat(formData.original_price) : null,
             stock_left: formData.stock ? parseInt(formData.stock_left) : null,
         };
 
@@ -339,7 +343,14 @@ const Admin = () => {
                                                             {product.category?.replace('-', ' ')}
                                                         </span>
                                                     </td>
-                                                    <td className="px-6 py-4 font-bold text-gray-900">₹{product.price}</td>
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex flex-col">
+                                                            <span className="font-bold text-gray-900 text-sm">₹{product.price}</span>
+                                                            {product.original_price && product.original_price > product.price && (
+                                                                <span className="text-[10px] text-gray-400 line-through">₹{product.original_price}</span>
+                                                            )}
+                                                        </div>
+                                                    </td>
                                                     <td className="px-6 py-4">
                                                         {product.stock ? (
                                                             <div className="flex items-center gap-2 text-green-600 text-xs font-bold">
@@ -390,7 +401,12 @@ const Admin = () => {
                                                     {product.category?.replace('-', ' ')}
                                                 </div>
                                                 <h3 className="font-black text-gray-900 leading-tight">{product.title}</h3>
-                                                <div className="text-lg font-black text-gray-900 mt-1">₹{product.price}</div>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <div className="text-lg font-black text-gray-900">₹{product.price}</div>
+                                                    {product.original_price && product.original_price > product.price && (
+                                                        <div className="text-sm text-gray-400 line-through opacity-60">₹{product.original_price}</div>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
 
@@ -510,7 +526,17 @@ const Admin = () => {
                                                 value={formData.price}
                                                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                                                 className="w-full px-4 py-3 rounded-md border border-gray-200 focus:border-gray-900 focus:ring-0 outline-none transition-all"
-                                                placeholder="999"
+                                                placeholder="799"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Original Price (₹)</label>
+                                            <input
+                                                type="number"
+                                                value={formData.original_price}
+                                                onChange={(e) => setFormData({ ...formData, original_price: e.target.value })}
+                                                className="w-full px-4 py-3 rounded-md border border-gray-200 focus:border-gray-900 focus:ring-0 outline-none transition-all"
+                                                placeholder="1299"
                                             />
                                         </div>
                                     </div>
