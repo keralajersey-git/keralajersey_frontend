@@ -5,10 +5,10 @@ import { FiBookOpen, FiStar, FiX, FiChevronDown, FiChevronUp, FiCheck } from "re
 
 const Hero = ({ onSelectQuality }) => {
   const images = [
-    "https://i.pinimg.com/736x/22/ca/c2/22cac27c6f4409796291a1c119e125e3.jpg",
-    "https://i.pinimg.com/736x/93/76/09/9376093a29a5b68f9a7beb9cf599a90e.jpg",
-    "https://i.pinimg.com/736x/4c/0f/2f/4c0f2fd86b79c7da4e3324b5f1e9610e.jpg",
-    "https://i.pinimg.com/736x/33/b7/66/33b7667b00c3533b7aa257934dfe8750.jpg"
+    "https://sgp.cloud.appwrite.io/v1/storage/buckets/696fb2fe002e5fe0bbbf/files/6978fc790016120a2bca/view?project=696faebf00087f88b3cb&mode=user",
+    "https://sgp.cloud.appwrite.io/v1/storage/buckets/696fb2fe002e5fe0bbbf/files/6978fc640009bb427be6/view?project=696faebf00087f88b3cb&mode=user",
+    "https://sgp.cloud.appwrite.io/v1/storage/buckets/696fb2fe002e5fe0bbbf/files/6978fbfc00342426026d/view?project=696faebf00087f88b3cb&mode=user",
+    "https://i.pinimg.com/736x/1d/d1/8d/1dd18dd3f03c5d3dcde268e489fe9fb5.jpg"
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
