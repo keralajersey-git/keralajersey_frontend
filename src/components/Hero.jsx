@@ -180,7 +180,10 @@ const Hero = ({ onSelectQuality }) => {
                 SPIRIT.
               </span>
             </h1>
-
+            <p className="max-w-lg text-sm md:text-lg text-gray-600 font-light leading-relaxed">
+              Premium Kerala jerseys crafted with heritage, pulse, and peak performance fabric.
+              Elevate your game and celebrate your roots in absolute style.
+            </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
