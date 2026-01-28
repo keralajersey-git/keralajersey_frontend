@@ -10,6 +10,31 @@ const Admin = () => {
     const [editingProduct, setEditingProduct] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    // Authentication State
+    const [isLoggedIn, setIsLoggedIn] = useState(sessionStorage.getItem('isAdminLoggedIn') === 'true');
+    const [adminUser, setAdminUser] = useState('');
+    const [adminPass, setAdminPass] = useState('');
+    const [loginError, setLoginError] = useState('');
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        const envUser = import.meta.env.VITE_ADMIN_USER;
+        const envPass = import.meta.env.VITE_ADMIN_PASS;
+
+        if (adminUser === envUser && adminPass === envPass) {
+            setIsLoggedIn(true);
+            sessionStorage.setItem('isAdminLoggedIn', 'true');
+            setLoginError('');
+        } else {
+            setLoginError('Invalid credentials. Please try again.');
+        }
+    };
+
+    const handleLogout = () => {
+        setIsLoggedIn(false);
+        sessionStorage.removeItem('isAdminLoggedIn');
+    };
+
     // Filtering state
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -226,6 +251,65 @@ const Admin = () => {
         }
     };
 
+    if (!isLoggedIn) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-[#e5e1da]"
+                >
+                    <div className="text-center mb-8">
+                        <h1 className="text-3xl font-black text-gray-900 tracking-tight italic">
+                            ADMIN<span className="text-[#c5bbae]">LOGIN</span>
+                        </h1>
+                        <p className="text-gray-500 text-xs mt-1 uppercase tracking-widest">
+                            Secure Access Required
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleLogin} className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Username</label>
+                            <input
+                                required
+                                type="text"
+                                value={adminUser}
+                                onChange={(e) => setAdminUser(e.target.value)}
+                                className="w-full px-4 py-3 rounded-xl border border-gray-100 focus:border-gray-900 focus:ring-0 outline-none transition-all placeholder:text-gray-300"
+                                placeholder="Enter username"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Password</label>
+                            <input
+                                required
+                                type="password"
+                                value={adminPass}
+                                onChange={(e) => setAdminPass(e.target.value)}
+                                className="w-full px-4 py-3 rounded-xl border border-gray-100 focus:border-gray-900 focus:ring-0 outline-none transition-all placeholder:text-gray-300"
+                                placeholder="••••••••"
+                            />
+                        </div>
+
+                        {loginError && (
+                            <p className="text-red-500 text-xs font-bold text-center">
+                                {loginError}
+                            </p>
+                        )}
+
+                        <button
+                            type="submit"
+                            className="w-full bg-gray-900 text-white py-4 rounded-xl font-black uppercase tracking-[0.2em] hover:bg-black transition-all shadow-lg active:scale-[0.98]"
+                        >
+                            Authorize
+                        </button>
+                    </form>
+                </motion.div>
+            </div>
+        );
+    }
+
     return (
         <div ref={adminRef} className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
             <div className="max-w-7xl mx-auto">
@@ -238,15 +322,26 @@ const Admin = () => {
                             Manage your products
                         </p>
                     </div>
-                    <button
-                        onClick={() => {
-                            resetForm();
-                            setShowModal(true);
-                        }}
-                        className="flex items-center justify-center bg-gray-900 text-white px-2 py-2 rounded-md font-bold hover:bg-black transition-all shadow-lg shadow-gray-900/20 active:scale-95 shrink-0"
-                    >
-                        <FiPlus className="w-6 h-6" />
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={handleLogout}
+                            className="text-gray-400 hover:text-red-600 transition-colors p-2"
+                            title="Logout"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                        </button>
+                        <button
+                            onClick={() => {
+                                resetForm();
+                                setShowModal(true);
+                            }}
+                            className="flex items-center justify-center bg-gray-900 text-white px-2 py-2 rounded-md font-bold hover:bg-black transition-all shadow-lg shadow-gray-900/20 active:scale-95 shrink-0"
+                        >
+                            <FiPlus className="w-6 h-6" />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Search Bar and Filter */}

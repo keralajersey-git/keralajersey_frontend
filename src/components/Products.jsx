@@ -151,7 +151,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
       <div className="max-w-6xl mx-auto">
         {/* Section heading */}
         <div className="mb-16 text-center">
-          <h2 className="text-2xl md:text-5xl text-gray-600 mb-4 tracking-tight uppercase">
+          <h2 className="text-2xl md:text-5xl text-gray-600 mb-4 uppercase">
             {selectedSubCategory
               ? selectedSubCategory
               : selectedCategory?.replace("-", " ") || "Our Collection"}
