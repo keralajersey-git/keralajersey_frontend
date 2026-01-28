@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FiPlus, FiEdit2, FiTrash2, FiImage, FiX, FiCheck, FiUploadCloud, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiImage, FiX, FiCheck, FiUploadCloud, FiChevronLeft, FiChevronRight, FiLogOut } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Admin = () => {
@@ -315,31 +315,30 @@ const Admin = () => {
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-row justify-between items-center gap-6 mb-12">
                     <div>
-                        <h1 className="text-3xl font-black text-gray-900 tracking-tight italic">
+                        <h1 className="text-xl font-black text-gray-900 tracking-tight italic">
                             ADMIN<span className="text-[#c5bbae]">PANEL</span>
                         </h1>
-                        <p className="text-gray-500 text-xs mt-1 uppercase tracking-widest">
+                        <p className="text-gray-500 text-xs mt-1 tracking-widest">
                             Manage your products
                         </p>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={handleLogout}
-                            className="text-gray-400 hover:text-red-600 transition-colors p-2"
-                            title="Logout"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
-                        </button>
+                    <div className="flex items-center gap-4">
                         <button
                             onClick={() => {
                                 resetForm();
                                 setShowModal(true);
                             }}
-                            className="flex items-center justify-center bg-gray-900 text-white px-2 py-2 rounded-md font-bold hover:bg-black transition-all shadow-lg shadow-gray-900/20 active:scale-95 shrink-0"
+                            className="flex items-center justify-center bg-gray-900 text-white px-2.5 py-2.5 rounded-md font-bold hover:bg-black transition-all shadow-lg shadow-gray-900/20 active:scale-95 shrink-0"
+                            title="Add Product"
                         >
-                            <FiPlus className="w-6 h-6" />
+                            <FiPlus className="w-5 h-5" />
+                        </button>
+                        <button
+                            onClick={handleLogout}
+                            className="flex items-center justify-center p-2.5 border border-red-100 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-all active:scale-95 shrink-0"
+                            title="Logout"
+                        >
+                            <FiLogOut className="w-5 h-5" />
                         </button>
                     </div>
                 </div>
