@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ProductModal = ({ product, isOpen, onClose }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -8,11 +8,11 @@ const ProductModal = ({ product, isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
-      document.body.classList.add('modal-open');
+      document.body.classList.add("modal-open");
     } else {
-      document.body.classList.remove('modal-open');
+      document.body.classList.remove("modal-open");
     }
-    return () => document.body.classList.remove('modal-open');
+    return () => document.body.classList.remove("modal-open");
   }, [isOpen]);
 
   // Reset indices when product changes
@@ -23,7 +23,9 @@ const ProductModal = ({ product, isOpen, onClose }) => {
   }, [product]);
 
   // Get available images
-  const images = product ? [product.image1, product.image2, product.image3].filter(Boolean) : [];
+  const images = product
+    ? [product.image1, product.image2, product.image3].filter(Boolean)
+    : [];
 
   const goToNextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
@@ -34,17 +36,21 @@ const ProductModal = ({ product, isOpen, onClose }) => {
   };
 
   const handleWhatsAppClick = () => {
-    if (product.available_sizes && product.available_sizes.length > 0 && !selectedSize) {
+    if (
+      product.available_sizes &&
+      product.available_sizes.length > 0 &&
+      !selectedSize
+    ) {
       setSizeError(true);
       // Optional: Scroll to size selection or just show the error
       return;
     }
 
     setSizeError(false);
-    const sizeText = selectedSize ? ` (Size: ${selectedSize})` : '';
+    const sizeText = selectedSize ? ` (Size: ${selectedSize})` : "";
     const message = `Hi, I'm interested in the ${product.title}${sizeText}. Price: ₹${product.price.toFixed(0)}. Can you provide more details?`;
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/919747140487?text=${encodedMessage}`, '_blank');
+    window.open(`https://wa.me/918848027778?text=${encodedMessage}`, "_blank");
   };
 
   const handleClose = () => {
@@ -87,13 +93,12 @@ const ProductModal = ({ product, isOpen, onClose }) => {
 
           {/* Desktop & Mobile Container */}
           <div className="fixed inset-0 z-[10002] pointer-events-none flex items-center justify-center md:items-center md:justify-center items-end">
-
             {/* Desktop Modal Content */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="hidden md:block pointer-events-auto bg-[#faf9f6] rounded-xl overflow-hidden shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto modal-scrollbar mx-4"
               onClick={(e) => e.stopPropagation()}
             >
@@ -124,16 +129,36 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                               onClick={goToPrevImage}
                               className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
                             >
-                              <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                              <svg
+                                className="w-6 h-6 text-black"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2.5}
+                                  d="M15 19l-7-7 7-7"
+                                />
                               </svg>
                             </button>
                             <button
                               onClick={goToNextImage}
                               className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm p-3 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
                             >
-                              <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                              <svg
+                                className="w-6 h-6 text-black"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2.5}
+                                  d="M9 5l7 7-7 7"
+                                />
                               </svg>
                             </button>
                           </>
@@ -153,10 +178,11 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                               <button
                                 key={idx}
                                 onClick={() => setCurrentImageIndex(idx)}
-                                className={`h-2 rounded-full transition-all duration-300 backdrop-blur-sm ${idx === currentImageIndex
-                                  ? 'w-8 bg-white shadow-lg'
-                                  : 'w-2 bg-white/50 hover:bg-white/80'
-                                  }`}
+                                className={`h-2 rounded-full transition-all duration-300 backdrop-blur-sm ${
+                                  idx === currentImageIndex
+                                    ? "w-8 bg-white shadow-lg"
+                                    : "w-2 bg-white/50 hover:bg-white/80"
+                                }`}
                               />
                             ))}
                           </div>
@@ -166,11 +192,23 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                       <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                         <div className="text-center">
                           <div className="w-16 h-16 mx-auto mb-3 bg-gray-300 rounded-full flex items-center justify-center">
-                            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            <svg
+                              className="w-8 h-8 text-gray-400"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={1.5}
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              />
                             </svg>
                           </div>
-                          <span className="text-gray-500 text-sm font-medium">No image available</span>
+                          <span className="text-gray-500 text-sm font-medium">
+                            No image available
+                          </span>
                         </div>
                       </div>
                     )}
@@ -185,8 +223,18 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                       onClick={handleClose}
                       className="p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 text-gray-400 hover:text-gray-600"
                     >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -199,10 +247,15 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                         {product.title}
                       </h1>
                       <div className="flex items-baseline gap-3">
-                        <span className="text-4xl font-black text-black">₹{product.price.toFixed(0)}</span>
-                        {product.original_price && product.original_price > product.price && (
-                          <span className="text-lg text-gray-400 line-through">₹{product.original_price.toFixed(0)}</span>
-                        )}
+                        <span className="text-4xl font-black text-black">
+                          ₹{product.price.toFixed(0)}
+                        </span>
+                        {product.original_price &&
+                          product.original_price > product.price && (
+                            <span className="text-lg text-gray-400 line-through">
+                              ₹{product.original_price.toFixed(0)}
+                            </span>
+                          )}
                       </div>
                     </div>
 
@@ -227,49 +280,56 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                     {/* Description */}
                     {product.description && (
                       <div className="mb-6">
-                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">Description</h3>
+                        <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-2">
+                          Description
+                        </h3>
                         <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">
                           {product.description}
                         </p>
                       </div>
                     )}
 
-
                     {/* Available Sizes */}
-                    {product.available_sizes && product.available_sizes.length > 0 && (
-                      <div className="mb-8">
-                        <h3 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3">Select Size</h3>
-                        <div className="grid grid-cols-3 gap-2">
-                          {product.available_sizes.map((size) => (
-                            <button
-                              key={size}
-                              onClick={() => {
-                                setSelectedSize(selectedSize === size ? null : size);
-                                setSizeError(false);
-                              }}
-                              className={`py-2.5 rounded-lg font-bold text-sm transition-all duration-300 border-2 ${selectedSize === size
-                                ? 'border-black bg-black text-white shadow-lg shadow-black/30 scale-105'
-                                : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white hover:bg-gray-50'
+                    {product.available_sizes &&
+                      product.available_sizes.length > 0 && (
+                        <div className="mb-8">
+                          <h3 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3">
+                            Select Size
+                          </h3>
+                          <div className="grid grid-cols-3 gap-2">
+                            {product.available_sizes.map((size) => (
+                              <button
+                                key={size}
+                                onClick={() => {
+                                  setSelectedSize(
+                                    selectedSize === size ? null : size,
+                                  );
+                                  setSizeError(false);
+                                }}
+                                className={`py-2.5 rounded-lg font-bold text-sm transition-all duration-300 border-2 ${
+                                  selectedSize === size
+                                    ? "border-black bg-black text-white shadow-lg shadow-black/30 scale-105"
+                                    : "border-gray-300 text-gray-700 hover:border-gray-900 bg-white hover:bg-gray-50"
                                 }`}
-                            >
-                              {size}
-                            </button>
-                          ))}
+                              >
+                                {size}
+                              </button>
+                            ))}
+                          </div>
+                          <AnimatePresence>
+                            {sizeError && (
+                              <motion.p
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="text-red-500 text-xs font-bold mt-3 animate-pulse"
+                              >
+                                ⚠️ Please select a size before ordering
+                              </motion.p>
+                            )}
+                          </AnimatePresence>
                         </div>
-                        <AnimatePresence>
-                          {sizeError && (
-                            <motion.p
-                              initial={{ opacity: 0, y: -10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -10 }}
-                              className="text-red-500 text-xs font-bold mt-3 animate-pulse"
-                            >
-                              ⚠️ Please select a size before ordering
-                            </motion.p>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    )}
+                      )}
                   </div>
 
                   {/* CTA Button - Sticky Bottom */}
@@ -278,7 +338,11 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                       onClick={handleWhatsAppClick}
                       className="w-full py-3.5 bg-gradient-to-r from-gray-900 to-black text-white font-bold text-base rounded-xl hover:shadow-xl hover:shadow-black/40 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 shadow-lg hover:from-black hover:to-gray-900"
                     >
-                      <img src="/whatsapp.svg" alt="WhatsApp" className="w-5 h-5" />
+                      <img
+                        src="/whatsapp.svg"
+                        alt="WhatsApp"
+                        className="w-5 h-5"
+                      />
                       Order Now
                     </button>
                   </div>
@@ -288,10 +352,10 @@ const ProductModal = ({ product, isOpen, onClose }) => {
 
             {/* Mobile Drawer Content */}
             <motion.div
-              initial={{ y: '100%' }}
+              initial={{ y: "100%" }}
               animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="md:hidden pointer-events-auto bg-[#faf9f6] rounded-t-md shadow-2xl h-[95vh] w-full flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
@@ -308,8 +372,18 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                     onClick={handleClose}
                     className="p-2 hover:bg-gray-100 rounded-lg transition-colors duration-200 text-gray-400 hover:text-gray-600"
                   >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -317,7 +391,6 @@ const ProductModal = ({ product, isOpen, onClose }) => {
 
               {/* Scrollable Content Area */}
               <div className="flex-1 overflow-y-auto modal-scrollbar">
-
                 <div className="px-5 pb-8">
                   {/* Product Image Carousel */}
                   <div className="mb-6 -mx-5 relative bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
@@ -345,16 +418,36 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                                 onClick={goToPrevImage}
                                 className="absolute left-3 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
                               >
-                                <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                                <svg
+                                  className="w-5 h-5 text-black"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2.5}
+                                    d="M15 19l-7-7 7-7"
+                                  />
                                 </svg>
                               </button>
                               <button
                                 onClick={goToNextImage}
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm p-2 rounded-full shadow-lg transition-all duration-300 hover:scale-110 z-10"
                               >
-                                <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                                <svg
+                                  className="w-5 h-5 text-black"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2.5}
+                                    d="M9 5l7 7-7 7"
+                                  />
                                 </svg>
                               </button>
                             </>
@@ -374,10 +467,11 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                                 <button
                                   key={idx}
                                   onClick={() => setCurrentImageIndex(idx)}
-                                  className={`h-1.5 rounded-full transition-all duration-300 backdrop-blur-sm ${idx === currentImageIndex
-                                    ? 'w-6 bg-white shadow-lg'
-                                    : 'w-1.5 bg-white/50 hover:bg-white/80'
-                                    }`}
+                                  className={`h-1.5 rounded-full transition-all duration-300 backdrop-blur-sm ${
+                                    idx === currentImageIndex
+                                      ? "w-6 bg-white shadow-lg"
+                                      : "w-1.5 bg-white/50 hover:bg-white/80"
+                                  }`}
                                 />
                               ))}
                             </div>
@@ -386,10 +480,22 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
                           <div className="text-center">
-                            <svg className="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            <svg
+                              className="w-12 h-12 text-gray-400 mx-auto mb-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={1.5}
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              />
                             </svg>
-                            <span className="text-gray-400 text-sm">No image</span>
+                            <span className="text-gray-400 text-sm">
+                              No image
+                            </span>
                           </div>
                         </div>
                       )}
@@ -404,10 +510,15 @@ const ProductModal = ({ product, isOpen, onClose }) => {
 
                     {/* Price */}
                     <div className="flex items-baseline gap-3 mb-5">
-                      <div className="text-3xl font-black text-black">₹{product.price.toFixed(0)}</div>
-                      {product.original_price && product.original_price > product.price && (
-                        <div className="text-lg text-gray-400 line-through">₹{product.original_price.toFixed(0)}</div>
-                      )}
+                      <div className="text-3xl font-black text-black">
+                        ₹{product.price.toFixed(0)}
+                      </div>
+                      {product.original_price &&
+                        product.original_price > product.price && (
+                          <div className="text-lg text-gray-400 line-through">
+                            ₹{product.original_price.toFixed(0)}
+                          </div>
+                        )}
                     </div>
 
                     {/* Stock & Delivery */}
@@ -435,43 +546,47 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                       </p>
                     )}
 
-
                     {/* Available Sizes */}
-                    {product.available_sizes && product.available_sizes.length > 0 && (
-                      <div className="mb-6">
-                        <h3 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3">Select Size</h3>
-                        <div className="flex flex-wrap gap-2">
-                          {product.available_sizes.map((size) => (
-                            <button
-                              key={size}
-                              onClick={() => {
-                                setSelectedSize(selectedSize === size ? null : size);
-                                setSizeError(false);
-                              }}
-                              className={`flex-1 min-w-[60px] py-2.5 rounded-lg font-bold text-sm transition-all duration-300 border-2 ${selectedSize === size
-                                ? 'border-black bg-black text-white shadow-lg shadow-black/30'
-                                : 'border-gray-300 text-gray-700 hover:border-gray-900 bg-white hover:bg-gray-50'
+                    {product.available_sizes &&
+                      product.available_sizes.length > 0 && (
+                        <div className="mb-6">
+                          <h3 className="text-xs font-bold text-gray-900 uppercase tracking-widest mb-3">
+                            Select Size
+                          </h3>
+                          <div className="grid grid-cols-5 gap-2">
+                            {product.available_sizes.map((size) => (
+                              <button
+                                key={size}
+                                onClick={() => {
+                                  setSelectedSize(
+                                    selectedSize === size ? null : size,
+                                  );
+                                  setSizeError(false);
+                                }}
+                                className={`py-2.5 rounded-lg font-bold text-sm transition-all duration-300 border-2 ${
+                                  selectedSize === size
+                                    ? "border-black bg-black text-white shadow-lg shadow-black/30"
+                                    : "border-gray-300 text-gray-700 hover:border-gray-900 bg-white hover:bg-gray-50"
                                 }`}
-                            >
-                              {size}
-                            </button>
-                          ))}
+                              >
+                                {size}
+                              </button>
+                            ))}
+                          </div>
+                          <AnimatePresence>
+                            {sizeError && (
+                              <motion.p
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="text-red-500 text-xs font-bold mt-3 animate-pulse"
+                              >
+                                ⚠️ Please select a size
+                              </motion.p>
+                            )}
+                          </AnimatePresence>
                         </div>
-                        <AnimatePresence>
-                          {sizeError && (
-                            <motion.p
-                              initial={{ opacity: 0, y: -10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -10 }}
-                              className="text-red-500 text-xs font-bold mt-3 animate-pulse"
-                            >
-                              ⚠️ Please select a size
-                            </motion.p>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    )}
-
+                      )}
                   </div>
                 </div>
               </div>
@@ -495,4 +610,3 @@ const ProductModal = ({ product, isOpen, onClose }) => {
 };
 
 export default ProductModal;
-
