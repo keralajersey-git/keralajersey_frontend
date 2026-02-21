@@ -105,7 +105,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
               <div className="grid grid-cols-5 gap-0">
                 {/* Image Section - Wider */}
                 <div className="col-span-3 bg-gradient-to-br from-gray-50 to-gray-100 sticky top-0">
-                  <div className="relative h-[600px] flex items-center justify-center overflow-hidden">
+                  <div className="relative min-h-[400px] max-h-[70vh] flex items-center justify-center overflow-auto">
                     {images.length > 0 ? (
                       <>
                         <motion.img
@@ -116,11 +116,12 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                           transition={{ duration: 0.3 }}
                           src={images[currentImageIndex]}
                           alt={`${product.title} - Image ${currentImageIndex + 1}`}
-                          className="w-full h-full object-cover"
+                          className="max-w-full max-h-full object-contain"
                         />
 
                         {/* Overlay Gradient */}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none"></div>
+                        <div className="absolute inset-0 border-8 border-transparent pointer-events-none"></div>
 
                         {/* Navigation Buttons */}
                         {images.length > 1 && (
@@ -189,7 +190,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                         )}
                       </>
                     ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center min-h-[320px]">
                         <div className="text-center">
                           <div className="w-16 h-16 mx-auto mb-3 bg-gray-300 rounded-full flex items-center justify-center">
                             <svg
@@ -216,7 +217,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                 </div>
 
                 {/* Details Section */}
-                <div className="col-span-2 bg-[#faf9f6] flex flex-col h-[600px] border-l border-gray-100">
+                <div className="col-span-2 bg-[#faf9f6] flex flex-col border-l border-gray-100 max-h-[70vh] overflow-auto">
                   {/* Close Button */}
                   <div className="flex justify-end p-5 border-b border-gray-100">
                     <button
@@ -240,7 +241,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                   </div>
 
                   {/* Scrollable Content */}
-                  <div className="flex-1 overflow-y-auto modal-scrollbar px-6 py-6">
+                  <div className="flex-1 overflow-y-auto modal-scrollbar px-6 py-6 max-h-[40vh]">
                     {/* Title & Price */}
                     <div className="mb-6">
                       <h1 className="text-2xl font-black text-gray-900 mb-3 leading-tight tracking-tight">
@@ -394,7 +395,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                 <div className="px-5 pb-8">
                   {/* Product Image Carousel */}
                   <div className="mb-6 -mx-5 relative bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-                    <div className="relative h-80 flex items-center justify-center">
+                    <div className="relative min-h-[320px] max-h-[60vh] flex items-center justify-center overflow-auto">
                       {images.length > 0 ? (
                         <>
                           <motion.img
@@ -405,11 +406,12 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                             transition={{ duration: 0.3 }}
                             src={images[currentImageIndex]}
                             alt={`${product.title} - Image ${currentImageIndex + 1}`}
-                            className="w-full h-full object-cover"
+                            className="max-w-full max-h-full object-contain"
                           />
 
                           {/* Overlay Gradient */}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none"></div>
+                        <div className="absolute inset-0 border-8 border-transparent pointer-events-none"></div>
 
                           {/* Navigation Buttons */}
                           {images.length > 1 && (
@@ -478,7 +480,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
                           )}
                         </>
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center min-h-[400px]">
                           <div className="text-center">
                             <svg
                               className="w-12 h-12 text-gray-400 mx-auto mb-2"
