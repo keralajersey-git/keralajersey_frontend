@@ -16,7 +16,7 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: "Contact", href: "tel:+919748027778", type: "link" },
+    { name: "Contact", href: "tel:+919747140487", type: "link" },
     { name: "Collections", href: "#products", type: "scroll" },
     { name: "Features", href: "#about", type: "scroll" },
     { name: "Reviews", href: "#testimonials", type: "scroll" },
@@ -78,7 +78,7 @@ const Navbar = () => {
         {/* WhatsApp Link */}
         <div className="hidden md:block">
           <a
-            href="https://wa.me/918848027778"
+            href="https://wa.me/919747140487"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2.5 bg-gray-900 text-[#25D366] px-5 py-2.5 rounded-full hover:bg-black transition-all duration-300 shadow-xl border border-white/10 group"
@@ -148,7 +148,7 @@ const Navbar = () => {
 
               <div className="mt-auto">
                 <a
-                  href="https://wa.me/918848027778"
+                  href="https://wa.me/919747140487"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-4 bg-gray-900 text-white font-black uppercase tracking-widest rounded-xl shadow-lg flex items-center justify-center gap-3 hover:bg-black transition-all"
