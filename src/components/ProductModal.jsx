@@ -357,7 +357,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="md:hidden pointer-events-auto bg-[#faf9f6] rounded-t-md shadow-2xl h-[95vh] w-full flex flex-col overflow-hidden"
+              className="md:hidden pointer-events-auto bg-[#faf9f6] rounded-t-md shadow-2xl h-full w-full flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Sticky Header for Mobile */}
