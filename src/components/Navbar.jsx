@@ -16,7 +16,7 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: "Contact", href: "tel:+919747140487", type: "link" },
+    { name: "Contact", href: "tel:+918848027778", type: "link" },
     { name: "Collections", href: "#products", type: "scroll" },
     { name: "Features", href: "#about", type: "scroll" },
     { name: "Reviews", href: "#testimonials", type: "scroll" },

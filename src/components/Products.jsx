@@ -23,7 +23,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const productsPerPage = 9;
+  const productsPerPage = 12;
   const API_URL = (
     import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
   ).replace(/\/$/, "");

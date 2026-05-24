@@ -50,7 +50,7 @@ const ProductModal = ({ product, isOpen, onClose }) => {
     const sizeText = selectedSize ? ` (Size: ${selectedSize})` : "";
     const message = `Hi, I'm interested in the ${product.title}${sizeText}. Price: ₹${product.price.toFixed(0)}. Can you provide more details?`;
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/919747140487?text=${encodedMessage}`, "_blank");
+    window.open(`https://wa.me/918848027778?text=${encodedMessage}`, "_blank");
   };
 
   const handleClose = () => {
