@@ -12,9 +12,9 @@ import {
 
 const Hero = ({ onSelectQuality }) => {
   const images = [
-    "https://sgp.cloud.appwrite.io/v1/storage/buckets/696fb2fe002e5fe0bbbf/files/6978fc790016120a2bca/view?project=696faebf00087f88b3cb&mode=user",
-    "https://sgp.cloud.appwrite.io/v1/storage/buckets/696fb2fe002e5fe0bbbf/files/6978fc640009bb427be6/view?project=696faebf00087f88b3cb&mode=user",
-    "https://sgp.cloud.appwrite.io/v1/storage/buckets/696fb2fe002e5fe0bbbf/files/6978fbfc00342426026d/view?project=696faebf00087f88b3cb&mode=user",
+    "https://0wkmdbtajqfmygt1.public.blob.vercel-storage.com/hero/d488c41d02ae9ed61c7453a180cbdf5d.jpg",
+    "https://0wkmdbtajqfmygt1.public.blob.vercel-storage.com/hero/IMG_3469.JPG.jpeg",
+    "https://0wkmdbtajqfmygt1.public.blob.vercel-storage.com/hero/IMG_3470.JPG.jpeg",
     "https://i.pinimg.com/736x/1d/d1/8d/1dd18dd3f03c5d3dcde268e489fe9fb5.jpg",
   ];
 
