@@ -15,8 +15,8 @@ const About = () => {
             icon: <RiBrushAiFill className="w-8 h-8 text-gray-900" />,
         },
         {
-            title: "Free Delivery",
-            description: "Fast and free shipping across Kerala on all orders with extra-care secure packaging.",
+            title: "All India Shipping",
+            description: "Fast shipping all across India on all orders with extra-care secure packaging.",
             icon: <FiTruck className="w-8 h-8 text-gray-900" />,
         }
     ];
