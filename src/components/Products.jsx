@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import ProductModal from "./ProductModal";
+import ProductDrawer from "./ProductDrawer";
 import {
   FiChevronLeft,
   FiChevronRight,
@@ -227,7 +227,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                   </div>
                   <div className="p-4 sm:p-6 flex-1 flex flex-col">
                     <div className="flex justify-between items-start mb-1">
-                      <span className="text-[10px] font-bold text-yellow-600 uppercase tracking-widest">
+                      <span className="text-[9px] sm:text-[10px] font-bold text-gray-900 uppercase tracking-widest font-built" style={{ fontFamily: "'BuiltTitlingSB', sans-serif" }}>
                         {product.sub_category ||
                           product.category?.replace("-", " ")}
                       </span>
@@ -248,7 +248,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                       {product.description}
                     </p>
 
-                    <div className="mt-auto pt-4 border-t border-gray-200 flex items-end justify-between">
+                    <div className="mt-auto pt-3 sm:pt-4 border-t border-gray-200 flex items-end justify-between">
                       {/* Desktop Stock Info */}
                       <div className="hidden lg:block text-left">
                         {product.stock && product.stock_left > 0 && (
@@ -262,16 +262,22 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                       </div>
 
                       <div className="text-right flex-1">
-                        <div className="flex items-baseline justify-end gap-2">
+                        <div className="flex items-baseline justify-end gap-2 font-sans">
                           {product.original_price &&
                             product.original_price > product.price && (
-                              <p className="text-sm text-gray-400 line-through font-medium opacity-60">
+                              <span
+                                className="text-xs sm:text-sm text-gray-400 line-through font-medium opacity-60"
+                                style={{ fontFamily: "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif", letterSpacing: "0em" }}
+                              >
                                 ₹{product.original_price}
-                              </p>
+                              </span>
                             )}
-                          <p className="text-xl font-black text-gray-900">
+                          <span
+                            className="text-base sm:text-xl font-semibold text-black"
+                            style={{ fontFamily: "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif", letterSpacing: "0em" }}
+                          >
                             ₹{product.price}
-                          </p>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -315,7 +321,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
           </div>
         )}
 
-        <ProductModal
+        <ProductDrawer
           product={selectedProduct}
           isOpen={!!selectedProduct}
           onClose={() => setSelectedProduct(null)}

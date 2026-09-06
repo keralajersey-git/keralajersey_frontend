@@ -68,7 +68,8 @@ const Navbar = () => {
               key={link.name}
               href={link.href}
               onClick={(e) => handleNavClick(e, link)}
-              className="text-sm font-bold text-gray-600 hover:text-gray-900 tracking-wide transition-colors"
+              className="text-base font-bold text-gray-600 hover:text-gray-900 tracking-wide transition-colors"
+              style={{ fontFamily: "'BuiltTitlingSB', sans-serif", letterSpacing: "0.12em" }}
             >
               {link.name}
             </a>
@@ -87,7 +88,10 @@ const Navbar = () => {
               size={18}
               className="text-white group-hover:scale-110 transition-transform duration-300"
             />
-            <span className="text-[11px] font-black uppercase tracking-widest text-white">
+            <span
+              className="text-xs font-black uppercase tracking-widest text-white"
+              style={{ fontFamily: "'BuiltTitlingSB', sans-serif", letterSpacing: "0.12em" }}
+            >
               WhatsApp
             </span>
           </a>
@@ -138,9 +142,12 @@ const Navbar = () => {
                     key={link.name}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link)}
-                    className="text-xl font-bold text-gray-900 py-2 border-b border-gray-100 flex items-center justify-between group"
+                    className="text-2xl font-bold text-gray-900 py-2 border-b border-gray-100 flex items-center justify-between group"
+                    style={{ fontFamily: "'BuiltTitlingSB', sans-serif", letterSpacing: "0.12em" }}
                   >
-                    <span>{link.name}</span>
+                    <span style={{ fontFamily: "'BuiltTitlingSB', sans-serif", letterSpacing: "0.12em" }}>
+                      {link.name}
+                    </span>
                     <div className="w-2 h-2 rounded-full bg-[#c5bbae] opacity-0 group-hover:opacity-100 transition-opacity" />
                   </a>
                 ))}
@@ -152,11 +159,17 @@ const Navbar = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-4 bg-gray-900 text-white font-black uppercase tracking-widest rounded-xl shadow-lg flex items-center justify-center gap-3 hover:bg-black transition-all"
+                  style={{ fontFamily: "'BuiltTitlingSB', sans-serif", letterSpacing: "0.12em" }}
                 >
                   <FaWhatsapp size={20} className="text-[#25D366]" />
-                  <span>WhatsApp Us</span>
+                  <span style={{ fontFamily: "'BuiltTitlingSB', sans-serif", letterSpacing: "0.12em" }}>
+                    WhatsApp Us
+                  </span>
                 </a>
-                <p className="text-[10px] text-gray-400 text-center mt-6 uppercase tracking-widest font-bold">
+                <p
+                  className="text-xs text-gray-400 text-center mt-6 uppercase tracking-widest font-bold"
+                  style={{ fontFamily: "'BuiltTitlingSB', sans-serif", letterSpacing: "0.12em" }}
+                >
                   © 2026 Kerala Jersey
                 </p>
               </div>

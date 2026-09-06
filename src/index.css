@@ -2,12 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body, #root {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 @font-face {
     font-family: 'DancingScript';
     src: url('/fonts/DancingScript-Bold.otf') format('opentype');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
+}
+
+@font-face {
+    font-family: 'BuiltTitlingSB';
+    src: url('/built%20titling%20sb.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'BuiltTitlingSB', sans-serif !important;
+    letter-spacing: 0.12em !important;
+}
+
+h1#hero-heading {
+    letter-spacing: 0.05em !important;
+}
+
+.font-built,
+[class~="font-built"] {
+    letter-spacing: 0.12em !important;
 }
 
 @keyframes float {

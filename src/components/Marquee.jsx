@@ -5,7 +5,7 @@ const Marquee = () => {
     const words = Array(10).fill('Kerala JERSEY');
 
     return (
-        <div className="relative py-6 md:py-8 mt-[-10px] md:mt-[80px] overflow-hidden bg-[#111827] border-y border-white/5 shadow-2xl -skew-y-6 md:-skew-y-3 my-12 md:my-14">
+        <div className="relative py-6 md:py-8 mt-6 md:mt-[80px] overflow-hidden bg-[#111827] border-y border-white/5 shadow-2xl -skew-y-6 md:-skew-y-3 my-12 md:my-14">
             <div className="flex whitespace-nowrap">
                 <motion.div
                     className="flex flex-row"

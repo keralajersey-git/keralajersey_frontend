@@ -30,10 +30,10 @@ const Hero = ({ onSelectQuality }) => {
   }, [images.length]);
 
   return (
-    <div className="relative min-h-[80vh] flex items-center pt-0 lg:pt-20 px-0 lg:px-4 overflow-hidden bg-white text-[#111827]">
-      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-12 items-center">
+    <div className="relative min-h-[80vh] max-h-screen flex items-center pt-0 lg:pt-20 px-0 lg:px-4 overflow-hidden bg-white text-[#111827] w-full max-w-full overflow-x-hidden overflow-y-hidden">
+      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-12 items-center overflow-x-hidden w-full max-w-full">
         {/* Right Side: Re-ordered (First on Mobile) */}
-        <div className="relative h-fit lg:h-[550px] flex items-center justify-center mt-0 lg:mt-0 order-1 lg:order-2">
+        <div className="relative h-fit lg:h-[550px] flex items-center justify-center mt-0 lg:mt-0 order-1 lg:order-2 overflow-hidden">
           {/* MOBILE ONLY: Automatic Carousel - Full Width, No Padding, No Rounded Corners */}
           <div className="lg:hidden relative w-full aspect-square bg-gray-50 overflow-hidden">
             <AnimatePresence mode="wait">
@@ -195,20 +195,19 @@ const Hero = ({ onSelectQuality }) => {
         </div>
 
         {/* Left Side: Content - Order 2 on Mobile */}
-        <div className="relative z-10 text-left space-y-8 animate-in fade-in slide-in-from-left duration-1000 order-2 lg:order-1 px-6 lg:px-0 pb-20 lg:pb-0">
-          <div className="inline-flex items-center space-x-2 bg-gray-900/5 backdrop-blur-sm border border-gray-900/10 px-4 py-1.5 rounded-full">
-            <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></span>
-            <p className="text-xs font-semibold uppercase tracking-widest text-gray-800">
-              2026 Collection
-            </p>
-          </div>
+        <div className="relative z-10 text-left space-y-8 animate-in fade-in slide-in-from-left duration-1000 order-2 lg:order-1 px-6 lg:px-0 pb-10 sm:pb-10 lg:pb-0 overflow-hidden max-h-[90vh]">
+         
 
-          <div className="space-y-4">
-            <h1 className="text-5xl md:text-5xl lg:text-7xl font-black text-gray-900 leading-[0.9] tracking-tighter">
-              WEAR THE <br />
-              <span className="text-[#c5bbae]">SPIRIT.</span>
+          <div className="space-y-5 overflow-hidden">
+            <h1
+              id="hero-heading"
+              className="text-[10vw] sm:text-5xl md:text-8xl lg:text-8xl font-black text-gray-900 leading-[0.9] whitespace-nowrap md:whitespace-normal overflow-hidden w-full max-w-full"
+              style={{ letterSpacing: "0.03em" }}
+            >
+              WEAR THE{" "}
+              <span className="md:block text-[#c5bbae]">SPIRIT.</span>
             </h1>
-            <p className="max-w-lg text-sm md:text-lg text-gray-600 font-light leading-relaxed">
+            <p className="max-w-xl text-base md:text-xl lg:text-2xl text-gray-600 font-light leading-relaxed">
               Premium Kerala jerseys crafted with heritage, pulse, and peak
               performance fabric. Elevate your game and celebrate your roots in
               absolute style.
@@ -227,7 +226,7 @@ const Hero = ({ onSelectQuality }) => {
       </div>
 
       {/* Background Decorative Blur */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-yellow-100/5 rounded-full blur-[120px] -z-10"></div>
+      <div className="pointer-events-none absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 w-[800px] h-[800px] bg-yellow-100/5 rounded-full blur-[120px] -z-10 opacity-60"></div>
 
       {/* Quality Selection Popup */}
       <AnimatePresence>
