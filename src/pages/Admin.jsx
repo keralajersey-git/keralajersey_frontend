@@ -10,6 +10,9 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiLogOut,
+  FiFilter,
+  FiChevronDown,
+  FiChevronUp,
 } from "react-icons/fi";
 import { MdPushPin } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
@@ -52,6 +55,10 @@ const Admin = () => {
   // Filtering state
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [pinnedFilter, setPinnedFilter] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState("top-quality");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -59,6 +66,41 @@ const Admin = () => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const productsPerPage = 12;
   const adminRef = useRef(null);
+
+  const subCategories = [
+    { id: null, label: "All Top Quality" },
+    { id: "first quality", label: "First Quality" },
+    { id: "master quality", label: "Master Quality" },
+    { id: "player version", label: "Player Version" },
+    { id: "authentic retro", label: "Authentic Retro" },
+  ];
+
+  const handleCategoryChange = (val, subVal = null) => {
+    setSelectedCategory(val);
+    setSelectedSubCategory(subVal);
+    setPinnedFilter(false);
+    setCurrentPage(1);
+    setIsFilterOpen(false);
+  };
+
+  const handlePinnedFilter = () => {
+    setPinnedFilter(true);
+    setSelectedCategory(null);
+    setSelectedSubCategory(null);
+    setCurrentPage(1);
+    setIsFilterOpen(false);
+  };
+
+  // Reviews tab state
+  const [activeTab, setActiveTab] = useState("products");
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewsLoadingMore, setReviewsLoadingMore] = useState(false);
+  const [reviewsError, setReviewsError] = useState(null);
+  const [reviewsSearch, setReviewsSearch] = useState("");
+  const [debouncedReviewsSearch, setDebouncedReviewsSearch] = useState("");
+  const [reviewsPage, setReviewsPage] = useState(1);
+  const [reviewsTotal, setReviewsTotal] = useState(0);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -108,6 +150,8 @@ const Admin = () => {
       });
       if (debouncedSearch.trim()) params.set("search", debouncedSearch.trim());
       if (selectedCategory) params.set("category", selectedCategory);
+      if (selectedSubCategory) params.set("sub_category", selectedSubCategory);
+      if (pinnedFilter) params.set("pinned", "true");
       const response = await fetch(`${API_URL}/products/?${params.toString()}`);
       if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
       const data = await response.json();
@@ -122,11 +166,87 @@ const Admin = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, debouncedSearch, selectedCategory, productsPerPage, API_URL]);
+  }, [
+    currentPage,
+    debouncedSearch,
+    selectedCategory,
+    selectedSubCategory,
+    pinnedFilter,
+    productsPerPage,
+    API_URL,
+  ]);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedReviewsSearch(reviewsSearch);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [reviewsSearch]);
+
+  const fetchReviews = useCallback(
+    async (page = 1, append = false) => {
+      try {
+        if (append) setReviewsLoadingMore(true);
+        else setReviewsLoading(true);
+        setReviewsError(null);
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: "20",
+        });
+        if (debouncedReviewsSearch.trim())
+          params.set("search", debouncedReviewsSearch.trim());
+        const response = await fetch(
+          `${API_URL}/reviews/?${params.toString()}`,
+        );
+        if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
+        const data = await response.json();
+        setReviews((prev) =>
+          append ? [...prev, ...data.items] : data.items,
+        );
+        setReviewsTotal(data.total);
+        setReviewsPage(page);
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+        setReviewsError("Could not load reviews.");
+      } finally {
+        setReviewsLoading(false);
+        setReviewsLoadingMore(false);
+      }
+    },
+    [debouncedReviewsSearch, API_URL],
+  );
+
+  useEffect(() => {
+    if (activeTab === "reviews") {
+      fetchReviews(1, false);
+    }
+  }, [activeTab, fetchReviews]);
+
+  const handleLoadMore = () => {
+    fetchReviews(reviewsPage + 1, true);
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    if (!window.confirm("Are you sure you want to delete this review?")) return;
+    try {
+      const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+        setReviewsTotal((t) => Math.max(t - 1, 0));
+      } else {
+        alert("Failed to delete review");
+      }
+    } catch (err) {
+      console.error("Error deleting review:", err);
+      alert("Failed to delete review");
+    }
+  };
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?"))
@@ -358,16 +478,18 @@ const Admin = () => {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => {
-                resetForm();
-                setShowModal(true);
-              }}
-              className="flex items-center justify-center bg-gray-900 text-white px-2.5 py-2.5 rounded-md font-bold hover:bg-black transition-all shadow-lg shadow-gray-900/20 active:scale-95 shrink-0"
-              title="Add Product"
-            >
-              <FiPlus className="w-5 h-5" />
-            </button>
+            {activeTab === "products" && (
+              <button
+                onClick={() => {
+                  resetForm();
+                  setShowModal(true);
+                }}
+                className="flex items-center justify-center bg-gray-900 text-white px-2.5 py-2.5 rounded-md font-bold hover:bg-black transition-all shadow-lg shadow-gray-900/20 active:scale-95 shrink-0"
+                title="Add Product"
+              >
+                <FiPlus className="w-5 h-5" />
+              </button>
+            )}
             <button
               onClick={handleLogout}
               className="flex items-center justify-center p-2.5 border border-red-100 bg-red-50 text-red-600 rounded-md hover:bg-red-100 transition-all active:scale-95 shrink-0"
@@ -378,6 +500,34 @@ const Admin = () => {
           </div>
         </div>
 
+        {/* Tabs */}
+        <div className="flex items-center gap-6 mb-10 border-b border-gray-200">
+          <button
+            onClick={() => setActiveTab("products")}
+            className={`px-1 py-3 text-sm font-black uppercase tracking-widest transition-all border-b-2 -mb-px ${
+              activeTab === "products"
+                ? "text-gray-900 border-gray-900"
+                : "text-gray-400 border-transparent hover:text-gray-600"
+            }`}
+            style={{ fontFamily: "'BuiltTitlingSB', sans-serif" }}
+          >
+            Products
+          </button>
+          <button
+            onClick={() => setActiveTab("reviews")}
+            className={`px-1 py-3 text-sm font-black uppercase tracking-widest transition-all border-b-2 -mb-px ${
+              activeTab === "reviews"
+                ? "text-gray-900 border-gray-900"
+                : "text-gray-400 border-transparent hover:text-gray-600"
+            }`}
+            style={{ fontFamily: "'BuiltTitlingSB', sans-serif" }}
+          >
+            Reviews
+          </button>
+        </div>
+
+        {activeTab === "products" ? (
+          <>
         {/* Search Bar and Filter */}
         <div className="mb-10">
           <div className="flex flex-row gap-3">
@@ -407,36 +557,13 @@ const Admin = () => {
               </svg>
             </div>
 
-            <div className="relative">
-              <select
-                value={selectedCategory || ""}
-                onChange={(e) => {
-                  setSelectedCategory(e.target.value || null);
-                  setCurrentPage(1);
-                }}
-                className="w-12 h-full pl-3 pr-2 border border-gray-200 rounded-md bg-white text-gray-900 focus:outline-none focus:border-gray-900 transition-all duration-200 appearance-none cursor-pointer hover:border-gray-300 shadow-sm"
-                style={{ textIndent: "-9999px" }}
-              >
-                <option value="">All Categories</option>
-                <option value="top-quality">Top Quality</option>
-                <option value="standard-quality">Standard Quality</option>
-              </select>
-              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-                <svg
-                  className="w-5 h-5 text-gray-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-                  />
-                </svg>
-              </div>
-            </div>
+            <button
+              onClick={() => setIsFilterOpen(true)}
+              className="w-12 h-[46px] flex items-center justify-center border border-gray-200 rounded-md bg-white text-gray-600 hover:border-gray-900 hover:text-gray-900 transition-all duration-200 shadow-sm active:scale-95 shrink-0"
+              title="Filter Collection"
+            >
+              <FiFilter className="w-5 h-5" />
+            </button>
           </div>
         </div>
 
@@ -663,6 +790,275 @@ const Admin = () => {
               </div>
             )}
           </>
+        )}
+
+            {/* Filter Collection Modal */}
+            <AnimatePresence>
+              {isFilterOpen && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setIsFilterOpen(false)}
+                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                    className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none"
+                  >
+                    <div
+                      className="relative bg-white rounded-xl shadow-xl max-w-sm w-full mx-4 overflow-hidden pointer-events-auto"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {/* Header */}
+                      <div className="p-4 pb-2 flex items-center justify-between">
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          Filter Collection
+                        </h3>
+                        <button
+                          onClick={() => setIsFilterOpen(false)}
+                          className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                        >
+                          <FiX className="w-4 h-4 text-gray-500" />
+                        </button>
+                      </div>
+
+                      {/* Options */}
+                      <div className="p-4 space-y-2">
+                        {/* All Collections */}
+                        <button
+                          onClick={() => handleCategoryChange(null)}
+                          className={`w-full text-left p-3 rounded-lg border transition-all duration-200 ${
+                            !selectedCategory && !selectedSubCategory && !pinnedFilter
+                              ? "border-[#c5bbae] bg-[#faf7f2]"
+                              : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
+                          }`}
+                        >
+                          <div className="font-medium text-gray-900">
+                            All Collections
+                          </div>
+                          <div className="text-sm text-gray-500 mt-1">
+                            View all products
+                          </div>
+                        </button>
+
+                        {/* Pinned */}
+                        <button
+                          onClick={handlePinnedFilter}
+                          className={`w-full text-left p-3 rounded-lg border transition-all duration-200 flex items-center justify-between ${
+                            pinnedFilter && !selectedCategory && !selectedSubCategory
+                              ? "border-[#c5bbae] bg-[#faf7f2]"
+                              : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <MdPushPin className="w-4 h-4 text-gray-700 rotate-45" />
+                            <div>
+                              <div className="font-medium text-gray-900">
+                                Pinned
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                Featured products only
+                              </div>
+                            </div>
+                          </div>
+                        </button>
+
+                        {/* Top Quality */}
+                        <div className="space-y-1">
+                          <button
+                            onClick={() =>
+                              setExpandedCategory(
+                                expandedCategory === "top-quality"
+                                  ? null
+                                  : "top-quality",
+                              )
+                            }
+                            className={`w-full text-left p-3 rounded-lg border transition-all duration-200 flex items-center justify-between ${
+                              expandedCategory === "top-quality" ||
+                              (selectedCategory === "top-quality" &&
+                                !selectedSubCategory)
+                                ? "border-[#c5bbae] bg-[#faf7f2]"
+                                : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
+                            }`}
+                          >
+                            <div>
+                              <div className="font-medium text-gray-900">
+                                Top Quality
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                5 variations available
+                              </div>
+                            </div>
+                            {expandedCategory === "top-quality" ? (
+                              <FiChevronUp className="w-4 h-4 text-gray-500" />
+                            ) : (
+                              <FiChevronDown className="w-4 h-4 text-gray-500" />
+                            )}
+                          </button>
+
+                          <AnimatePresence>
+                            {expandedCategory === "top-quality" && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="bg-gray-50 rounded-lg overflow-hidden"
+                              >
+                                {subCategories.map((sub) => (
+                                  <button
+                                    key={sub.id || "all-sub"}
+                                    onClick={() =>
+                                      handleCategoryChange("top-quality", sub.id)
+                                    }
+                                    className={`w-full text-left px-4 py-2.5 text-sm transition-colors border-l-2 ${
+                                      selectedCategory === "top-quality" &&
+                                      selectedSubCategory === sub.id
+                                        ? "text-[#c5bbae] bg-white border-[#c5bbae]"
+                                        : "text-gray-700 hover:text-[#c5bbae] hover:bg-white border-transparent hover:border-[#c5bbae]"
+                                    }`}
+                                  >
+                                    {sub.label}
+                                  </button>
+                                ))}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+
+                        {/* Standard Quality */}
+                        <button
+                          onClick={() => handleCategoryChange("standard-quality")}
+                          className={`w-full text-left p-3 rounded-lg border transition-all duration-200 ${
+                            selectedCategory === "standard-quality" &&
+                            !selectedSubCategory
+                              ? "border-[#c5bbae] bg-[#faf7f2]"
+                              : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
+                          }`}
+                        >
+                          <div className="font-medium text-gray-900">
+                            Standard Quality
+                          </div>
+                          <div className="text-sm text-gray-500 mt-1">
+                            Regular quality jerseys
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </>
+        ) : (
+          <div>
+            {/* Reviews Search */}
+            <div className="mb-10">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search by review or product..."
+                  value={reviewsSearch}
+                  onChange={(e) => setReviewsSearch(e.target.value)}
+                  className="w-full px-5 py-3 border border-gray-200 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 transition-all duration-200 shadow-sm"
+                />
+                {reviewsSearch && (
+                  <button
+                    onClick={() => setReviewsSearch("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                  >
+                    <FiX className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {reviewsLoading ? (
+              <div className="flex justify-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+              </div>
+            ) : reviewsError ? (
+              <div className="bg-red-50 p-8 rounded-md border border-red-100 text-center">
+                <p className="text-red-600 font-bold">{reviewsError}</p>
+              </div>
+            ) : reviews.length === 0 ? (
+              <div className="text-center py-12 text-gray-500">
+                No reviews found.
+              </div>
+            ) : (
+              <>
+                <div className="space-y-4">
+                  {reviews.map((review) => (
+                    <div
+                      key={review.id}
+                      className="bg-white rounded-md shadow-md border border-gray-100 p-5 flex items-start gap-4"
+                    >
+                      {review.product_image ? (
+                        <img
+                          src={review.product_image}
+                          alt={review.product_title}
+                          className="w-16 h-16 rounded-md object-cover bg-gray-100 border border-gray-100 shrink-0"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 rounded-md bg-gray-100 border border-gray-100 flex items-center justify-center text-gray-300 shrink-0">
+                          <FiImage className="w-5 h-5" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-4 mb-1">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-yellow-600 bg-yellow-50 px-2 py-1 rounded-md truncate">
+                            {review.product_title || "Unknown product"}
+                          </span>
+                          <span className="text-[10px] text-gray-400 shrink-0">
+                            {review.created_at
+                              ? new Date(
+                                  review.created_at,
+                                ).toLocaleDateString(undefined, {
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                })
+                              : ""}
+                          </span>
+                        </div>
+                        <div className="text-sm font-bold text-gray-900 mb-1">
+                          {review.customer_name}
+                        </div>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {review.review}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteReview(review.id)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors shrink-0"
+                        title="Delete review"
+                      >
+                        <FiTrash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-8 text-center">
+                  <p className="text-xs text-gray-400 mb-4">
+                    Showing {reviews.length} of {reviewsTotal} reviews
+                  </p>
+                  {reviews.length < reviewsTotal && (
+                    <button
+                      onClick={handleLoadMore}
+                      disabled={reviewsLoadingMore}
+                      className="px-8 py-3 bg-gray-900 text-white rounded-md font-bold hover:bg-black transition-all disabled:opacity-50"
+                    >
+                      {reviewsLoadingMore ? "Loading..." : "Load More"}
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
         )}
       </div>
 
