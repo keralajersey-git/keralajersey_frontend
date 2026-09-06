@@ -18,16 +18,20 @@ const Hero = ({ onSelectQuality }) => {
     "https://i.pinimg.com/736x/1d/d1/8d/1dd18dd3f03c5d3dcde268e489fe9fb5.jpg",
   ];
 
+  const mobileImages = images.filter(
+    (img) => !img.includes("IMG_3470.JPG_ppfrdh")
+  );
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState("top-quality");
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
+      setCurrentIndex((prev) => (prev + 1) % mobileImages.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, [images.length]);
+  }, [mobileImages.length]);
 
   return (
     <div className="relative min-h-[80vh] max-h-screen flex items-center pt-0 lg:pt-20 px-0 lg:px-4 overflow-hidden bg-white text-[#111827] w-full max-w-full overflow-x-hidden overflow-y-hidden">
@@ -39,7 +43,7 @@ const Hero = ({ onSelectQuality }) => {
             <AnimatePresence mode="wait">
               <motion.img
                 key={currentIndex}
-                src={images[currentIndex]}
+                src={mobileImages[currentIndex]}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -48,7 +52,7 @@ const Hero = ({ onSelectQuality }) => {
               />
             </AnimatePresence>
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-              {images.map((_, idx) => (
+              {mobileImages.map((_, idx) => (
                 <div
                   key={idx}
                   className={`h-1.5 rounded-full transition-all duration-500 ${
