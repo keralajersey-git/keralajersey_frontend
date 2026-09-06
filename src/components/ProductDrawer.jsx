@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { MdPushPin } from "react-icons/md";
 
 const ProductDrawer = ({ product, isOpen, onClose }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -15,6 +16,36 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
       document.body.classList.remove("drawer-open");
     }
     return () => document.body.classList.remove("drawer-open");
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    if (window.history.state?.drawerOpen !== true) {
+      window.history.pushState({ drawerOpen: true }, "");
+    }
+
+    const handlePopState = () => {
+      handleClose();
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("popstate", handlePopState);
+      if (window.history.state?.drawerOpen === true) {
+        window.history.back();
+      }
+    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -311,8 +342,16 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
 
                 <div className="flex flex-col gap-2 mb-6">
                   {product.stock && (
-                    <div className="self-start px-3 py-2.5 bg-gradient-to-r from-gray-900 to-gray-800 text-white text-sm font-semibold flex items-center">
-                      {product.stock_left} in stock
+                    <div className="self-start flex items-center gap-2 flex-wrap">
+                      <div className="px-3 py-2.5 bg-gradient-to-r from-gray-900 to-gray-800 text-white text-sm font-semibold flex items-center">
+                        {product.stock_left} in stock
+                      </div>
+                      {product.pinned && (
+                        <div className="px-3 py-2.5 bg-gradient-to-r from-yellow-400 to-amber-500 text-white text-sm font-semibold flex items-center gap-1.5">
+                          <MdPushPin className="w-4 h-4 rotate-45" />
+                          Pinned
+                        </div>
+                      )}
                     </div>
                   )}
                   {product.free_delivery && (

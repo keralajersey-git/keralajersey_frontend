@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
+import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { FaWhatsapp } from "react-icons/fa";
 
 const Navbar = () => {
@@ -102,7 +103,7 @@ const Navbar = () => {
           className="md:hidden p-2 text-gray-900"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          {mobileMenuOpen ? <FiX size={24} /> : <HiOutlineMenuAlt3 size={24} />}
         </button>
       </div>
 

@@ -11,6 +11,7 @@ import {
   FiChevronRight,
   FiLogOut,
 } from "react-icons/fi";
+import { MdPushPin } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Admin = () => {
@@ -76,6 +77,7 @@ const Admin = () => {
     stock: true,
     stock_left: "",
     free_delivery: false,
+    pinned: false,
     available_sizes: ["S", "M", "L", "XL"],
     image1: "",
     image2: "",
@@ -154,6 +156,7 @@ const Admin = () => {
       stock: product.stock !== undefined ? product.stock : true,
       stock_left: product.stock_left !== null ? product.stock_left : "",
       free_delivery: product.free_delivery || false,
+      pinned: product.pinned || false,
       available_sizes: product.available_sizes || ["S", "M", "L", "XL"],
       image1: product.image1 || "",
       image2: product.image2 || "",
@@ -173,6 +176,7 @@ const Admin = () => {
       stock: true,
       stock_left: "",
       free_delivery: false,
+      pinned: false,
       available_sizes: ["S", "M", "L", "XL"],
       image1: "",
       image2: "",
@@ -480,7 +484,10 @@ const Admin = () => {
                           key={product.$id || product.id}
                           className="hover:bg-gray-50 transition-colors"
                         >
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4 relative">
+                            {product.pinned && (
+                              <MdPushPin className="absolute top-2 right-2 w-3.5 h-3.5 text-yellow-500 shrink-0 rotate-45" />
+                            )}
                             <div className="flex items-center gap-4">
                               <img
                                 src={product.image1}
@@ -560,8 +567,11 @@ const Admin = () => {
                 .map((product) => (
                   <div
                     key={product.$id || product.id}
-                    className="bg-white p-6 rounded-md shadow-lg border border-gray-100 space-y-4"
+                    className="bg-white p-6 rounded-md shadow-lg border border-gray-100 space-y-4 relative"
                   >
+                    {product.pinned && (
+                      <MdPushPin className="absolute top-4 right-4 w-4 h-4 text-yellow-500 shrink-0 rotate-45" />
+                    )}
                     <div className="flex items-center gap-4">
                       <img
                         src={product.image1}
@@ -880,6 +890,26 @@ const Admin = () => {
                       </div>
                       <span className="text-xs font-bold text-gray-600 uppercase tracking-widest">
                         Free Delivery
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData({ ...formData, pinned: !formData.pinned })
+                      }
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <div
+                        className={`w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all ${formData.pinned ? "bg-yellow-500 border-yellow-500" : "border-gray-200"}`}
+                      >
+                        {formData.pinned && (
+                          <MdPushPin className="text-white w-3.5 h-3.5 rotate-45" />
+                        )}
+                      </div>
+                      <span
+                        className={`text-xs font-bold uppercase tracking-widest ${formData.pinned ? "text-yellow-600" : "text-gray-600"}`}
+                      >
+                        Pin to Top
                       </span>
                     </button>
                   </div>

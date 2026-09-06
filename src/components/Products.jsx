@@ -9,6 +9,7 @@ import {
   FiChevronDown,
   FiChevronUp,
 } from "react-icons/fi";
+import { MdPushPin } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Products = ({ externalFilter, setExternalFilter }) => {
@@ -167,19 +168,34 @@ const Products = ({ externalFilter, setExternalFilter }) => {
         <div className="mb-12 max-w-4xl mx-auto">
           <div className="flex flex-row gap-3 sm:gap-4">
             <div className="relative flex-1">
+              <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
               <input
                 type="text"
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-6 py-4 border-2 border-gray-100 rounded-md bg-white/50 backdrop-blur-sm focus:outline-none focus:border-gray-900 transition-all h-[56px]"
+                className="w-full pl-14 pr-6 py-4 border-2 border-gray-300 rounded-md bg-white focus:outline-none focus:border-gray-900 focus:ring-4 focus:ring-gray-900/10 transition-all h-[56px] text-gray-900 placeholder-gray-500 font-medium shadow-md"
               />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
             <button
               onClick={() => setIsFilterOpen(true)}
-              className="w-[56px] h-[56px] flex items-center justify-center border-2 border-gray-100 rounded-md bg-white/50 backdrop-blur-sm hover:border-gray-900 transition-all shrink-0"
+              className="w-[56px] h-[56px] flex items-center justify-center border-2 border-gray-300 rounded-md bg-white hover:border-gray-900 hover:bg-gray-50 text-gray-700 transition-all shrink-0 shadow-md hover:shadow-lg active:scale-95"
             >
-              <FiFilter className="w-5 h-5 text-gray-600" />
+              <FiFilter className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -212,8 +228,18 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                     ) : (
                       <span className="text-gray-400">No Image</span>
                     )}
+                    {product.pinned && (
+                      <div
+                        className="absolute top-2 right-2 z-10 bg-[#faf7f2] rounded-full w-7 h-7 flex items-center justify-center shadow-md border border-[#e5e1da]"
+                        title="Pinned"
+                      >
+                        <MdPushPin className="w-3.5 h-3.5 text-gray-900 rotate-45" />
+                      </div>
+                    )}
                     {product.free_delivery && (
-                      <div className="absolute top-2 right-2 bg-gray-900 text-white text-[8px] px-2 py-1 rounded-full uppercase font-bold tracking-widest">
+                      <div
+                        className={`absolute right-2 bg-gray-900 text-white text-[8px] px-2 py-1 rounded-full uppercase font-bold tracking-widest ${product.pinned ? "top-9" : "top-2"}`}
+                      >
                         Free Delivery
                       </div>
                     )}
