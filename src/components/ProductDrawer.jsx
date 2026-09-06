@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdPushPin } from "react-icons/md";
+import { FiPlus, FiX } from "react-icons/fi";
 
 const ProductDrawer = ({ product, isOpen, onClose }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -8,6 +9,17 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
   const [sizeError, setSizeError] = useState(false);
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewsError, setReviewsError] = useState(null);
+  const [customerName, setCustomerName] = useState("");
+  const [reviewText, setReviewText] = useState("");
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+
+  const API_URL = (
+    import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
+  ).replace(/\/$/, "");
 
   useEffect(() => {
     if (isOpen) {
@@ -52,7 +64,59 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
     setCurrentImageIndex(0);
     setSelectedSize(null);
     setSizeError(false);
+    if (product) {
+      fetchReviews(product.$id || product.id);
+    }
   }, [product]);
+
+  const fetchReviews = async (productId) => {
+    try {
+      setReviewsLoading(true);
+      setReviewsError(null);
+      const response = await fetch(`${API_URL}/products/${productId}/reviews`);
+      if (!response.ok) throw new Error("Failed to fetch reviews");
+      const data = await response.json();
+      setReviews(data);
+    } catch (err) {
+      console.error("Error fetching reviews:", err);
+      setReviewsError("Could not load reviews.");
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (reviewSubmitting) return;
+    setReviewSubmitting(true);
+    try {
+      const productId = product.$id || product.id;
+      const response = await fetch(
+        `${API_URL}/products/${productId}/reviews`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customer_name: customerName.trim(),
+            review: reviewText.trim(),
+          }),
+        },
+      );
+      if (!response.ok) throw new Error("Failed to submit review");
+      const created = await response.json();
+      setReviews((prev) => [created, ...prev]);
+      setCustomerName("");
+      setReviewText("");
+      setShowReviewForm(false);
+    } catch (err) {
+      console.error("Error submitting review:", err);
+      alert("Failed to submit review. Please try again.");
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
 
   const images = product
     ? [product.image1, product.image2, product.image3].filter(Boolean)
@@ -414,6 +478,104 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
                       </AnimatePresence>
                     </div>
                   )}
+
+                  {/* Customer Reviews */}
+                  <div className="mb-8">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+                        Customer Reviews
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => setShowReviewForm((v) => !v)}
+                        className="w-7 h-7 flex items-center justify-center bg-gray-900 text-white rounded-full hover:bg-black transition-all active:scale-90 shadow-md shrink-0"
+                        title={showReviewForm ? "Hide review form" : "Add review"}
+                      >
+                        {showReviewForm ? (
+                          <FiX className="w-3.5 h-3.5" />
+                        ) : (
+                          <FiPlus className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                    </div>
+
+                    {reviewsError && (
+                      <p className="text-red-500 text-xs font-bold mb-3">
+                        {reviewsError}
+                      </p>
+                    )}
+
+                    {reviewsLoading ? (
+                      <div className="flex justify-center py-6">
+                        <div className="animate-spin rounded-full h-6 w-6 border-2 border-gray-300 border-t-gray-900"></div>
+                      </div>
+                    ) : reviews.length === 0 ? (
+                      <p className="text-sm text-gray-500 italic py-2">
+                        No reviews yet. Be the first to review this jersey!
+                      </p>
+                    ) : (
+                      <div className="space-y-3 mb-4">
+                        {reviews.map((review) => (
+                          <div
+                            key={review.id}
+                            className="bg-white border border-gray-100 rounded-lg p-3"
+                          >
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-sm font-bold text-gray-900">
+                                {review.customer_name}
+                              </span>
+                              <span className="text-[10px] text-gray-400">
+                                {review.created_at
+                                  ? new Date(review.created_at).toLocaleDateString(
+                                      undefined,
+                                      {
+                                        day: "numeric",
+                                        month: "short",
+                                        year: "numeric",
+                                      },
+                                    )
+                                  : ""}
+                              </span>
+                            </div>
+                            <p className="text-sm text-gray-600 leading-relaxed">
+                              {review.review}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Add Review Form */}
+                    {showReviewForm && (
+                    <form onSubmit={handleReviewSubmit} className="space-y-3">
+                      <input
+                        type="text"
+                        placeholder="Your name"
+                        value={customerName}
+                        onChange={(e) => setCustomerName(e.target.value)}
+                        required
+                        maxLength={100}
+                        className="w-full px-4 py-2.5 rounded-md border border-gray-200 focus:border-gray-900 focus:ring-0 outline-none transition-all placeholder:text-gray-300 bg-white"
+                      />
+                      <textarea
+                        placeholder="Write your review..."
+                        value={reviewText}
+                        onChange={(e) => setReviewText(e.target.value)}
+                        required
+                        rows={3}
+                        maxLength={1000}
+                        className="w-full px-4 py-2.5 rounded-md border border-gray-200 focus:border-gray-900 focus:ring-0 outline-none transition-all placeholder:text-gray-300 bg-white resize-none"
+                      />
+                      <button
+                        type="submit"
+                        disabled={reviewSubmitting}
+                        className="w-full py-2.5 bg-gray-900 text-white text-xs font-bold uppercase tracking-widest rounded-md hover:bg-black transition-all disabled:opacity-50 active:scale-[0.98]"
+                      >
+                        {reviewSubmitting ? "Submitting..." : "Submit Review"}
+                      </button>
+                    </form>
+                    )}
+                  </div>
               </div>
             </div>
 

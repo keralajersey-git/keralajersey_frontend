@@ -23,6 +23,8 @@ const Products = ({ externalFilter, setExternalFilter }) => {
   const [expandedCategory, setExpandedCategory] = useState("top-quality"); // Accordion state
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const productsPerPage = 12;
   const API_URL = (
@@ -45,28 +47,53 @@ const Products = ({ externalFilter, setExternalFilter }) => {
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    setTimeout(() => {
-      const section = document.getElementById("products");
-      if (section) {
-        const offset = section.offsetTop - 80;
-        window.scrollTo({
-          top: offset,
-          behavior: "smooth",
-        });
-      }
-    }, 50);
   };
+
+  // Scroll to the top of the products section once the new page has loaded
+  const lastLoadedPage = useRef(1);
+  useEffect(() => {
+    if (loading) return;
+    if (currentPage === lastLoadedPage.current) return;
+    lastLoadedPage.current = currentPage;
+    const section = document.getElementById("products");
+    if (section) {
+      const offset = section.offsetTop - 80;
+      window.scrollTo({
+        top: offset,
+        behavior: "smooth",
+      });
+    }
+  }, [loading, currentPage]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_URL}/products/`);
+        setError(null);
+        const params = new URLSearchParams({
+          page: String(currentPage),
+          limit: String(productsPerPage),
+        });
+        if (debouncedSearch.trim())
+          params.set("search", debouncedSearch.trim());
+        if (selectedCategory) params.set("category", selectedCategory);
+        if (selectedSubCategory)
+          params.set("sub_category", selectedSubCategory);
+        const response = await fetch(
+          `${API_URL}/products/?${params.toString()}`,
+        );
         if (!response.ok) throw new Error("Failed to fetch products");
         const data = await response.json();
-        setProducts(data);
-        setFilteredProducts(data);
-        setError(null);
+        setProducts(data.items);
+        setFilteredProducts(data.items);
+        setTotalPages(data.pages);
       } catch (err) {
         console.error("Error:", err);
         setError(
@@ -77,30 +104,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
       }
     };
     fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    let results = products.filter(
-      (product) =>
-        product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-    if (selectedCategory) {
-      results = results.filter(
-        (product) =>
-          product.category?.toLowerCase() === selectedCategory.toLowerCase(),
-      );
-    }
-    if (selectedSubCategory) {
-      results = results.filter(
-        (product) =>
-          product.sub_category?.toLowerCase() ===
-          selectedSubCategory.toLowerCase(),
-      );
-    }
-    setFilteredProducts(results);
-    setCurrentPage(1);
-  }, [searchTerm, selectedCategory, selectedSubCategory, products]);
+  }, [currentPage, debouncedSearch, selectedCategory, selectedSubCategory]);
 
   useEffect(() => {
     if (externalFilter) {
@@ -114,12 +118,14 @@ const Products = ({ externalFilter, setExternalFilter }) => {
         setSelectedCategory(externalFilter);
         setSelectedSubCategory(null);
       }
+      setCurrentPage(1);
     }
   }, [externalFilter]);
 
   const handleCategoryChange = (val, subVal = null) => {
     setSelectedCategory(val);
     setSelectedSubCategory(subVal);
+    setCurrentPage(1);
     setIsFilterOpen(false);
     if (setExternalFilter) setExternalFilter(null);
   };
@@ -177,7 +183,10 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                 type="text"
                 placeholder="Search products..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
                 className="w-full pl-14 pr-6 py-4 border-2 border-gray-300 rounded-md bg-white focus:outline-none focus:border-gray-900 focus:ring-4 focus:ring-gray-900/10 transition-all h-[56px] text-gray-900 placeholder-gray-500 font-medium shadow-md"
               />
               {searchTerm && (
@@ -207,12 +216,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
           </div>
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts
-              .slice(
-                (currentPage - 1) * productsPerPage,
-                currentPage * productsPerPage,
-              )
-              .map((product, index) => (
+            {filteredProducts.map((product, index) => (
                 <div
                   key={index}
                   onClick={() => product.stock && setSelectedProduct(product)}
@@ -314,7 +318,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
         )}
 
         {/* Pagination */}
-        {Math.ceil(filteredProducts.length / productsPerPage) > 1 && (
+        {totalPages > 1 && (
           <div className="mt-16 flex items-center justify-center gap-4">
             <button
               onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
@@ -324,22 +328,11 @@ const Products = ({ externalFilter, setExternalFilter }) => {
               <FiChevronLeft size={24} />
             </button>
             <div className="px-6 h-12 bg-white border-2 border-gray-200 rounded-lg flex items-center justify-center font-bold">
-              {currentPage} /{" "}
-              {Math.ceil(filteredProducts.length / productsPerPage)}
+              {currentPage} / {totalPages}
             </div>
             <button
-              onClick={() =>
-                handlePageChange(
-                  Math.min(
-                    currentPage + 1,
-                    Math.ceil(filteredProducts.length / productsPerPage),
-                  ),
-                )
-              }
-              disabled={
-                currentPage ===
-                Math.ceil(filteredProducts.length / productsPerPage)
-              }
+              onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
+              disabled={currentPage === totalPages}
               className="w-12 h-12 border-2 border-gray-200 rounded-lg flex items-center justify-center disabled:opacity-30"
             >
               <FiChevronRight size={24} />

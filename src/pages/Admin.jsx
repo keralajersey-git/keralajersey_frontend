@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   FiPlus,
   FiEdit2,
@@ -54,7 +54,10 @@ const Admin = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 6;
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const productsPerPage = 12;
   const adminRef = useRef(null);
 
   const handlePageChange = (newPage) => {
@@ -89,44 +92,41 @@ const Admin = () => {
   ).replace(/\/$/, "");
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`${API_URL}/products/`);
+      const params = new URLSearchParams({
+        page: String(currentPage),
+        limit: String(productsPerPage),
+      });
+      if (debouncedSearch.trim()) params.set("search", debouncedSearch.trim());
+      if (selectedCategory) params.set("category", selectedCategory);
+      const response = await fetch(`${API_URL}/products/?${params.toString()}`);
       if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
       const data = await response.json();
       console.log("Fetched products:", data);
-      setProducts(data);
-      setFilteredProducts(data);
+      setProducts(data.items);
+      setFilteredProducts(data.items);
+      setTotalPages(data.pages);
+      setTotalProducts(data.total);
     } catch (err) {
       console.error("Error fetching products:", err);
       setError("Could not connect to backend. Please check if it is running.");
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, debouncedSearch, selectedCategory, productsPerPage, API_URL]);
 
-  // Handle search and category filter
   useEffect(() => {
-    let results = products.filter(
-      (product) =>
-        product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-
-    if (selectedCategory) {
-      results = results.filter(
-        (product) => product.category === selectedCategory,
-      );
-    }
-
-    setFilteredProducts(results);
-    setCurrentPage(1);
-  }, [searchTerm, selectedCategory, products]);
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?"))
@@ -137,7 +137,7 @@ const Admin = () => {
         method: "DELETE",
       });
       if (response.ok) {
-        setProducts(products.filter((p) => (p.$id || p.id) !== id));
+        fetchProducts();
       }
     } catch (err) {
       console.error("Error deleting product:", err);
@@ -353,7 +353,7 @@ const Admin = () => {
             <p className="text-gray-500 text-xs mt-1 tracking-widest">
               Manage your products <span className="text-gray-300">|</span>{" "}
               <span className="text-gray-900 font-bold">
-                {products.length} total
+                {totalProducts} total
               </span>
             </p>
           </div>
@@ -386,7 +386,10 @@ const Admin = () => {
                 type="text"
                 placeholder="Search inventory..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
                 className="w-full px-5 py-3 border border-gray-200 rounded-md bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-900 transition-all duration-200 shadow-sm"
               />
               <svg
@@ -407,7 +410,10 @@ const Admin = () => {
             <div className="relative">
               <select
                 value={selectedCategory || ""}
-                onChange={(e) => setSelectedCategory(e.target.value || null)}
+                onChange={(e) => {
+                  setSelectedCategory(e.target.value || null);
+                  setCurrentPage(1);
+                }}
                 className="w-12 h-full pl-3 pr-2 border border-gray-200 rounded-md bg-white text-gray-900 focus:outline-none focus:border-gray-900 transition-all duration-200 appearance-none cursor-pointer hover:border-gray-300 shadow-sm"
                 style={{ textIndent: "-9999px" }}
               >
@@ -474,12 +480,7 @@ const Admin = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
-                    {filteredProducts
-                      .slice(
-                        (currentPage - 1) * productsPerPage,
-                        currentPage * productsPerPage,
-                      )
-                      .map((product) => (
+                    {filteredProducts.map((product) => (
                         <tr
                           key={product.$id || product.id}
                           className="hover:bg-gray-50 transition-colors"
@@ -559,12 +560,7 @@ const Admin = () => {
 
             {/* Mobile Card View */}
             <div className="grid grid-cols-1 gap-6 md:hidden">
-              {filteredProducts
-                .slice(
-                  (currentPage - 1) * productsPerPage,
-                  currentPage * productsPerPage,
-                )
-                .map((product) => (
+              {filteredProducts.map((product) => (
                   <div
                     key={product.$id || product.id}
                     className="bg-white p-6 rounded-md shadow-lg border border-gray-100 space-y-4 relative"
@@ -637,7 +633,7 @@ const Admin = () => {
             </div>
 
             {/* Pagination */}
-            {Math.ceil(filteredProducts.length / productsPerPage) > 1 && (
+            {totalPages > 1 && (
               <div className="mt-12 flex items-center justify-center gap-4">
                 <button
                   onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
@@ -651,23 +647,15 @@ const Admin = () => {
                   <span className="text-xs font-black text-gray-900 uppercase tracking-widest whitespace-nowrap">
                     Page {currentPage}{" "}
                     <span className="text-gray-300 mx-2">/</span>{" "}
-                    {Math.ceil(filteredProducts.length / productsPerPage)}
+                    {totalPages}
                   </span>
                 </div>
 
                 <button
                   onClick={() =>
-                    handlePageChange(
-                      Math.min(
-                        currentPage + 1,
-                        Math.ceil(filteredProducts.length / productsPerPage),
-                      ),
-                    )
+                    handlePageChange(Math.min(currentPage + 1, totalPages))
                   }
-                  disabled={
-                    currentPage ===
-                    Math.ceil(filteredProducts.length / productsPerPage)
-                  }
+                  disabled={currentPage === totalPages}
                   className="w-12 h-12 flex items-center justify-center border border-gray-200 rounded-md text-gray-500 hover:border-gray-900 hover:text-gray-900 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 bg-white"
                 >
                   <FiChevronRight size={20} />
