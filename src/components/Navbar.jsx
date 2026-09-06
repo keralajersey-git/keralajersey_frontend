@@ -1,20 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { FaWhatsapp } from "react-icons/fa";
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const navLinks = [
     { name: "Contact", href: "tel:+918848027778", type: "link" },
@@ -44,22 +35,27 @@ const Navbar = () => {
   };
 
   return (
-    <nav
-      className={`
-                fixed top-0 left-0 right-0 z-[100] transition-all duration-500
-                ${
-                  isScrolled
-                    ? "bg-white shadow-md py-3 border-b border-[#e5e1da]"
-                    : "bg-transparent py-5 border-b border-transparent"
-                }
-            `}
-    >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
+    <nav className="fixed top-0 left-0 right-0 z-[100] bg-transparent pt-2 pb-0 md:py-5 border-b border-transparent">
+      <div className="max-w-7xl mx-auto px-3 md:px-6 flex items-center justify-end md:justify-between">
+        {/* Logo - desktop only */}
+        <div className="hidden md:flex items-center gap-2">
           <span className="text-2xl font-black tracking-tighter text-black italic">
             KERALA<span className="text-[#c5bbae]">JERSEY</span>
           </span>
+        </div>
+
+        {/* Mobile pill - title + menu icon, always off-white */}
+        <div className="md:hidden flex items-center justify-between gap-3 bg-[#f5f3ee] rounded-full pl-4 pr-1 py-1 shadow-md border border-[#e5e1da]">
+          <span className="text-sm font-black tracking-tighter text-black italic whitespace-nowrap">
+            KERALA<span className="text-[#c5bbae]">JERSEY</span>
+          </span>
+          <button
+            className="w-7 h-7 flex items-center justify-center rounded-full bg-black text-[#f5f3ee]"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <FiX size={14} /> : <HiOutlineMenuAlt3 size={14} />}
+          </button>
         </div>
 
         {/* Desktop Nav */}
@@ -98,13 +94,6 @@ const Navbar = () => {
           </a>
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden p-2 text-gray-900"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <FiX size={24} /> : <HiOutlineMenuAlt3 size={24} />}
-        </button>
       </div>
 
       {/* Mobile Menu Overlay - SLIDER FROM LEFT */}
