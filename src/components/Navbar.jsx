@@ -60,16 +60,16 @@ const Navbar = () => {
         </div>
 
         {/* Mobile pill - title + menu icon, always off-white */}
-        <div className="md:hidden flex items-center justify-between gap-3 bg-[#f5f3ee] rounded-full pl-4 pr-1 py-1 shadow-md border border-[#e5e1da]">
-          <span className="text-sm font-black tracking-tighter text-black italic whitespace-nowrap">
+        <div className="md:hidden flex items-center justify-between gap-3.5 bg-[#f5f3ee] rounded-full pl-5 pr-1.5 py-1.5 shadow-md border border-[#e5e1da]">
+          <span className="text-[15px] font-black tracking-tighter text-black italic whitespace-nowrap">
             KERALA<span className="text-[#c5bbae]">JERSEY</span>
           </span>
           <button
-            className="w-7 h-7 flex items-center justify-center rounded-full bg-black text-[#f5f3ee]"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-black text-[#f5f3ee]"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            {mobileMenuOpen ? <FiX size={14} /> : <HiOutlineMenuAlt3 size={14} />}
+            {mobileMenuOpen ? <FiX size={16} /> : <HiOutlineMenuAlt3 size={16} />}
           </button>
         </div>
 
