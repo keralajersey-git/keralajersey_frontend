@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { FaWhatsapp } from "react-icons/fa";
 
 const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navLinks = [
     { name: "Contact", href: "tel:+918848027778", type: "link" },
@@ -35,7 +44,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] bg-transparent pt-2 pb-0 md:py-5 border-b border-transparent">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 bg-transparent pt-2 pb-0 md:py-0 border-b border-transparent ${
+        isScrolled
+          ? "md:bg-white md:shadow-md md:py-3 md:border-[#e5e1da]"
+          : "md:bg-transparent md:py-5 md:border-transparent"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-3 md:px-6 flex items-center justify-end md:justify-between">
         {/* Logo - desktop only */}
         <div className="hidden md:flex items-center gap-2">
