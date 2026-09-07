@@ -13,8 +13,8 @@ import {
 const Hero = ({ onSelectQuality }) => {
   const images = [
     "https://cdn.imgpile.com/f/W9qKwiL.webp",
-    "https://cdn.imgpile.com/f/3Ae0d9j.webp",
-    "https://cdn.imgpile.com/f/iP6Myu7.webp",
+    "https://i.pinimg.com/736x/a2/7c/6a/a27c6abb29d5e6ec3edf7a30ecaa9c8b.jpg",
+    "https://i.pinimg.com/736x/48/05/35/480535935ecc2498ce5060101e298812.jpg",
     "https://i.pinimg.com/736x/1d/d1/8d/1dd18dd3f03c5d3dcde268e489fe9fb5.jpg",
   ];
 
