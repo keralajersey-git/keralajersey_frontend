@@ -154,12 +154,12 @@ export default function Testimonials() {
                     <div className="flex items-center gap-3 bg-amber-100/10 shadow-md backdrop-blur-md px-6 py-3 rounded-2xl border border-white/50 shadow-sm">
                         <div className="flex -space-x-2">
                             <img
-                                src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766746071/999_11zon_p1cwr4.jpg"
+                                src="https://cdn.imgpile.com/f/uBKDg2x.webp"
                                 alt="Member"
                                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                             />
                             <img
-                                src="https://res.cloudinary.com/dviwae8cc/image/upload/v1766745906/3D_UrbanStyle_11zon_r71nzf.jpg"
+                                src="https://cdn.imgpile.com/f/9K4bIOn.webp"
                                 alt="Member"
                                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                             />
