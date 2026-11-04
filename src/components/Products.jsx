@@ -274,7 +274,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                     )}
 
                     {/* Desktop Description */}
-                    <p className="hidden lg:block text-gray-500 text-[11px] mb-3 line-clamp-1 italic tracking-tight opacity-70">
+                    <p className="hidden lg:block text-gray-500 text-[11px] mb-3 line-clamp-2 italic tracking-tight opacity-70">
                       {product.description}
                     </p>
 
