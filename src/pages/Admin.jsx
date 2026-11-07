@@ -33,6 +33,29 @@ const Admin = () => {
   const [adminPass, setAdminPass] = useState("");
   const [loginError, setLoginError] = useState("");
 
+  useEffect(() => {
+    const previousTitle = document.title;
+    const robotsMeta = document.querySelector('meta[name="robots"]');
+    const previousRobots = robotsMeta?.getAttribute("content");
+    const canonicalLink = document.querySelector('link[rel="canonical"]');
+    const previousCanonical = canonicalLink?.getAttribute("href");
+
+    document.title = "Admin Login | Kerala Jersey";
+    if (robotsMeta) robotsMeta.setAttribute("content", "noindex, nofollow");
+    canonicalLink?.remove();
+
+    return () => {
+      document.title = previousTitle;
+      if (robotsMeta && previousRobots) {
+        robotsMeta.setAttribute("content", previousRobots);
+      }
+      if (canonicalLink && previousCanonical) {
+        canonicalLink.setAttribute("href", previousCanonical);
+        document.head.appendChild(canonicalLink);
+      }
+    };
+  }, []);
+
   const handleLogin = (e) => {
     e.preventDefault();
     const envUser = import.meta.env.VITE_ADMIN_USER;
