@@ -155,17 +155,17 @@ export default function Testimonials() {
                         <div className="flex -space-x-2">
                             <img
                                 src="https://cdn.imgpile.com/f/uBKDg2x.webp"
-                                alt="Member"
+                                alt="Kerala Jersey community member portrait"
                                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                             />
                             <img
                                 src="https://cdn.imgpile.com/f/9K4bIOn.webp"
-                                alt="Member"
+                                alt="Kerala Jersey community member portrait"
                                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                             />
                             <img
                                 src="https://i.pinimg.com/1200x/b7/c1/31/b7c131d008da508abbe765b5c2d49114.jpg"
-                                alt="Member"
+                                alt="Kerala Jersey community member portrait"
                                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                             />
                         </div>

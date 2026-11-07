@@ -44,6 +44,7 @@ const Hero = ({ onSelectQuality }) => {
               <motion.img
                 key={currentIndex}
                 src={mobileImages[currentIndex]}
+                alt={`Kerala football jersey collection image ${currentIndex + 1}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -121,7 +122,7 @@ const Hero = ({ onSelectQuality }) => {
             <div className="group relative row-span-2 overflow-hidden rounded-2xl border border-[#e5e1da] bg-white shadow-xl">
               <img
                 src={images[0]}
-                alt="Authentic Kerala Jersey"
+                alt="Kerala football jersey from the custom collection"
                 className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-1"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -136,7 +137,7 @@ const Hero = ({ onSelectQuality }) => {
             <div className="group relative row-span-2 overflow-hidden rounded-2xl border border-[#e5e1da] bg-[#faf7f2]">
               <img
                 src={images[3]}
-                alt="Jersey Detail"
+                alt="Close-up detail of a Kerala football jersey"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent">

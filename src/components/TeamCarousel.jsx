@@ -26,7 +26,7 @@ const LogoColumn = ({ set, delay }) => {
                 <motion.img
                     key={set[index].img}
                     src={set[index].img}
-                    alt={set[index].name}
+                    alt={`${set[index].name} football club crest`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 1.1 }}

@@ -226,7 +226,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                     {product.image1 ? (
                       <img
                         src={product.image1}
-                        alt={product.title}
+                        alt={`${product.title} ${product.sub_category || product.category?.replaceAll("-", " ") || "football jersey"} jersey`}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                     ) : (

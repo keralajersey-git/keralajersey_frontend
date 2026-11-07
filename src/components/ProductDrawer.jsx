@@ -244,7 +244,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.25, ease: "easeOut" }}
                         src={images[currentImageIndex]}
-                        alt={`${product.title} - Image ${currentImageIndex + 1}`}
+                        alt={`${product.title} ${product.sub_category || product.category?.replaceAll("-", " ") || "football jersey"} jersey - image ${currentImageIndex + 1}`}
                         className="w-full h-full object-contain touch-pan-y select-none"
                         style={{ cursor: images.length > 1 ? "grab" : "default" }}
                       />
