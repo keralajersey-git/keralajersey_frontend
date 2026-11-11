@@ -9,6 +9,7 @@ import {
   FiChevronUp,
   FiCheck,
 } from "react-icons/fi";
+import { CATEGORIES, SUB_CATEGORIES } from "../constants/categories";
 
 const Hero = ({ onSelectQuality }) => {
   const images = [
@@ -334,7 +335,7 @@ const Hero = ({ onSelectQuality }) => {
                     </AnimatePresence>
                   </div>
 
-                  {/* Standard Quality */}
+                  {/* Standard Collection */}
                   <button
                     onClick={() => {
                       onSelectQuality("standard-quality");
@@ -347,6 +348,20 @@ const Hero = ({ onSelectQuality }) => {
                     </div>
                     <div className="text-sm text-gray-500 mt-1">
                       Regular quality jerseys
+                    </div>
+                  </button>
+
+                  {/* Jackets */}
+                  <button
+                    onClick={() => {
+                      onSelectQuality("jackets");
+                      setShowPopup(false);
+                    }}
+                    className="w-full text-left p-3 rounded-lg border border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2] transition-all duration-200"
+                  >
+                    <div className="font-medium text-gray-900">Jackets</div>
+                    <div className="text-sm text-gray-500 mt-1">
+                      Windbreakers & track jackets
                     </div>
                   </button>
                 </div>

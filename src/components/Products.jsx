@@ -11,6 +11,7 @@ import {
 } from "react-icons/fi";
 import { MdPushPin } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
+import { CATEGORIES, SUB_CATEGORIES } from "../constants/categories";
 
 const Products = ({ externalFilter, setExternalFilter }) => {
   const [products, setProducts] = useState([]);
@@ -31,19 +32,8 @@ const Products = ({ externalFilter, setExternalFilter }) => {
     import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
   ).replace(/\/$/, "");
 
-  const categories = [
-    { id: null, label: "All Collections" },
-    { id: "top-quality", label: "Top Quality" },
-    { id: "standard-quality", label: "Standard Quality" },
-  ];
-
-  const subCategories = [
-    { id: null, label: "All Top Quality" },
-    { id: "first quality", label: "First Quality" },
-    { id: "master quality", label: "Master Quality" },
-    { id: "player version", label: "Player Version" },
-    { id: "authentic retro", label: "Authentic Retro" },
-  ];
+  const categories = [{ id: null, label: "All Collections" }, ...CATEGORIES];
+  const subCategories = SUB_CATEGORIES;
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -396,85 +386,86 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                     </div>
                   </button>
 
-                  {/* Top Quality */}
-                  <div className="space-y-1">
-                    <button
-                      onClick={() =>
-                        setExpandedCategory(
-                          expandedCategory === "top-quality"
-                            ? null
-                            : "top-quality",
-                        )
-                      }
-                      className={`w-full text-left p-3 rounded-lg border transition-all duration-200 flex items-center justify-between ${
-                        expandedCategory === "top-quality" ||
-                        (selectedCategory === "top-quality" &&
-                          !selectedSubCategory)
-                          ? "border-[#c5bbae] bg-[#faf7f2]"
-                          : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
-                      }`}
-                    >
-                      <div>
-                        <div className="font-medium text-gray-900">
-                          Top Quality
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          5 variations available
-                        </div>
-                      </div>
-                      {expandedCategory === "top-quality" ? (
-                        <FiChevronUp className="w-4 h-4 text-gray-500" />
-                      ) : (
-                        <FiChevronDown className="w-4 h-4 text-gray-500" />
-                      )}
-                    </button>
-
-                    <AnimatePresence>
-                      {expandedCategory === "top-quality" && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          className="bg-gray-50 rounded-lg overflow-hidden"
+                  {/* Categories (top-quality expands into sub-categories) */}
+                  {categories.filter((cat) => cat.id).map((cat) =>
+                    cat.hasSubCategories ? (
+                      <div key={cat.id} className="space-y-1">
+                        <button
+                          onClick={() =>
+                            setExpandedCategory(
+                              expandedCategory === cat.id ? null : cat.id,
+                            )
+                          }
+                          className={`w-full text-left p-3 rounded-lg border transition-all duration-200 flex items-center justify-between ${
+                            expandedCategory === cat.id ||
+                            (selectedCategory === cat.id &&
+                              !selectedSubCategory)
+                              ? "border-[#c5bbae] bg-[#faf7f2]"
+                              : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
+                          }`}
                         >
-                          {subCategories.map((sub) => (
-                            <button
-                              key={sub.id || "all-sub"}
-                              onClick={() =>
-                                handleCategoryChange("top-quality", sub.id)
-                              }
-                              className={`w-full text-left px-4 py-2.5 text-sm transition-colors border-l-2 ${
-                                selectedCategory === "top-quality" &&
-                                selectedSubCategory === sub.id
-                                  ? "text-[#c5bbae] bg-white border-[#c5bbae]"
-                                  : "text-gray-700 hover:text-[#c5bbae] hover:bg-white border-transparent hover:border-[#c5bbae]"
-                              }`}
-                            >
-                              {sub.label}
-                            </button>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                          <div>
+                            <div className="font-medium text-gray-900">
+                              {cat.label}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {subCategories.length} variations available
+                            </div>
+                          </div>
+                          {expandedCategory === cat.id ? (
+                            <FiChevronUp className="w-4 h-4 text-gray-500" />
+                          ) : (
+                            <FiChevronDown className="w-4 h-4 text-gray-500" />
+                          )}
+                        </button>
 
-                  {/* Standard Quality */}
-                  <button
-                    onClick={() => handleCategoryChange("standard-quality")}
-                    className={`w-full text-left p-3 rounded-lg border transition-all duration-200 ${
-                      selectedCategory === "standard-quality" &&
-                      !selectedSubCategory
-                        ? "border-[#c5bbae] bg-[#faf7f2]"
-                        : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
-                    }`}
-                  >
-                    <div className="font-medium text-gray-900">
-                      Standard Quality
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      Regular quality jerseys
-                    </div>
-                  </button>
+                        <AnimatePresence>
+                          {expandedCategory === cat.id && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="bg-gray-50 rounded-lg overflow-hidden"
+                            >
+                              {subCategories.map((sub) => (
+                                <button
+                                  key={sub.id || "all-sub"}
+                                  onClick={() =>
+                                    handleCategoryChange(cat.id, sub.id)
+                                  }
+                                  className={`w-full text-left px-4 py-2.5 text-sm transition-colors border-l-2 ${
+                                    selectedCategory === cat.id &&
+                                    selectedSubCategory === sub.id
+                                      ? "text-[#c5bbae] bg-white border-[#c5bbae]"
+                                      : "text-gray-700 hover:text-[#c5bbae] hover:bg-white border-transparent hover:border-[#c5bbae]"
+                                  }`}
+                                >
+                                  {sub.label}
+                                </button>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ) : (
+                      <button
+                        key={cat.id}
+                        onClick={() => handleCategoryChange(cat.id)}
+                        className={`w-full text-left p-3 rounded-lg border transition-all duration-200 ${
+                          selectedCategory === cat.id && !selectedSubCategory
+                            ? "border-[#c5bbae] bg-[#faf7f2]"
+                            : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
+                        }`}
+                      >
+                        <div className="font-medium text-gray-900">
+                          {cat.label}
+                        </div>
+                        <div className="text-sm text-gray-500 mt-1">
+                          {cat.description}
+                        </div>
+                      </button>
+                    ),
+                  )}
                 </div>
               </div>
             </motion.div>

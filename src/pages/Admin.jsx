@@ -16,6 +16,11 @@ import {
 } from "react-icons/fi";
 import { MdPushPin } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  CATEGORIES,
+  SUB_CATEGORIES,
+  supportsSubCategories,
+} from "../constants/categories";
 
 const Admin = () => {
   const [products, setProducts] = useState([]);
@@ -90,13 +95,7 @@ const Admin = () => {
   const productsPerPage = 12;
   const adminRef = useRef(null);
 
-  const subCategories = [
-    { id: null, label: "All Top Quality" },
-    { id: "first quality", label: "First Quality" },
-    { id: "master quality", label: "Master Quality" },
-    { id: "player version", label: "Player Version" },
-    { id: "authentic retro", label: "Authentic Retro" },
-  ];
+  const subCategories = SUB_CATEGORIES;
 
   const handleCategoryChange = (val, subVal = null) => {
     setSelectedCategory(val);
@@ -890,85 +889,87 @@ const Admin = () => {
                           </div>
                         </button>
 
-                        {/* Top Quality */}
-                        <div className="space-y-1">
-                          <button
-                            onClick={() =>
-                              setExpandedCategory(
-                                expandedCategory === "top-quality"
-                                  ? null
-                                  : "top-quality",
-                              )
-                            }
-                            className={`w-full text-left p-3 rounded-lg border transition-all duration-200 flex items-center justify-between ${
-                              expandedCategory === "top-quality" ||
-                              (selectedCategory === "top-quality" &&
-                                !selectedSubCategory)
-                                ? "border-[#c5bbae] bg-[#faf7f2]"
-                                : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
-                            }`}
-                          >
-                            <div>
-                              <div className="font-medium text-gray-900">
-                                Top Quality
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                5 variations available
-                              </div>
-                            </div>
-                            {expandedCategory === "top-quality" ? (
-                              <FiChevronUp className="w-4 h-4 text-gray-500" />
-                            ) : (
-                              <FiChevronDown className="w-4 h-4 text-gray-500" />
-                            )}
-                          </button>
-
-                          <AnimatePresence>
-                            {expandedCategory === "top-quality" && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="bg-gray-50 rounded-lg overflow-hidden"
+                        {/* Categories (top-quality expands into sub-categories) */}
+                        {CATEGORIES.map((cat) =>
+                          cat.hasSubCategories ? (
+                            <div key={cat.id} className="space-y-1">
+                              <button
+                                onClick={() =>
+                                  setExpandedCategory(
+                                    expandedCategory === cat.id ? null : cat.id,
+                                  )
+                                }
+                                className={`w-full text-left p-3 rounded-lg border transition-all duration-200 flex items-center justify-between ${
+                                  expandedCategory === cat.id ||
+                                  (selectedCategory === cat.id &&
+                                    !selectedSubCategory)
+                                    ? "border-[#c5bbae] bg-[#faf7f2]"
+                                    : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
+                                }`}
                               >
-                                {subCategories.map((sub) => (
-                                  <button
-                                    key={sub.id || "all-sub"}
-                                    onClick={() =>
-                                      handleCategoryChange("top-quality", sub.id)
-                                    }
-                                    className={`w-full text-left px-4 py-2.5 text-sm transition-colors border-l-2 ${
-                                      selectedCategory === "top-quality" &&
-                                      selectedSubCategory === sub.id
-                                        ? "text-[#c5bbae] bg-white border-[#c5bbae]"
-                                        : "text-gray-700 hover:text-[#c5bbae] hover:bg-white border-transparent hover:border-[#c5bbae]"
-                                    }`}
-                                  >
-                                    {sub.label}
-                                  </button>
-                                ))}
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
+                                <div>
+                                  <div className="font-medium text-gray-900">
+                                    {cat.label}
+                                  </div>
+                                  <div className="text-sm text-gray-500">
+                                    {subCategories.length} variations available
+                                  </div>
+                                </div>
+                                {expandedCategory === cat.id ? (
+                                  <FiChevronUp className="w-4 h-4 text-gray-500" />
+                                ) : (
+                                  <FiChevronDown className="w-4 h-4 text-gray-500" />
+                                )}
+                              </button>
 
-                        {/* Standard Quality */}
-                        <button
-                          onClick={() => handleCategoryChange("standard-quality")}
-                          className={`w-full text-left p-3 rounded-lg border transition-all duration-200 ${
-                            selectedCategory === "standard-quality" &&
-                            !selectedSubCategory
-                              ? "border-[#c5bbae] bg-[#faf7f2]"
-                              : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
-                          }`}
-                        >
-                          <div className="font-medium text-gray-900">
-                            Standard Quality
-                          </div>
-                          <div className="text-sm text-gray-500 mt-1">
-                            Regular quality jerseys
-                          </div>
-                        </button>
+                              <AnimatePresence>
+                                {expandedCategory === cat.id && (
+                                  <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    className="bg-gray-50 rounded-lg overflow-hidden"
+                                  >
+                                    {subCategories.map((sub) => (
+                                      <button
+                                        key={sub.id || "all-sub"}
+                                        onClick={() =>
+                                          handleCategoryChange(cat.id, sub.id)
+                                        }
+                                        className={`w-full text-left px-4 py-2.5 text-sm transition-colors border-l-2 ${
+                                          selectedCategory === cat.id &&
+                                          selectedSubCategory === sub.id
+                                            ? "text-[#c5bbae] bg-white border-[#c5bbae]"
+                                            : "text-gray-700 hover:text-[#c5bbae] hover:bg-white border-transparent hover:border-[#c5bbae]"
+                                        }`}
+                                      >
+                                        {sub.label}
+                                      </button>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          ) : (
+                            <button
+                              key={cat.id}
+                              onClick={() => handleCategoryChange(cat.id)}
+                              className={`w-full text-left p-3 rounded-lg border transition-all duration-200 ${
+                                selectedCategory === cat.id &&
+                                !selectedSubCategory
+                                  ? "border-[#c5bbae] bg-[#faf7f2]"
+                                  : "border-gray-200 hover:border-[#c5bbae] hover:bg-[#faf7f2]"
+                              }`}
+                            >
+                              <div className="font-medium text-gray-900">
+                                {cat.label}
+                              </div>
+                              <div className="text-sm text-gray-500 mt-1">
+                                {cat.description}
+                              </div>
+                            </button>
+                          ),
+                        )}
                       </div>
                     </div>
                   </motion.div>
@@ -1200,21 +1201,21 @@ const Admin = () => {
                           setFormData({
                             ...formData,
                             category: val,
-                            sub_category:
-                              val === "top-quality"
-                                ? formData.sub_category
-                                : "",
+                            sub_category: supportsSubCategories(val)
+                              ? formData.sub_category
+                              : "",
                           });
                         }}
                         className="w-full px-4 py-3 rounded-md border border-gray-200 focus:border-gray-900 focus:ring-0 outline-none transition-all appearance-none bg-white"
                       >
-                        <option value="top-quality">Top Quality</option>
-                        <option value="standard-quality">
-                          Standard Quality
-                        </option>
+                        {CATEGORIES.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.label}
+                          </option>
+                        ))}
                       </select>
                     </div>
-                    {formData.category === "top-quality" && (
+                    {supportsSubCategories(formData.category) && (
                       <div className="space-y-2">
                         <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">
                           Sub Category
@@ -1230,12 +1231,11 @@ const Admin = () => {
                           className="w-full px-4 py-3 rounded-md border border-gray-200 focus:border-gray-900 focus:ring-0 outline-none transition-all appearance-none bg-white"
                         >
                           <option value="">None</option>
-                          <option value="first quality">First Quality</option>
-                          <option value="master quality">Master Quality</option>
-                          <option value="player version">Player Version</option>
-                          <option value="authentic retro">
-                            Authentic Retro
-                          </option>
+                          {SUB_CATEGORIES.filter((s) => s.id).map((sub) => (
+                            <option key={sub.id} value={sub.id}>
+                              {sub.label}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     )}
