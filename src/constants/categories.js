@@ -18,7 +18,7 @@ export const CATEGORIES = [
   {
     id: "jackets",
     label: "Jackets",
-    description: "Windbreakers & track jackets",
+    description: "High quality windbreakers",
     hasSubCategories: false,
   },
 ];

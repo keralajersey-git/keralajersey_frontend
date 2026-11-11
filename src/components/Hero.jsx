@@ -361,7 +361,7 @@ const Hero = ({ onSelectQuality }) => {
                   >
                     <div className="font-medium text-gray-900">Jackets</div>
                     <div className="text-sm text-gray-500 mt-1">
-                      Windbreakers & track jackets
+                      High quality windbreakers
                     </div>
                   </button>
                 </div>
