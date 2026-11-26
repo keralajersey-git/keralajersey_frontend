@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion as Motion } from "framer-motion";
 import { MdPushPin } from "react-icons/md";
 import { FiPlus, FiX } from "react-icons/fi";
@@ -17,18 +17,48 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
   const [reviewText, setReviewText] = useState("");
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
+  const drawerPanelRef = useRef(null);
 
   const API_URL = (
     import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
   ).replace(/\/$/, "");
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add("drawer-open");
-    } else {
-      document.body.classList.remove("drawer-open");
-    }
-    return () => document.body.classList.remove("drawer-open");
+    if (!isOpen) return;
+
+    const body = document.body;
+    const root = document.documentElement;
+    const scrollY = window.scrollY;
+    const previousStyles = {
+      bodyPosition: body.style.position,
+      bodyTop: body.style.top,
+      bodyWidth: body.style.width,
+      bodyOverflow: body.style.overflow,
+      rootOverflow: root.style.overflow,
+    };
+
+    body.classList.add("drawer-open");
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+    root.style.overflow = "hidden";
+
+    const preventBackgroundTouch = (event) => {
+      if (!drawerPanelRef.current?.contains(event.target)) event.preventDefault();
+    };
+    document.addEventListener("touchmove", preventBackgroundTouch, { passive: false });
+
+    return () => {
+      document.removeEventListener("touchmove", preventBackgroundTouch);
+      body.classList.remove("drawer-open");
+      body.style.position = previousStyles.bodyPosition;
+      body.style.top = previousStyles.bodyTop;
+      body.style.width = previousStyles.bodyWidth;
+      body.style.overflow = previousStyles.bodyOverflow;
+      root.style.overflow = previousStyles.rootOverflow;
+      window.scrollTo(0, scrollY);
+    };
   }, [isOpen]);
 
   useEffect(() => {
@@ -189,6 +219,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 28, stiffness: 260 }}
+            ref={drawerPanelRef}
             className="fixed top-0 right-0 z-[10002] h-full w-full sm:w-[460px] md:w-[500px] lg:w-[540px] bg-[#faf9f6] shadow-2xl flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
@@ -214,7 +245,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto drawer-scrollbar">
+            <div className="flex-1 overflow-y-auto overscroll-contain drawer-scrollbar">
               <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden shrink-0">
                 <div className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden">
                   {images.length > 0 ? (
