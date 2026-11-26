@@ -13,7 +13,7 @@ import {
 import { MdPushPin } from "react-icons/md";
 import { AnimatePresence, motion as Motion } from "framer-motion";
 import { CATEGORIES, SUB_CATEGORIES } from "../constants/categories";
-import { collectionPath, productPath, RETRO_COLLECTION, productImageType } from "../utils/seo";
+import { collectionPath, RETRO_COLLECTION, productImageType } from "../utils/seo";
 
 const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
@@ -257,13 +257,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                     </div>
 
                     <h3 className="text-sm font-black text-gray-900 mb-2 line-clamp-1">
-                      <Link
-                        className="hover:underline"
-                        to={productPath(product)}
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        {product.title}
-                      </Link>
+                      {product.title}
                     </h3>
                     {product.stock && product.stock_left > 0 && (
                       <span className="lg:hidden text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full uppercase tracking-tighter">
