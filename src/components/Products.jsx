@@ -11,7 +11,7 @@ import {
   FiChevronUp,
 } from "react-icons/fi";
 import { MdPushPin } from "react-icons/md";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion as Motion } from "framer-motion";
 import { CATEGORIES, SUB_CATEGORIES } from "../constants/categories";
 import { collectionPath, productPath, RETRO_COLLECTION, productImageType } from "../utils/seo";
 
@@ -344,7 +344,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
         {isFilterOpen && (
           <>
             {/* Backdrop */}
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -353,7 +353,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
             />
 
             {/* Popup Content */}
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -430,7 +430,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
 
                         <AnimatePresence>
                           {expandedCategory === cat.id && (
-                            <motion.div
+                            <Motion.div
                               initial={{ height: 0, opacity: 0 }}
                               animate={{ height: "auto", opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }}
@@ -452,7 +452,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                                   {sub.label}
                                 </button>
                               ))}
-                            </motion.div>
+                            </Motion.div>
                           )}
                         </AnimatePresence>
                       </div>
@@ -477,7 +477,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                   )}
                 </div>
               </div>
-            </motion.div>
+            </Motion.div>
           </>
         )}
       </AnimatePresence>

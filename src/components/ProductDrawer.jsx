@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion as Motion } from "framer-motion";
 import { MdPushPin } from "react-icons/md";
 import { FiPlus, FiX } from "react-icons/fi";
 import { productImageType } from "../utils/seo";
@@ -176,7 +176,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
             }
           `}</style>
 
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -184,7 +184,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
             className="fixed inset-0 z-[10001] bg-black/60 backdrop-blur-md"
           />
 
-          <motion.div
+          <Motion.div
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -219,7 +219,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
                 <div className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden">
                   {images.length > 0 ? (
                     <>
-                      <motion.img
+                      <Motion.img
                         key={currentImageIndex}
                         drag={images.length > 1 ? "x" : false}
                         dragConstraints={{ left: 0, right: 0 }}
@@ -467,14 +467,14 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
                       </div>
                       <AnimatePresence>
                         {sizeError && (
-                          <motion.p
+                          <Motion.p
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             className="text-red-500 text-xs font-bold mt-3 animate-pulse"
                           >
                             ⚠️ Please select a size before ordering
-                          </motion.p>
+                          </Motion.p>
                         )}
                       </AnimatePresence>
                     </div>
@@ -594,7 +594,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
                 Order Now
               </button>
             </div>
-          </motion.div>
+          </Motion.div>
         </>
       )}
     </AnimatePresence>
