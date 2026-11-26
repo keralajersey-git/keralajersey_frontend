@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import ProductDrawer from "./ProductDrawer";
 import {
   FiChevronLeft,
@@ -10,11 +11,13 @@ import {
   FiChevronUp,
 } from "react-icons/fi";
 import { MdPushPin } from "react-icons/md";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { CATEGORIES, SUB_CATEGORIES } from "../constants/categories";
+import { collectionPath, productPath } from "../utils/seo";
+
+const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
 const Products = ({ externalFilter, setExternalFilter }) => {
-  const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,10 +31,6 @@ const Products = ({ externalFilter, setExternalFilter }) => {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const productsPerPage = 12;
-  const API_URL = (
-    import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
-  ).replace(/\/$/, "");
-
   const categories = [{ id: null, label: "All Collections" }, ...CATEGORIES];
   const subCategories = SUB_CATEGORIES;
 
@@ -81,7 +80,6 @@ const Products = ({ externalFilter, setExternalFilter }) => {
         );
         if (!response.ok) throw new Error("Failed to fetch products");
         const data = await response.json();
-        setProducts(data.items);
         setFilteredProducts(data.items);
         setTotalPages(data.pages);
       } catch (err) {
@@ -140,9 +138,6 @@ const Products = ({ externalFilter, setExternalFilter }) => {
       </div>
     );
 
-  const currentCategoryObj =
-    categories.find((cat) => cat.id === selectedCategory) || categories[0];
-
   return (
     <div id="products" className="py-16 md:py-24 px-4 bg-transparent">
       <div className="max-w-6xl mx-auto">
@@ -158,6 +153,13 @@ const Products = ({ externalFilter, setExternalFilter }) => {
             <div className="w-1.5 h-1.5 bg-gray-600 rounded-full"></div>
             <div className="flex-1 max-w-xs h-px bg-gradient-to-l from-transparent to-gray-400"></div>
           </div>
+          <nav className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm" aria-label="Shop collections">
+            {CATEGORIES.map((category) => (
+              <Link className="underline underline-offset-4" key={category.id} to={collectionPath(category.id)}>
+                {category.label} jerseys
+              </Link>
+            ))}
+          </nav>
         </div>
 
         {/* Search Bar and Filter */}
@@ -254,7 +256,13 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                     </div>
 
                     <h3 className="text-sm font-black text-gray-900 mb-2 line-clamp-1">
-                      {product.title}
+                      <Link
+                        className="hover:underline"
+                        to={productPath(product)}
+                        onClick={(event) => event.stopPropagation()}
+                      >
+                        {product.title}
+                      </Link>
                     </h3>
                     {product.stock && product.stock_left > 0 && (
                       <span className="lg:hidden text-[9px] font-black text-red-500 bg-red-50 px-2 py-0.5 rounded-full uppercase tracking-tighter">
