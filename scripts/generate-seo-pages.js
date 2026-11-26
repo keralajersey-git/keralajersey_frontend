@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { CATEGORIES } from "../src/constants/categories.js";
-import { collectionPath, productPath, SITE_ORIGIN, slugify } from "../src/utils/seo.js";
+import { collectionPath, productPath, SITE_ORIGIN, slugify, RETRO_COLLECTION, isRetroProduct, retroProductTitle, retroProductDescription } from "../src/utils/seo.js";
 
 const root = process.cwd();
 const distDir = path.join(root, "dist");
@@ -88,13 +88,30 @@ for (const category of CATEGORIES.filter((item) => item.id)) {
     const image = product.image1 ? `<img src="${escapeHtml(product.image1)}" alt="${escapeHtml(product.title.trim())} football jersey" width="320" loading="lazy" />` : "";
     return `<li><a href="${escapeHtml(productUrl)}">${image}<h2>${escapeHtml(product.title.trim())}</h2><p>₹${escapeHtml(product.price)}</p></a></li>`;
   }).join("\n");
-  const nav = CATEGORIES.filter((item) => item.id !== category.id).map((item) => `<a href="${SITE_ORIGIN}${collectionPath(item.id)}">Shop ${escapeHtml(item.label)}</a>`).join(" | ");
+  const nav = [...CATEGORIES.filter((item) => item.id !== category.id).map((item) => `<a href="${SITE_ORIGIN}${collectionPath(item.id)}">Shop ${escapeHtml(item.label)}</a>`), `<a href="${SITE_ORIGIN}${collectionPath(RETRO_COLLECTION.id)}">Shop retro and vintage football jerseys</a>`].join(" | ");
   const body = `<main><nav aria-label="Breadcrumb"><a href="${SITE_ORIGIN}/">Home</a> / ${escapeHtml(category.label)}</nav><h1>${escapeHtml(category.label)} Football Jerseys</h1><p>${escapeHtml(category.description)}. Shop football jerseys and fanwear online with delivery across India.</p><ul>${cards}</ul><nav aria-label="Other collections">${nav}</nav></main>`;
   const schema = { "@context": "https://schema.org", "@type": "CollectionPage", name: title, description, url: canonical, isPartOf: { "@type": "WebSite", name: "Kerala Jersey", url: `${SITE_ORIGIN}/` } };
   const file = path.join(distDir, "collections", slugify(category.id), "index.html");
   await mkdir(path.dirname(file), { recursive: true });
   await writeFile(file, makePage(baseHtml, { title, description, canonical, image: `${SITE_ORIGIN}/kerala-jersey-og.jpg`, body, schema }));
 }
+
+const retroProducts = products.filter(isRetroProduct);
+const retroCanonical = `${SITE_ORIGIN}${collectionPath(RETRO_COLLECTION.id)}`;
+const retroTitle = "Retro & Vintage Football Jerseys in India | Kerala Jersey";
+const retroDescription = RETRO_COLLECTION.description;
+const retroCards = retroProducts.map((product) => {
+  const itemUrl = productPath(product);
+  const productUrl = `${SITE_ORIGIN}${itemUrl}`;
+  const image = product.image1 ? `<img src="${escapeHtml(product.image1)}" alt="${escapeHtml(product.title.trim())} retro football jersey" width="320" loading="lazy" />` : "";
+  return `<li><a href="${escapeHtml(productUrl)}">${image}<h2>${escapeHtml(product.title.trim())}</h2><p>₹${escapeHtml(product.price)}</p></a></li>`;
+}).join("\n");
+const retroBody = `<main><nav aria-label="Breadcrumb"><a href="${SITE_ORIGIN}/">Home</a> / Retro &amp; Vintage jerseys</nav><h1>Retro &amp; Vintage Football Jerseys in India</h1><p>${escapeHtml(retroDescription)}</p><ul>${retroCards}</ul><nav aria-label="Other collections">${CATEGORIES.map((item) => `<a href="${SITE_ORIGIN}${collectionPath(item.id)}">Shop ${escapeHtml(item.label)}</a>`).join(" | ")}</nav></main>`;
+const retroSchema = { "@context": "https://schema.org", "@type": "CollectionPage", name: "Retro & Vintage Football Jerseys in India", description: retroDescription, url: retroCanonical, isPartOf: { "@type": "WebSite", name: "Kerala Jersey", url: `${SITE_ORIGIN}/` }, mainEntity: { "@type": "ItemList", numberOfItems: retroProducts.length, itemListElement: retroProducts.map((product, index) => ({ "@type": "ListItem", position: index + 1, url: `${SITE_ORIGIN}${productPath(product)}`, name: product.title.trim() })) } };
+const retroFile = path.join(distDir, "collections", slugify(RETRO_COLLECTION.id), "index.html");
+await mkdir(path.dirname(retroFile), { recursive: true });
+await writeFile(retroFile, makePage(baseHtml, { title: retroTitle, description: retroDescription, canonical: retroCanonical, image: `${SITE_ORIGIN}/kerala-jersey-og.jpg`, body: retroBody, schema: retroSchema }));
+sitemapUrls.add(retroCanonical);
 
 for (const product of products) {
   const id = product.$id || product.id;
@@ -104,11 +121,15 @@ for (const product of products) {
   const category = CATEGORIES.find((item) => item.id === product.category);
   const categoryLabel = category?.label || String(product.category || "Football jerseys").replaceAll("-", " ");
   const categoryUrl = category ? `${SITE_ORIGIN}${collectionPath(category.id)}` : `${SITE_ORIGIN}/`;
-  const title = `${product.title.trim()} | Kerala Jersey`;
-  const description = excerpt(product.description || `Shop ${product.title.trim()} at Kerala Jersey. Order online with delivery across India.`);
+  const retroProduct = isRetroProduct(product);
+  const productDescription = retroProduct ? retroProductDescription(product) : product.description || `Shop ${product.title.trim()} at Kerala Jersey. Order online with delivery across India.`;
+  const title = retroProduct ? retroProductTitle(product) : `${product.title.trim()} | Kerala Jersey`;
+  const description = excerpt(productDescription);
   const images = [product.image1, product.image2, product.image3].filter(Boolean);
   const imageMarkup = images.map((url, index) => `<img src="${escapeHtml(url)}" alt="${escapeHtml(product.title.trim())} jersey${index ? ` detail ${index + 1}` : ""}" width="480"${index ? " loading=\"lazy\"" : ""} />`).join("\n");
-  const body = `<main><nav aria-label="Breadcrumb"><a href="${SITE_ORIGIN}/">Home</a> / <a href="${categoryUrl}">${escapeHtml(categoryLabel)}</a> / ${escapeHtml(product.title.trim())}</nav><article><h1>${escapeHtml(product.title.trim())}</h1><p>${escapeHtml(product.sub_category || categoryLabel)}</p>${imageMarkup}<p><strong>₹${escapeHtml(product.price)}</strong></p><p>${escapeHtml(product.description || `Shop ${product.title.trim()} online at Kerala Jersey with delivery across India.`)}</p><p>${product.stock ? "Available to order" : "Currently out of stock"}</p>${category ? `<p><a href="${categoryUrl}">Browse more ${escapeHtml(categoryLabel.toLowerCase())}</a></p>` : ""}</article></main>`;
+  const productCollectionUrl = retroProduct ? `${SITE_ORIGIN}${collectionPath(RETRO_COLLECTION.id)}` : categoryUrl;
+  const productCollectionName = retroProduct ? "retro and vintage football jerseys" : categoryLabel.toLowerCase();
+  const body = `<main><nav aria-label="Breadcrumb"><a href="${SITE_ORIGIN}/">Home</a> / <a href="${productCollectionUrl}">${escapeHtml(productCollectionName)}</a> / ${escapeHtml(product.title.trim())}</nav><article><h1>${escapeHtml(product.title.trim())}</h1><p>${escapeHtml(product.sub_category || categoryLabel)}</p>${imageMarkup}<p><strong>₹${escapeHtml(product.price)}</strong></p><p>${escapeHtml(productDescription)}</p><p>${product.stock ? "Available to order" : "Currently out of stock"}</p><p><a href="${productCollectionUrl}">Browse more ${escapeHtml(productCollectionName)}</a></p></article></main>`;
   const schema = { "@context": "https://schema.org", "@type": "Product", name: product.title.trim(), description, image: images, sku: id, brand: { "@type": "Brand", name: "Kerala Jersey" }, offers: { "@type": "Offer", url: canonical, priceCurrency: "INR", price: String(product.price), availability: product.stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" } };
   const file = path.join(distDir, "products", productSlug, encodeURIComponent(id), "index.html");
   await mkdir(path.dirname(file), { recursive: true });
@@ -121,4 +142,4 @@ const xmlEscape = (value) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt
 const urlEntries = [...sitemapUrls].sort().map((url) => `  <url><loc>${xmlEscape(url)}</loc></url>`).join("\n");
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlEntries}\n</urlset>\n`;
 await writeFile(path.join(distDir, "sitemap.xml"), sitemap);
-console.log(`Generated ${generatedProductPages} product pages, ${CATEGORIES.filter((item) => item.id).length} collection pages, and a ${sitemapUrls.size}-URL sitemap.`);
+console.log(`Generated ${generatedProductPages} product pages, ${CATEGORIES.filter((item) => item.id).length + 1} collection pages, and a ${sitemapUrls.size}-URL sitemap.`);

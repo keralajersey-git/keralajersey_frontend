@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { CATEGORIES } from "../constants/categories";
-import { collectionPath, productPath, setPageMetadata, SITE_ORIGIN } from "../utils/seo";
+import { collectionPath, productPath, setPageMetadata, SITE_ORIGIN, RETRO_COLLECTION, isRetroProduct, retroProductTitle, retroProductDescription } from "../utils/seo";
 
 const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
@@ -29,8 +29,9 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (!product) return;
-    const title = `${product.title.trim()} | Kerala Jersey`;
-    const description = (product.description || `Shop ${product.title.trim()} at Kerala Jersey. Order online with delivery across India.`).trim().slice(0, 155);
+    const isRetro = isRetroProduct(product);
+    const title = isRetro ? retroProductTitle(product) : `${product.title.trim()} | Kerala Jersey`;
+    const description = (isRetro ? retroProductDescription(product) : product.description || `Shop ${product.title.trim()} at Kerala Jersey. Order online with delivery across India.`).trim().slice(0, 155);
     const path = productPath(product);
     const availability = product.stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
     setPageMetadata({
@@ -62,13 +63,15 @@ export default function ProductPage() {
   if (failedId === id || !product || productId !== id) return <main className="min-h-screen p-8 text-gray-900"><h1 className="text-3xl font-bold">Product unavailable</h1><p className="mt-3">This product may no longer be listed.</p><Link className="mt-6 inline-block underline" to="/">Browse Kerala Jersey</Link></main>;
 
   const category = CATEGORIES.find((item) => item.id === product.category);
+  const isRetro = isRetroProduct(product);
+  const productDescription = isRetro ? retroProductDescription(product) : product.description;
   const categoryName = category?.label || product.category?.replaceAll("-", " ") || "Jerseys";
   const message = encodeURIComponent(`Hi, I'm interested in the ${product.title.trim()}. Price: ₹${product.price}.`);
 
   return (
     <main className="min-h-screen bg-[#faf7f2] text-gray-900">
       <nav className="mx-auto flex max-w-6xl gap-2 px-5 py-6 text-sm" aria-label="Breadcrumb">
-        <Link to="/">Home</Link><span aria-hidden="true">/</span>{category ? <Link to={collectionPath(category.id)}>{categoryName}</Link> : <span>{categoryName}</span>}<span aria-hidden="true">/</span><span>{product.title.trim()}</span>
+        <Link to="/">Home</Link><span aria-hidden="true">/</span>{isRetro ? <Link to={collectionPath(RETRO_COLLECTION.id)}>{RETRO_COLLECTION.label}</Link> : category ? <Link to={collectionPath(category.id)}>{categoryName}</Link> : <span>{categoryName}</span>}<span aria-hidden="true">/</span><span>{product.title.trim()}</span>
       </nav>
       <article className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 md:grid-cols-2">
         <div className="space-y-4">
@@ -79,11 +82,11 @@ export default function ProductPage() {
           <p className="text-sm font-bold uppercase tracking-widest">{product.sub_category || categoryName}</p>
           <h1 className="mt-3 text-3xl font-black md:text-5xl">{product.title.trim()}</h1>
           <p className="mt-5 text-2xl font-semibold">₹{product.price}</p>
-          {product.description && <p className="mt-6 whitespace-pre-line leading-7 text-gray-700">{product.description}</p>}
+          {productDescription && <p className="mt-6 whitespace-pre-line leading-7 text-gray-700">{productDescription}</p>}
           {product.available_sizes?.length > 0 && <p className="mt-5"><strong>Available sizes:</strong> {product.available_sizes.join(", ")}</p>}
           <p className="mt-4">{product.stock ? "Available to order" : "Currently out of stock"}</p>
           <a className="mt-7 inline-block rounded bg-gray-900 px-6 py-3 font-semibold text-white" href={`https://wa.me/918848027778?text=${message}`}>Ask about this jersey on WhatsApp</a>
-          {category && <p className="mt-6"><Link className="underline" to={collectionPath(category.id)}>Browse more {categoryName.toLowerCase()}</Link></p>}
+          {isRetro ? <p className="mt-6"><Link className="underline" to={collectionPath(RETRO_COLLECTION.id)}>Browse retro &amp; vintage football jerseys</Link></p> : category && <p className="mt-6"><Link className="underline" to={collectionPath(category.id)}>Browse more {categoryName.toLowerCase()}</Link></p>}
         </div>
       </article>
     </main>

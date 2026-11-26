@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { CATEGORIES } from "../constants/categories";
-import { collectionPath, productPath, setPageMetadata, SITE_ORIGIN, slugify } from "../utils/seo";
+import { collectionPath, productPath, setPageMetadata, SITE_ORIGIN, slugify, RETRO_COLLECTION, RETRO_SUBCATEGORY, isRetroProduct } from "../utils/seo";
 
 const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
 export default function CollectionPage() {
   const { categorySlug } = useParams();
-  const category = CATEGORIES.find((item) => slugify(item.id) === categorySlug);
+  const isRetroCollection = categorySlug === slugify(RETRO_COLLECTION.id);
+  const category = isRetroCollection ? RETRO_COLLECTION : CATEGORIES.find((item) => slugify(item.id) === categorySlug);
   const [products, setProducts] = useState([]);
   const [loadedCategoryId, setLoadedCategoryId] = useState(null);
   const [failedCategoryId, setFailedCategoryId] = useState(null);
@@ -16,7 +17,8 @@ export default function CollectionPage() {
     if (!category) return;
     let active = true;
     const loadCollection = async () => {
-      const params = new URLSearchParams({ page: "1", limit: "100", category: category.id });
+      const params = new URLSearchParams({ page: "1", limit: "100", category: isRetroCollection ? "top-quality" : category.id });
+      if (isRetroCollection) params.set("sub_category", RETRO_SUBCATEGORY);
       const firstResponse = await fetch(`${API_URL}/products/?${params}`);
       if (!firstResponse.ok) throw new Error("Unable to load collection");
       const firstPage = await firstResponse.json();
@@ -29,7 +31,7 @@ export default function CollectionPage() {
         if (Array.isArray(data.items)) items.push(...data.items);
       }
       if (active) {
-        setProducts(items);
+        setProducts(isRetroCollection ? items.filter(isRetroProduct) : items);
         setLoadedCategoryId(category.id);
         setFailedCategoryId(null);
       }
@@ -37,27 +39,31 @@ export default function CollectionPage() {
     loadCollection()
       .catch(() => active && setFailedCategoryId(category.id));
     return () => { active = false; };
-  }, [category]);
+  }, [category, isRetroCollection]);
 
   useEffect(() => {
     if (!category) return;
-    const path = collectionPath(category.id);
-    const description = `${category.description}. Browse ${category.label.toLowerCase()} football jerseys and fanwear at Kerala Jersey, with delivery across India.`;
+    const path = collectionPath(isRetroCollection ? RETRO_COLLECTION.id : category.id);
+    const description = isRetroCollection
+      ? RETRO_COLLECTION.description
+      : `${category.description}. Browse ${category.label.toLowerCase()} football jerseys and fanwear at Kerala Jersey, with delivery across India.`;
+    const listedProducts = products.filter(isRetroProduct);
     setPageMetadata({
-      title: `${category.label} Football Jerseys | Kerala Jersey`,
+      title: isRetroCollection ? "Retro & Vintage Football Jerseys in India | Kerala Jersey" : `${category.label} Football Jerseys | Kerala Jersey`,
       description,
       path,
       image: `${SITE_ORIGIN}/kerala-jersey-og.jpg`,
       jsonLd: {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
-        name: `${category.label} Football Jerseys`,
+        name: isRetroCollection ? "Retro & Vintage Football Jerseys in India" : `${category.label} Football Jerseys`,
         description,
         url: `${SITE_ORIGIN}${path}`,
         isPartOf: { "@type": "WebSite", name: "Kerala Jersey", url: `${SITE_ORIGIN}/` },
+        ...(isRetroCollection ? { mainEntity: { "@type": "ItemList", numberOfItems: listedProducts.length, itemListElement: listedProducts.map((product, index) => ({ "@type": "ListItem", position: index + 1, url: `${SITE_ORIGIN}${productPath(product)}`, name: product.title?.trim() })) } } : {}),
       },
     });
-  }, [category]);
+  }, [category, isRetroCollection, products]);
 
   if (!category) return <main className="min-h-screen p-8"><h1 className="text-3xl font-bold">Collection not found</h1><Link className="mt-5 inline-block underline" to="/">Browse all products</Link></main>;
   const loading = loadedCategoryId !== category.id && failedCategoryId !== category.id;
@@ -69,8 +75,8 @@ export default function CollectionPage() {
       <div className="mx-auto max-w-6xl">
         <nav className="mb-8 text-sm" aria-label="Breadcrumb"><Link to="/">Home</Link><span aria-hidden="true"> / </span><span>{category.label}</span></nav>
         <header className="mb-10 max-w-3xl">
-          <h1 className="text-4xl font-black md:text-5xl">{category.label} Football Jerseys</h1>
-          <p className="mt-4 text-lg text-gray-700">{category.description}. Shop football jerseys and fanwear online with delivery across India.</p>
+          <h1 className="text-4xl font-black md:text-5xl">{isRetroCollection ? "Retro & Vintage Football Jerseys in India" : `${category.label} Football Jerseys`}</h1>
+          <p className="mt-4 text-lg text-gray-700">{isRetroCollection ? RETRO_COLLECTION.description : `${category.description}. Shop football jerseys and fanwear online with delivery across India.`}</p>
         </header>
         {loading && <p>Loading collection…</p>}
         {failed && <p>We couldn’t load this collection right now. Please try again shortly.</p>}
@@ -79,13 +85,13 @@ export default function CollectionPage() {
           {visibleProducts.map((product) => (
             <li key={product.$id || product.id} className="overflow-hidden rounded-lg border border-[#e5e1da] bg-white shadow-sm">
               <Link className="block h-full" to={productPath(product)}>
-                {product.image1 && <img className="aspect-square w-full object-cover" src={product.image1} alt={`${product.title} football jersey`} loading="lazy" />}
+                {product.image1 && <img className="aspect-square w-full object-cover" src={product.image1} alt={`${product.title} retro football jersey`} loading="lazy" />}
                 <div className="p-4"><h2 className="font-bold">{product.title?.trim()}</h2><p className="mt-2 font-semibold">₹{product.price}</p></div>
               </Link>
             </li>
           ))}
         </ul>
-        <div className="mt-12 flex flex-wrap gap-5 border-t border-gray-300 pt-6">{CATEGORIES.filter((item) => item.id !== category.id).map((item) => <Link className="underline" key={item.id} to={collectionPath(item.id)}>Shop {item.label}</Link>)}</div>
+        <div className="mt-12 flex flex-wrap gap-5 border-t border-gray-300 pt-6">{!isRetroCollection && <Link className="underline" to={collectionPath(RETRO_COLLECTION.id)}>Shop retro &amp; vintage football jerseys</Link>}{CATEGORIES.filter((item) => item.id !== category.id).map((item) => <Link className="underline" key={item.id} to={collectionPath(item.id)}>Shop {item.label}</Link>)}</div>
       </div>
     </main>
   );

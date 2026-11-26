@@ -13,7 +13,7 @@ import {
 import { MdPushPin } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
 import { CATEGORIES, SUB_CATEGORIES } from "../constants/categories";
-import { collectionPath, productPath } from "../utils/seo";
+import { collectionPath, productPath, RETRO_COLLECTION } from "../utils/seo";
 
 const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
@@ -159,6 +159,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                 {category.label} jerseys
               </Link>
             ))}
+            <Link className="underline underline-offset-4" to={collectionPath(RETRO_COLLECTION.id)}>Retro &amp; vintage jerseys</Link>
           </nav>
         </div>
 
