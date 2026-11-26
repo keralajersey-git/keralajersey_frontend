@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { MdPushPin } from "react-icons/md";
 import { FiPlus, FiX } from "react-icons/fi";
+import { productImageType } from "../utils/seo";
 
 const ProductDrawer = ({ product, isOpen, onClose }) => {
   const [selectedSize, setSelectedSize] = useState(null);
@@ -244,7 +245,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.25, ease: "easeOut" }}
                         src={images[currentImageIndex]}
-                        alt={`${product.title} ${product.sub_category || product.category?.replaceAll("-", " ") || "football jersey"} jersey - image ${currentImageIndex + 1}`}
+                        alt={`${product.title} ${productImageType(product)} - image ${currentImageIndex + 1}`}
                         className="w-full h-full object-contain touch-pan-y select-none"
                         style={{ cursor: images.length > 1 ? "grab" : "default" }}
                       />

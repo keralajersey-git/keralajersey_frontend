@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { CATEGORIES } from "../constants/categories";
-import { collectionPath, productPath, setPageMetadata, SITE_ORIGIN, slugify, RETRO_COLLECTION, RETRO_SUBCATEGORY, isRetroProduct } from "../utils/seo";
+import { collectionPath, productPath, setPageMetadata, SITE_ORIGIN, slugify, RETRO_COLLECTION, RETRO_SUBCATEGORY, isRetroProduct, collectionHeading, collectionTitle, collectionDescription, productImageType } from "../utils/seo";
 
 const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
@@ -44,19 +44,18 @@ export default function CollectionPage() {
   useEffect(() => {
     if (!category) return;
     const path = collectionPath(isRetroCollection ? RETRO_COLLECTION.id : category.id);
-    const description = isRetroCollection
-      ? RETRO_COLLECTION.description
-      : `${category.description}. Browse ${category.label.toLowerCase()} football jerseys and fanwear at Kerala Jersey, with delivery across India.`;
+    const description = isRetroCollection ? RETRO_COLLECTION.description : collectionDescription(category);
+    const heading = isRetroCollection ? "Retro & Vintage Football Jerseys in India" : collectionHeading(category);
     const listedProducts = products.filter(isRetroProduct);
     setPageMetadata({
-      title: isRetroCollection ? "Retro & Vintage Football Jerseys in India | Kerala Jersey" : `${category.label} Football Jerseys | Kerala Jersey`,
+      title: isRetroCollection ? "Retro & Vintage Football Jerseys in India | Kerala Jersey" : collectionTitle(category),
       description,
       path,
       image: `${SITE_ORIGIN}/kerala-jersey-og.jpg`,
       jsonLd: {
         "@context": "https://schema.org",
         "@type": "CollectionPage",
-        name: isRetroCollection ? "Retro & Vintage Football Jerseys in India" : `${category.label} Football Jerseys`,
+        name: heading,
         description,
         url: `${SITE_ORIGIN}${path}`,
         isPartOf: { "@type": "WebSite", name: "Kerala Jersey", url: `${SITE_ORIGIN}/` },
@@ -75,8 +74,8 @@ export default function CollectionPage() {
       <div className="mx-auto max-w-6xl">
         <nav className="mb-8 text-sm" aria-label="Breadcrumb"><Link to="/">Home</Link><span aria-hidden="true"> / </span><span>{category.label}</span></nav>
         <header className="mb-10 max-w-3xl">
-          <h1 className="text-4xl font-black md:text-5xl">{isRetroCollection ? "Retro & Vintage Football Jerseys in India" : `${category.label} Football Jerseys`}</h1>
-          <p className="mt-4 text-lg text-gray-700">{isRetroCollection ? RETRO_COLLECTION.description : `${category.description}. Shop football jerseys and fanwear online with delivery across India.`}</p>
+          <h1 className="text-4xl font-black md:text-5xl">{isRetroCollection ? "Retro & Vintage Football Jerseys in India" : collectionHeading(category)}</h1>
+          <p className="mt-4 text-lg text-gray-700">{isRetroCollection ? RETRO_COLLECTION.description : category.id === "jackets" ? collectionDescription(category) : `${category.description}. Shop football jerseys and fanwear online with delivery across India.`}</p>
         </header>
         {loading && <p>Loading collection…</p>}
         {failed && <p>We couldn’t load this collection right now. Please try again shortly.</p>}
@@ -85,7 +84,7 @@ export default function CollectionPage() {
           {visibleProducts.map((product) => (
             <li key={product.$id || product.id} className="overflow-hidden rounded-lg border border-[#e5e1da] bg-white shadow-sm">
               <Link className="block h-full" to={productPath(product)}>
-                {product.image1 && <img className="aspect-square w-full object-cover" src={product.image1} alt={`${product.title} retro football jersey`} loading="lazy" />}
+                {product.image1 && <img className="aspect-square w-full object-cover" src={product.image1} alt={`${product.title} ${productImageType(product)}`} loading="lazy" />}
                 <div className="p-4"><h2 className="font-bold">{product.title?.trim()}</h2><p className="mt-2 font-semibold">₹{product.price}</p></div>
               </Link>
             </li>

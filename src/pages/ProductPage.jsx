@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { CATEGORIES } from "../constants/categories";
-import { collectionPath, productPath, setPageMetadata, SITE_ORIGIN, RETRO_COLLECTION, isRetroProduct, retroProductTitle, retroProductDescription } from "../utils/seo";
+import { collectionPath, productPath, setPageMetadata, SITE_ORIGIN, RETRO_COLLECTION, isRetroProduct, isJacketProduct, retroProductTitle, retroProductDescription, jacketProductDescription, collectionCategoryLabel, productImageType } from "../utils/seo";
 
 const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
@@ -30,9 +30,11 @@ export default function ProductPage() {
   useEffect(() => {
     if (!product) return;
     const isRetro = isRetroProduct(product);
+    const isJacket = isJacketProduct(product);
     const title = isRetro ? retroProductTitle(product) : `${product.title.trim()} | Kerala Jersey`;
-    const description = (isRetro ? retroProductDescription(product) : product.description || `Shop ${product.title.trim()} at Kerala Jersey. Order online with delivery across India.`).trim().slice(0, 155);
+    const description = (isRetro ? retroProductDescription(product) : isJacket ? jacketProductDescription(product) : product.description || `Shop ${product.title.trim()} at Kerala Jersey. Order online with delivery across India.`).trim().slice(0, 155);
     const path = productPath(product);
+    const category = CATEGORIES.find((item) => item.id === product.category);
     const availability = product.stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
     setPageMetadata({
       title,
@@ -44,6 +46,7 @@ export default function ProductPage() {
         "@type": "Product",
         name: product.title.trim(),
         description,
+        ...(isJacket && category ? { category: collectionCategoryLabel(category) } : {}),
         image: [product.image1, product.image2, product.image3].filter(Boolean),
         sku: product.$id || product.id,
         brand: { "@type": "Brand", name: "Kerala Jersey" },
@@ -64,8 +67,9 @@ export default function ProductPage() {
 
   const category = CATEGORIES.find((item) => item.id === product.category);
   const isRetro = isRetroProduct(product);
+  const isJacket = isJacketProduct(product);
   const productDescription = isRetro ? retroProductDescription(product) : product.description;
-  const categoryName = category?.label || product.category?.replaceAll("-", " ") || "Jerseys";
+  const categoryName = collectionCategoryLabel(category) || product.category?.replaceAll("-", " ") || "Jerseys";
   const message = encodeURIComponent(`Hi, I'm interested in the ${product.title.trim()}. Price: ₹${product.price}.`);
 
   return (
@@ -75,8 +79,8 @@ export default function ProductPage() {
       </nav>
       <article className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 md:grid-cols-2">
         <div className="space-y-4">
-          {product.image1 && <img className="w-full rounded-lg bg-white object-cover" src={product.image1} alt={`${product.title.trim()} football jersey`} />}
-          <div className="grid grid-cols-2 gap-4">{[product.image2, product.image3].filter(Boolean).map((image) => <img key={image} className="w-full rounded-lg bg-white object-cover" src={image} alt={`${product.title.trim()} jersey detail`} />)}</div>
+          {product.image1 && <img className="w-full rounded-lg bg-white object-cover" src={product.image1} alt={`${product.title.trim()} ${productImageType(product)}`} />}
+          <div className="grid grid-cols-2 gap-4">{[product.image2, product.image3].filter(Boolean).map((image) => <img key={image} className="w-full rounded-lg bg-white object-cover" src={image} alt={`${product.title.trim()} ${isJacket ? "jacket" : "jersey"} detail`} />)}</div>
         </div>
         <div className="self-start md:sticky md:top-8">
           <p className="text-sm font-bold uppercase tracking-widest">{product.sub_category || categoryName}</p>
@@ -85,7 +89,7 @@ export default function ProductPage() {
           {productDescription && <p className="mt-6 whitespace-pre-line leading-7 text-gray-700">{productDescription}</p>}
           {product.available_sizes?.length > 0 && <p className="mt-5"><strong>Available sizes:</strong> {product.available_sizes.join(", ")}</p>}
           <p className="mt-4">{product.stock ? "Available to order" : "Currently out of stock"}</p>
-          <a className="mt-7 inline-block rounded bg-gray-900 px-6 py-3 font-semibold text-white" href={`https://wa.me/918848027778?text=${message}`}>Ask about this jersey on WhatsApp</a>
+          <a className="mt-7 inline-block rounded bg-gray-900 px-6 py-3 font-semibold text-white" href={`https://wa.me/918848027778?text=${message}`}>{isJacket ? "Ask about this jacket on WhatsApp" : "Ask about this jersey on WhatsApp"}</a>
           {isRetro ? <p className="mt-6"><Link className="underline" to={collectionPath(RETRO_COLLECTION.id)}>Browse retro &amp; vintage football jerseys</Link></p> : category && <p className="mt-6"><Link className="underline" to={collectionPath(category.id)}>Browse more {categoryName.toLowerCase()}</Link></p>}
         </div>
       </article>

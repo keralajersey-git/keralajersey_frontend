@@ -7,7 +7,22 @@ export const RETRO_COLLECTION = {
   label: "Retro & Vintage",
   description: "Shop retro and vintage-style football jerseys in India. Browse classic team and season designs, check prices and availability at Kerala Jersey.",
 };
-
+export const isJacketProduct = (product) =>
+  String(product?.category || "").toLowerCase() === "jackets";
+export const collectionHeading = (category) =>
+  category?.id === "jackets" ? "Football Jackets & Windbreakers" : `${category.label} Football Jerseys`;
+export const collectionTitle = (category) =>
+  category?.id === "jackets" ? "Football Jackets & Windbreakers in India | Kerala Jersey" : `${category.label} Football Jerseys | Kerala Jersey`;
+export const collectionDescription = (category) =>
+  category?.id === "jackets"
+    ? "Shop football jackets and windbreakers in India at Kerala Jersey. Browse available team styles, check current prices and stock."
+    : `${category.description}. Browse ${category.label.toLowerCase()} football jerseys and fanwear at Kerala Jersey, with delivery across India.`;
+export const collectionCategoryLabel = (category) =>
+  category?.id === "jackets" ? "Football Jackets & Windbreakers" : category?.label;
+export const productImageType = (product) =>
+  isJacketProduct(product) ? "football jacket" : "football jersey";
+export const jacketProductDescription = (product) =>
+  `Shop ${String(product?.title || "Football jacket").trim().replace(/\s+/g, " ")} at Kerala Jersey. Check the listed price of ₹${product?.price} and current stock. Browse football jackets and windbreakers in India.`;
 export const slugify = (value = "") =>
   String(value)
     .normalize("NFKD")

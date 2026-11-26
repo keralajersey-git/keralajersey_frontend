@@ -13,7 +13,7 @@ import {
 import { MdPushPin } from "react-icons/md";
 import { AnimatePresence } from "framer-motion";
 import { CATEGORIES, SUB_CATEGORIES } from "../constants/categories";
-import { collectionPath, productPath, RETRO_COLLECTION } from "../utils/seo";
+import { collectionPath, productPath, RETRO_COLLECTION, productImageType } from "../utils/seo";
 
 const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
@@ -156,7 +156,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
           <nav className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm" aria-label="Shop collections">
             {CATEGORIES.map((category) => (
               <Link className="underline underline-offset-4" key={category.id} to={collectionPath(category.id)}>
-                {category.label} jerseys
+                {category.id === "jackets" ? "Football jackets & windbreakers" : `${category.label} jerseys`}
               </Link>
             ))}
             <Link className="underline underline-offset-4" to={collectionPath(RETRO_COLLECTION.id)}>Retro &amp; vintage jerseys</Link>
@@ -219,7 +219,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                     {product.image1 ? (
                       <img
                         src={product.image1}
-                        alt={`${product.title} ${product.sub_category || product.category?.replaceAll("-", " ") || "football jersey"} jersey`}
+                        alt={`${product.title} ${productImageType(product)}`}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                     ) : (
