@@ -83,7 +83,7 @@ export default function CollectionPage() {
         <ul className="grid list-none grid-cols-2 gap-5 p-0 sm:grid-cols-3 lg:grid-cols-4">
           {visibleProducts.map((product) => (
             <li key={product.$id || product.id} className="overflow-hidden rounded-lg border border-[#e5e1da] bg-white shadow-sm">
-              <Link className="block h-full" to={productPath(product)}>
+              <Link className="block h-full" to={productPath(product)} state={{ product }}>
                 {product.image1 && <img className="aspect-square w-full object-cover" src={product.image1} alt={`${product.title} ${productImageType(product)}`} loading="lazy" />}
                 <div className="p-4"><h2 className="font-bold">{product.title?.trim()}</h2><p className="mt-2 font-semibold">₹{product.price}</p></div>
               </Link>
