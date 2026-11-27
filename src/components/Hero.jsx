@@ -182,14 +182,14 @@ const Hero = ({ onSelectQuality }) => {
           <div className="space-y-5 overflow-hidden">
             <h1
               id="hero-heading"
-              className="text-[10vw] sm:text-5xl md:text-8xl lg:text-8xl font-black text-gray-900 leading-[0.9] whitespace-nowrap md:whitespace-normal overflow-hidden w-full max-w-full"
+              className="text-[9vw] sm:text-5xl md:text-6xl lg:text-7xl font-black text-gray-900 leading-[0.9] whitespace-normal overflow-hidden w-full max-w-full"
               style={{ letterSpacing: "0.03em" }}
             >
-              WEAR THE{" "}
-              <span className="md:block text-[#c5bbae]">SPIRIT.</span>
+              <span className="block">WEAR THE JERSEY.</span>
+              <span className="block text-[#c5bbae]">TREND THE CULTURE.</span>
             </h1>
             <p className="max-w-xl text-base md:text-xl lg:text-2xl text-gray-600 font-light leading-relaxed">
-              Kerala No. 1 online store for premium football jerseys and jackets with fast delivery across India.
+              This isn't just fabric, it's the identity of an entire generation legacy. From the stands to the streets, our jerseys turn fans into legends.
             </p>
           </div>
 
