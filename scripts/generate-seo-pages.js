@@ -2,7 +2,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { CATEGORIES } from "../src/constants/categories.js";
-import { collectionPath, productPath, SITE_ORIGIN, slugify, RETRO_COLLECTION, isRetroProduct, isJacketProduct, retroProductTitle, retroProductDescription, jacketProductDescription, collectionHeading, collectionTitle, collectionDescription, collectionCategoryLabel, productImageType } from "../src/utils/seo.js";
+import { collectionPath, productPath, SITE_ORIGIN, slugify, RETRO_COLLECTION, isRetroProduct, isJacketProduct, retroProductTitle, retroProductDescription, jacketProductDescription, collectionHeading, collectionTitle, collectionDescription, collectionCategoryLabel, productImageType, imgpileVariantUrl } from "../src/utils/seo.js";
 
 const root = process.cwd();
 const distDir = path.join(root, "dist");
@@ -89,7 +89,8 @@ for (const category of CATEGORIES.filter((item) => item.id)) {
   const cards = categoryProducts.map((product) => {
     const itemUrl = productPath(product);
     const productUrl = `${SITE_ORIGIN}${itemUrl}`;
-    const image = product.image1 ? `<img src="${escapeHtml(product.image1)}" alt="${escapeHtml(product.title.trim())} ${productImageType(product)}" width="320" loading="lazy" />` : "";
+    const mobileImage = imgpileVariantUrl(product.image1, "md");
+    const image = product.image1 ? `<picture>${mobileImage ? `<source media="(max-width: 767px)" srcset="${escapeHtml(mobileImage)}" />` : ""}<img src="${escapeHtml(product.image1)}" alt="${escapeHtml(product.title.trim())} ${productImageType(product)}" width="320" loading="lazy" decoding="async" /></picture>` : "";
     return `<li><a href="${escapeHtml(productUrl)}">${image}<h2>${escapeHtml(product.title.trim())}</h2><p>₹${escapeHtml(product.price)}</p></a></li>`;
   }).join("\n");
   const nav = [...CATEGORIES.filter((item) => item.id !== category.id).map((item) => `<a href="${SITE_ORIGIN}${collectionPath(item.id)}">Shop ${escapeHtml(item.label)}</a>`), `<a href="${SITE_ORIGIN}${collectionPath(RETRO_COLLECTION.id)}">Shop retro and vintage football jerseys</a>`].join(" | ");
@@ -108,7 +109,8 @@ const retroDescription = RETRO_COLLECTION.description;
 const retroCards = retroProducts.map((product) => {
   const itemUrl = productPath(product);
   const productUrl = `${SITE_ORIGIN}${itemUrl}`;
-  const image = product.image1 ? `<img src="${escapeHtml(product.image1)}" alt="${escapeHtml(product.title.trim())} retro football jersey" width="320" loading="lazy" />` : "";
+  const mobileImage = imgpileVariantUrl(product.image1, "md");
+  const image = product.image1 ? `<picture>${mobileImage ? `<source media="(max-width: 767px)" srcset="${escapeHtml(mobileImage)}" />` : ""}<img src="${escapeHtml(product.image1)}" alt="${escapeHtml(product.title.trim())} retro football jersey" width="320" loading="lazy" decoding="async" /></picture>` : "";
   return `<li><a href="${escapeHtml(productUrl)}">${image}<h2>${escapeHtml(product.title.trim())}</h2><p>₹${escapeHtml(product.price)}</p></a></li>`;
 }).join("\n");
 const retroBody = `<main><nav aria-label="Breadcrumb"><a href="${SITE_ORIGIN}/">Home</a> / Retro &amp; Vintage jerseys</nav><h1>Retro &amp; Vintage Football Jerseys in India</h1><p>${escapeHtml(retroDescription)}</p><ul>${retroCards}</ul><nav aria-label="Other collections">${CATEGORIES.map((item) => `<a href="${SITE_ORIGIN}${collectionPath(item.id)}">Shop ${escapeHtml(item.label)}</a>`).join(" | ")}</nav></main>`;
@@ -136,8 +138,14 @@ for (const product of products) {
   const productCollectionHref = retroProduct ? collectionPath(RETRO_COLLECTION.id) : category ? collectionPath(category.id) : "/";
   const productTitle = escapeHtml(product.title.trim());
   const productImageAspect = retroProduct ? "aspect-square" : "aspect-[3/4]";
-  const primaryImageMarkup = images[0] ? `<div class="${productImageAspect} overflow-hidden rounded-lg bg-white"><img class="h-full w-full object-contain" src="${escapeHtml(images[0])}" alt="${productTitle} ${productImageType(product)}" fetchpriority="high" loading="eager" decoding="async" /></div>` : "";
-  const detailImageMarkup = images.slice(1).map((url) => `<div class="${productImageAspect} overflow-hidden rounded-lg bg-white"><img class="h-full w-full object-contain" src="${escapeHtml(url)}" alt="${productTitle} ${isJacket ? "jacket" : "jersey"} detail" loading="lazy" fetchpriority="low" decoding="async" /></div>`).join("");
+  const mobilePrimaryImage = imgpileVariantUrl(images[0], "lg");
+  const primaryImageSource = mobilePrimaryImage ? `<source media="(max-width: 767px)" srcset="${escapeHtml(mobilePrimaryImage)}" />` : "";
+  const primaryImageMarkup = images[0] ? `<div class="${productImageAspect} overflow-hidden rounded-lg bg-white"><picture class="block h-full w-full">${primaryImageSource}<img class="h-full w-full object-contain" src="${escapeHtml(images[0])}" alt="${productTitle} ${productImageType(product)}" fetchpriority="high" loading="eager" decoding="async" /></picture></div>` : "";
+  const detailImageMarkup = images.slice(1).map((url) => {
+    const mobileImage = imgpileVariantUrl(url, "md");
+    const mobileSource = mobileImage ? `<source media="(max-width: 767px)" srcset="${escapeHtml(mobileImage)}" />` : "";
+    return `<div class="${productImageAspect} overflow-hidden rounded-lg bg-white"><picture class="block h-full w-full">${mobileSource}<img class="h-full w-full object-contain" src="${escapeHtml(url)}" alt="${productTitle} ${isJacket ? "jacket" : "jersey"} detail" loading="lazy" fetchpriority="low" decoding="async" /></picture></div>`;
+  }).join("");
   const productDescriptionMarkup = productDescription ? `<p class="mt-6 whitespace-pre-line leading-7 text-gray-700">${escapeHtml(productDescription)}</p>` : "";
   const sizesMarkup = product.available_sizes?.length > 0 ? `<p class="mt-5"><strong>Available sizes:</strong> ${escapeHtml(product.available_sizes.join(", "))}</p>` : "";
   const browseMarkup = retroProduct ? `<p class="mt-6"><a class="underline" href="${escapeHtml(productCollectionHref)}">Browse retro &amp; vintage football jerseys</a></p>` : category ? `<p class="mt-6"><a class="underline" href="${escapeHtml(productCollectionHref)}">Browse more ${escapeHtml(categoryName.toLowerCase())}</a></p>` : "";
