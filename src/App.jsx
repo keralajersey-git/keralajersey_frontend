@@ -1,8 +1,10 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import Admin from './pages/Admin';
-import ProductPage from './pages/ProductPage';
-import CollectionPage from './pages/CollectionPage';
+
+const Admin = lazy(() => import('./pages/Admin'));
+const ProductPage = lazy(() => import('./pages/ProductPage'));
+const CollectionPage = lazy(() => import('./pages/CollectionPage'));
 
 function App() {
   return (
@@ -17,12 +19,14 @@ function App() {
         />
         {/* Content Area */}
         <div className="relative z-10 overflow-x-hidden w-full max-w-screen">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products/:slug/:id" element={<ProductPage />} />
-            <Route path="/collections/:categorySlug" element={<CollectionPage />} />
-            <Route path="/admin" element={<Admin />} />
-          </Routes>
+          <Suspense fallback={<main className="min-h-screen p-8 text-gray-700">Loading page…</main>}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/products/:slug/:id" element={<ProductPage />} />
+              <Route path="/collections/:categorySlug" element={<CollectionPage />} />
+              <Route path="/admin" element={<Admin />} />
+            </Routes>
+          </Suspense>
         </div>
       </div>
     </Router>
