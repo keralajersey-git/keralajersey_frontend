@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import ProductDrawer from "./ProductDrawer";
 import {
   FiChevronLeft,
   FiChevronRight,
@@ -14,6 +13,8 @@ import { MdPushPin } from "react-icons/md";
 import { AnimatePresence, motion as Motion } from "framer-motion";
 import { CATEGORIES, SUB_CATEGORIES } from "../constants/categories";
 import { collectionPath, RETRO_COLLECTION, productImageType } from "../utils/seo";
+
+const ProductDrawer = lazy(() => import("./ProductDrawer"));
 
 const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 
@@ -329,11 +330,13 @@ const Products = ({ externalFilter, setExternalFilter }) => {
           </div>
         )}
 
-        <ProductDrawer
-          product={selectedProduct}
-          isOpen={!!selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-        />
+        <Suspense fallback={null}>
+          <ProductDrawer
+            product={selectedProduct}
+            isOpen={!!selectedProduct}
+            onClose={() => setSelectedProduct(null)}
+          />
+        </Suspense>
       </div>
 
       <AnimatePresence>
