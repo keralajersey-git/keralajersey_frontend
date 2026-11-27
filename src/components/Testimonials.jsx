@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 
 // --- Data ---
 const testimonials = [
@@ -63,11 +63,18 @@ const firstColumn = testimonials;
 const secondColumn = [...testimonials.slice(3), ...testimonials.slice(0, 3)];
 const thirdColumn = [...testimonials.slice(6), ...testimonials.slice(0, 6)];
 
+const getColumnCount = () => {
+    if (typeof window === "undefined") return 1;
+    if (window.matchMedia("(min-width: 1024px)").matches) return 3;
+    if (window.matchMedia("(min-width: 768px)").matches) return 2;
+    return 1;
+};
+
 // --- Sub-Components ---
-const TestimonialsColumn = ({ className, testimonials, duration }) => {
+const TestimonialsColumn = ({ testimonials, duration }) => {
     return (
-        <div className={className}>
-            <motion.ul
+        <div>
+            <Motion.ul
                 animate={{
                     translateY: "-50%",
                 }}
@@ -83,7 +90,7 @@ const TestimonialsColumn = ({ className, testimonials, duration }) => {
                     ...new Array(2).fill(0).map((_, index) => (
                         <React.Fragment key={index}>
                             {testimonials.map(({ text, image, name, role }, i) => (
-                                <motion.li
+                                <Motion.li
                                     key={`${index}-${i}`}
                                     aria-hidden={index === 1 ? "true" : "false"}
                                     tabIndex={index === 1 ? -1 : 0}
@@ -104,6 +111,8 @@ const TestimonialsColumn = ({ className, testimonials, duration }) => {
                                                 width={40}
                                                 height={40}
                                                 src={image}
+                                                loading="lazy"
+                                                decoding="async"
                                                 alt={`Avatar of ${name}`}
                                                 className="h-10 w-10 rounded-full object-cover ring-2 ring-white/60 group-hover:ring-yellow-500/50 transition-all duration-300 ease-in-out"
                                             />
@@ -117,17 +126,29 @@ const TestimonialsColumn = ({ className, testimonials, duration }) => {
                                             </div>
                                         </footer>
                                     </blockquote>
-                                </motion.li>
+                                </Motion.li>
                             ))}
                         </React.Fragment>
                     )),
                 ]}
-            </motion.ul>
+            </Motion.ul>
         </div>
     );
 };
 
 export default function Testimonials() {
+    const [columnCount, setColumnCount] = React.useState(getColumnCount);
+
+    React.useEffect(() => {
+        const updateColumnCount = () => setColumnCount(getColumnCount());
+        window.addEventListener("resize", updateColumnCount);
+        updateColumnCount();
+
+        return () => {
+            window.removeEventListener("resize", updateColumnCount);
+        };
+    }, []);
+
     return (
         <section
             id="testimonials"
@@ -137,7 +158,7 @@ export default function Testimonials() {
             <div className="max-w-7xl mx-auto px-4">
                 {/* Header Section */}
                 <div className="flex flex-col items-center justify-center text-center mb-16">
-                    <motion.div
+                    <Motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
@@ -147,7 +168,7 @@ export default function Testimonials() {
                         <p className="text-xs font-semibold uppercase tracking-widest text-gray-800">
                             Community Love
                         </p>
-                    </motion.div>
+                    </Motion.div>
 
 
 
@@ -155,16 +176,28 @@ export default function Testimonials() {
                         <div className="flex -space-x-2">
                             <img
                                 src="https://cdn.imgpile.com/f/uBKDg2x.webp"
+                                width={40}
+                                height={40}
+                                loading="lazy"
+                                decoding="async"
                                 alt="Kerala Jersey community member portrait"
                                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                             />
                             <img
                                 src="https://cdn.imgpile.com/f/9K4bIOn.webp"
+                                width={40}
+                                height={40}
+                                loading="lazy"
+                                decoding="async"
                                 alt="Kerala Jersey community member portrait"
                                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                             />
                             <img
                                 src="https://i.pinimg.com/1200x/b7/c1/31/b7c131d008da508abbe765b5c2d49114.jpg"
+                                width={40}
+                                height={40}
+                                loading="lazy"
+                                decoding="async"
                                 alt="Kerala Jersey community member portrait"
                                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
                             />
@@ -183,8 +216,8 @@ export default function Testimonials() {
                     aria-label="Scrolling Testimonials"
                 >
                     <TestimonialsColumn testimonials={firstColumn} duration={40} />
-                    <TestimonialsColumn testimonials={secondColumn} className="hidden md:block" duration={55} />
-                    <TestimonialsColumn testimonials={thirdColumn} className="hidden lg:block" duration={45} />
+                    {columnCount >= 2 && <TestimonialsColumn testimonials={secondColumn} duration={55} />}
+                    {columnCount >= 3 && <TestimonialsColumn testimonials={thirdColumn} duration={45} />}
                 </div>
             </div>
 

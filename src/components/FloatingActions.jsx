@@ -1,6 +1,42 @@
 import React from "react";
 
 const FloatingActions = () => {
+  const [isVisible, setIsVisible] = React.useState(() =>
+    typeof window === "undefined"
+      ? true
+      : window.matchMedia("(min-width: 768px)").matches,
+  );
+
+  React.useEffect(() => {
+    const updateVisibility = () => {
+      if (window.matchMedia("(min-width: 768px)").matches) {
+        setIsVisible(true);
+        return;
+      }
+
+      const cta = document.querySelector(".hero-collections-cta");
+      if (!cta) {
+        setIsVisible(true);
+        return;
+      }
+
+      const ctaBounds = cta.getBoundingClientRect();
+      const contactStackTop = window.innerHeight - 24 - 3 * 56 - 2 * 16;
+      setIsVisible(
+        ctaBounds.bottom + 12 < contactStackTop ||
+          ctaBounds.bottom < 0,
+      );
+    };
+
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    window.addEventListener("resize", updateVisibility);
+    return () => {
+      window.removeEventListener("scroll", updateVisibility);
+      window.removeEventListener("resize", updateVisibility);
+    };
+  }, []);
+
   const actions = [
     {
       id: "whatsapp",
@@ -33,6 +69,8 @@ const FloatingActions = () => {
       label: "Email",
     },
   ];
+
+  if (!isVisible) return null;
 
   return (
     <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-[9999] floating-actions-container">

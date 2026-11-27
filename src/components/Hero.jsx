@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 import { MdDoubleArrow } from "react-icons/md";
 import {
   FiBookOpen,
@@ -42,9 +42,11 @@ const Hero = ({ onSelectQuality }) => {
           {/* MOBILE ONLY: Automatic Carousel - Full Width, No Padding, No Rounded Corners */}
           <div className="lg:hidden relative w-full aspect-square bg-gray-50 overflow-hidden">
             <AnimatePresence mode="wait">
-              <motion.img
+              <Motion.img
                 key={currentIndex}
                 src={mobileImages[currentIndex]}
+                fetchPriority={currentIndex === 0 ? "high" : "auto"}
+                decoding="async"
                 alt={`Kerala football jersey collection image ${currentIndex + 1}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -222,8 +224,8 @@ const Hero = ({ onSelectQuality }) => {
 
           <div className="flex flex-col sm:flex-row gap-4">
             <button
+              className="hero-collections-cta px-10 py-4 border-2 border-gray-900 text-gray-900 font-bold rounded-sm hover:bg-gray-50 transition-all duration-300 transform hover:-translate-y-1"
               onClick={() => setShowPopup(true)}
-              className="px-10 py-4 border-2 border-gray-900 text-gray-900 font-bold rounded-sm hover:bg-gray-50 transition-all duration-300 transform hover:-translate-y-1"
             >
               Collections
             </button>
@@ -239,7 +241,7 @@ const Hero = ({ onSelectQuality }) => {
         {showPopup && (
           <>
             {/* Backdrop */}
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -248,7 +250,7 @@ const Hero = ({ onSelectQuality }) => {
             />
 
             {/* Popup Content */}
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -306,7 +308,7 @@ const Hero = ({ onSelectQuality }) => {
 
                     <AnimatePresence>
                       {expandedCategory === "top-quality" && (
-                        <motion.div
+                        <Motion.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
@@ -330,7 +332,7 @@ const Hero = ({ onSelectQuality }) => {
                               {sub.label}
                             </button>
                           ))}
-                        </motion.div>
+                        </Motion.div>
                       )}
                     </AnimatePresence>
                   </div>
@@ -366,7 +368,7 @@ const Hero = ({ onSelectQuality }) => {
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </Motion.div>
           </>
         )}
       </AnimatePresence>
