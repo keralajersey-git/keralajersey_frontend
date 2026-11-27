@@ -27,10 +27,13 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
     const body = document.body;
     const root = document.documentElement;
     const scrollY = window.scrollY;
+    const scrollbarWidth = window.innerWidth - root.clientWidth;
+    const computedPaddingRight = Number.parseFloat(window.getComputedStyle(body).paddingRight) || 0;
     const previousStyles = {
       bodyPosition: body.style.position,
       bodyTop: body.style.top,
       bodyWidth: body.style.width,
+      bodyPaddingRight: body.style.paddingRight,
       bodyOverflow: body.style.overflow,
       rootOverflow: root.style.overflow,
     };
@@ -39,6 +42,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
     body.style.position = "fixed";
     body.style.top = `-${scrollY}px`;
     body.style.width = "100%";
+    body.style.paddingRight = `${computedPaddingRight + scrollbarWidth}px`;
     body.style.overflow = "hidden";
     root.style.overflow = "hidden";
 
@@ -53,6 +57,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
       body.style.position = previousStyles.bodyPosition;
       body.style.top = previousStyles.bodyTop;
       body.style.width = previousStyles.bodyWidth;
+      body.style.paddingRight = previousStyles.bodyPaddingRight;
       body.style.overflow = previousStyles.bodyOverflow;
       root.style.overflow = previousStyles.rootOverflow;
       window.scrollTo(0, scrollY);
