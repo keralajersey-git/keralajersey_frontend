@@ -16,6 +16,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const drawerPanelRef = useRef(null);
+  const imageSwipeStartRef = useRef(null);
 
   const API_URL = (
     import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
@@ -250,31 +251,39 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
 
             <div className="flex-1 overflow-y-auto overscroll-contain drawer-scrollbar">
               <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden shrink-0">
-                <div className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden">
+                <div
+                  className="relative w-full aspect-[4/3] flex items-center justify-center overflow-hidden"
+                  style={{ touchAction: "pan-y" }}
+                  onPointerDown={(event) => {
+                    if (images.length < 2 || event.button > 0) return;
+                    imageSwipeStartRef.current = {
+                      pointerId: event.pointerId,
+                      x: event.clientX,
+                      y: event.clientY,
+                    };
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                  }}
+                  onPointerUp={(event) => {
+                    const start = imageSwipeStartRef.current;
+                    imageSwipeStartRef.current = null;
+                    if (!start || start.pointerId !== event.pointerId) return;
+                    const deltaX = event.clientX - start.x;
+                    const deltaY = event.clientY - start.y;
+                    if (Math.abs(deltaX) < 60 || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+                    if (deltaX < 0) goToNextImage();
+                    else goToPrevImage();
+                  }}
+                  onPointerCancel={() => {
+                    imageSwipeStartRef.current = null;
+                  }}
+                >
                   {images.length > 0 ? (
                     <>
-                      <Motion.img
-                        key={currentImageIndex}
-                        drag={images.length > 1 ? "x" : false}
-                        dragConstraints={{ left: 0, right: 0 }}
-                        dragElastic={0.2}
-                        onDragEnd={(e, info) => {
-                          const threshold = 80;
-                          if (info.offset.x < -threshold) {
-                            goToNextImage();
-                          } else if (info.offset.x > threshold) {
-                            goToPrevImage();
-                          }
-                        }}
-                        initial={{ opacity: 0, x: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.25, ease: "easeOut" }}
-                        dragMomentum={false}
-                        dragTransition={{ bounceStiffness: 600, bounceDamping: 40 }}
+                      <img
                         src={images[currentImageIndex]}
                         alt={`${product.title} ${productImageType(product)} - image ${currentImageIndex + 1}`}
-                        className="w-full h-full object-contain touch-pan-y select-none"
+                        draggable={false}
+                        className="w-full h-full object-contain select-none"
                         style={{ cursor: images.length > 1 ? "grab" : "default" }}
                       />
 
