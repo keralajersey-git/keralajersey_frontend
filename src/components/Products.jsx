@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import ResponsiveProductImage from "./ResponsiveProductImage";
 import {
   FiChevronLeft,
   FiChevronRight,
@@ -218,11 +219,12 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                 >
                   <div className="relative aspect-square m-3 rounded-md overflow-hidden bg-white flex items-center justify-center">
                     {product.image1 ? (
-                      <img
+                      <ResponsiveProductImage
                         src={product.image1}
                         alt={`${product.title} ${productImageType(product)}`}
                         loading="lazy"
                         decoding="async"
+                        mobileSize="md"
                         className="w-full h-full object-cover"
                       />
                     ) : (

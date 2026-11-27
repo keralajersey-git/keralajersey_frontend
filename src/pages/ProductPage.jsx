@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
+import ResponsiveProductImage from "../components/ResponsiveProductImage";
 import { CATEGORIES } from "../constants/categories";
 import { collectionPath, productPath, setPageMetadata, SITE_ORIGIN, RETRO_COLLECTION, isRetroProduct, isJacketProduct, retroProductTitle, retroProductDescription, jacketProductDescription, collectionCategoryLabel, productImageType } from "../utils/seo";
 
@@ -97,8 +98,8 @@ export default function ProductPage() {
       </nav>
       <article className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 md:grid-cols-2">
         <div className="space-y-4">
-          {productImages[0] && <div className={`${productImageAspect} overflow-hidden rounded-lg bg-white`}><img className="h-full w-full object-contain" src={productImages[0]} alt={`${currentProduct.title.trim()} ${productImageType(currentProduct)}`} fetchPriority="high" loading="eager" decoding="async" /></div>}
-          <div className="grid grid-cols-2 gap-4">{productImages.slice(1).map((image) => <div key={image} className={`${productImageAspect} overflow-hidden rounded-lg bg-white`}><img className="h-full w-full object-contain" src={image} alt={`${currentProduct.title.trim()} ${isJacket ? "jacket" : "jersey"} detail`} loading="lazy" fetchPriority="low" decoding="async" /></div>)}</div>
+          {productImages[0] && <div className={`${productImageAspect} overflow-hidden rounded-lg bg-white`}><ResponsiveProductImage className="h-full w-full object-contain" src={productImages[0]} alt={`${currentProduct.title.trim()} ${productImageType(currentProduct)}`} fetchPriority="high" loading="eager" decoding="async" mobileSize="lg" /></div>}
+          <div className="grid grid-cols-2 gap-4">{productImages.slice(1).map((image) => <div key={image} className={`${productImageAspect} overflow-hidden rounded-lg bg-white`}><ResponsiveProductImage className="h-full w-full object-contain" src={image} alt={`${currentProduct.title.trim()} ${isJacket ? "jacket" : "jersey"} detail`} loading="lazy" fetchPriority="low" decoding="async" mobileSize="md" /></div>)}</div>
         </div>
         <div className="self-start md:sticky md:top-8">
           <p className="text-sm font-bold uppercase tracking-widest">{currentProduct.sub_category || categoryName}</p>

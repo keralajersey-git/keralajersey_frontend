@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import ResponsiveProductImage from "../components/ResponsiveProductImage";
 import { CATEGORIES } from "../constants/categories";
 import {
   collectionPath,
@@ -167,12 +168,13 @@ export default function CollectionPage() {
             <li key={product.$id || product.id} className="overflow-hidden rounded-lg border border-[#e5e1da] bg-white shadow-sm">
               {product.image1 && (
                 <Link className="block" to={productPath(product)} state={{ product }}>
-                  <img
-                    className="aspect-square w-full object-cover"
+                  <ResponsiveProductImage
                     src={product.image1}
                     alt={`${product.title} ${productImageType(product)}`}
                     loading="lazy"
                     decoding="async"
+                    mobileSize="md"
+                    className="aspect-square w-full object-cover"
                   />
                 </Link>
               )}

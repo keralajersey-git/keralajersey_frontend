@@ -21,6 +21,18 @@ export const collectionCategoryLabel = (category) =>
   category?.id === "jackets" ? "Football Jackets & Windbreakers" : category?.label;
 export const productImageType = (product) =>
   isJacketProduct(product) ? "football jacket" : "football jersey";
+export const imgpileVariantUrl = (imageUrl, size) => {
+  if (!["xs", "sm", "md", "lg", "xl"].includes(size)) return null;
+  try {
+    const url = new URL(imageUrl);
+    const match = url.pathname.match(/^\/f\/([^/]+)\.(jpe?g|png|webp)$/i);
+    if (url.protocol !== "https:" || url.hostname !== "cdn.imgpile.com" || url.username || url.password || !match || /_(?:xs|sm|md|lg|xl)$/i.test(match[1])) return null;
+    url.pathname = `/f/${match[1]}_${size}.${match[2]}`;
+    return url.href;
+  } catch {
+    return null;
+  }
+};
 export const jacketProductDescription = (product) =>
   `Shop ${String(product?.title || "Football jacket").trim().replace(/\s+/g, " ")} at Kerala Jersey. Check the listed price of ₹${product?.price} and current stock. Browse football jackets and windbreakers in India.`;
 export const slugify = (value = "") =>
