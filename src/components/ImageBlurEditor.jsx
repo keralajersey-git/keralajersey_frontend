@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { FiCheck, FiRotateCcw, FiTrash2, FiX } from "react-icons/fi";
 
-const MAX_IMAGE_EDGE = 2048;
+const MAX_IMAGE_EDGE = 1600;
+const MAX_CACHED_BLURS = 2;
 const MotionDiv = motion.div;
 const MotionSection = motion.section;
 
@@ -133,13 +134,33 @@ const ImageBlurEditor = ({ file, onCancel, onApply }) => {
     blurredCanvas.width = canvas.width;
     blurredCanvas.height = canvas.height;
     const blurredContext = blurredCanvas.getContext("2d");
-    if (!blurredContext || !("filter" in blurredContext)) {
-      throw new Error("Blur editing is not available in this browser.");
+    if (!blurredContext) {
+      throw new Error("Your browser could not prepare this image for blur.");
     }
 
-    blurredContext.filter = `blur(${strength}px)`;
-    blurredContext.drawImage(image, 0, 0, canvas.width, canvas.height);
-    blurredContext.filter = "none";
+    if (typeof blurredContext.filter === "string") {
+      blurredContext.filter = `blur(${strength}px)`;
+      blurredContext.drawImage(image, 0, 0, canvas.width, canvas.height);
+      blurredContext.filter = "none";
+    } else {
+      const scale = Math.max(0.06, 1 / (1 + strength / 4));
+      const smallCanvas = document.createElement("canvas");
+      smallCanvas.width = Math.max(1, Math.round(canvas.width * scale));
+      smallCanvas.height = Math.max(1, Math.round(canvas.height * scale));
+      const smallContext = smallCanvas.getContext("2d");
+      if (!smallContext) {
+        throw new Error("Your browser could not prepare this image for blur.");
+      }
+      smallContext.drawImage(image, 0, 0, smallCanvas.width, smallCanvas.height);
+      blurredContext.imageSmoothingEnabled = true;
+      blurredContext.imageSmoothingQuality = "high";
+      blurredContext.drawImage(smallCanvas, 0, 0, canvas.width, canvas.height);
+    }
+
+    if (blurredCanvasesRef.current.size >= MAX_CACHED_BLURS) {
+      const oldestStrength = blurredCanvasesRef.current.keys().next().value;
+      blurredCanvasesRef.current.delete(oldestStrength);
+    }
     blurredCanvasesRef.current.set(strength, blurredCanvas);
     return blurredCanvas;
   };
