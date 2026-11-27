@@ -1,45 +1,127 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { CATEGORIES } from "../constants/categories";
-import { collectionPath, productPath, setPageMetadata, SITE_ORIGIN, slugify, RETRO_COLLECTION, RETRO_SUBCATEGORY, isRetroProduct, collectionHeading, collectionTitle, collectionDescription, productImageType } from "../utils/seo";
+import {
+  collectionPath,
+  productPath,
+  setPageMetadata,
+  SITE_ORIGIN,
+  slugify,
+  RETRO_COLLECTION,
+  RETRO_SUBCATEGORY,
+  isRetroProduct,
+  collectionHeading,
+  collectionTitle,
+  collectionDescription,
+  productImageType,
+} from "../utils/seo";
 
 const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
+const PAGE_SIZE = 12;
+
+const getCollectionParams = (page, category, isRetroCollection) => {
+  const params = new URLSearchParams({
+    page: String(page),
+    limit: String(PAGE_SIZE),
+    category: isRetroCollection ? "top-quality" : category.id,
+  });
+  if (isRetroCollection) params.set("sub_category", RETRO_SUBCATEGORY);
+  return params.toString();
+};
 
 export default function CollectionPage() {
   const { categorySlug } = useParams();
   const isRetroCollection = categorySlug === slugify(RETRO_COLLECTION.id);
-  const category = isRetroCollection ? RETRO_COLLECTION : CATEGORIES.find((item) => slugify(item.id) === categorySlug);
+  const category = isRetroCollection
+    ? RETRO_COLLECTION
+    : CATEGORIES.find((item) => slugify(item.id) === categorySlug);
   const [products, setProducts] = useState([]);
   const [loadedCategoryId, setLoadedCategoryId] = useState(null);
   const [failedCategoryId, setFailedCategoryId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [loadMoreFailed, setLoadMoreFailed] = useState(false);
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
-    if (!category) return;
+    window.scrollTo(0, 0);
+  }, [categorySlug]);
+
+  useEffect(() => {
+    if (!category) return undefined;
     let active = true;
+    const requestId = ++requestIdRef.current;
+    setProducts([]);
+    setLoadedCategoryId(null);
+    setFailedCategoryId(null);
+    setCurrentPage(1);
+    setTotalPages(1);
+    setTotalProducts(0);
+    setLoadingMore(false);
+    setLoadMoreFailed(false);
+
     const loadCollection = async () => {
-      const params = new URLSearchParams({ page: "1", limit: "100", category: isRetroCollection ? "top-quality" : category.id });
-      if (isRetroCollection) params.set("sub_category", RETRO_SUBCATEGORY);
-      const firstResponse = await fetch(`${API_URL}/products/?${params}`);
-      if (!firstResponse.ok) throw new Error("Unable to load collection");
-      const firstPage = await firstResponse.json();
-      const items = Array.isArray(firstPage.items) ? [...firstPage.items] : [];
-      for (let page = 2; page <= Number(firstPage.pages || 1); page += 1) {
-        params.set("page", String(page));
-        const response = await fetch(`${API_URL}/products/?${params}`);
-        if (!response.ok) throw new Error("Unable to load collection page");
-        const data = await response.json();
-        if (Array.isArray(data.items)) items.push(...data.items);
-      }
-      if (active) {
+      try {
+        const response = await fetch(
+          `${API_URL}/products/?${getCollectionParams(1, category, isRetroCollection)}`,
+        );
+        if (!response.ok) throw new Error("Unable to load collection");
+        const firstPage = await response.json();
+        const items = Array.isArray(firstPage.items) ? firstPage.items : [];
+        if (!active || requestId !== requestIdRef.current) return;
+
         setProducts(isRetroCollection ? items.filter(isRetroProduct) : items);
+        setCurrentPage(1);
+        setTotalPages(Math.max(1, Number(firstPage.pages) || 1));
+        setTotalProducts(
+          Number.isFinite(Number(firstPage.total))
+            ? Number(firstPage.total)
+            : items.length,
+        );
         setLoadedCategoryId(category.id);
         setFailedCategoryId(null);
+      } catch {
+        if (active && requestId === requestIdRef.current) {
+          setFailedCategoryId(category.id);
+        }
       }
     };
-    loadCollection()
-      .catch(() => active && setFailedCategoryId(category.id));
-    return () => { active = false; };
+
+    loadCollection();
+    return () => {
+      active = false;
+    };
   }, [category, isRetroCollection]);
+
+  const handleLoadMore = async () => {
+    if (!category || loadingMore || currentPage >= totalPages) return;
+    const requestId = requestIdRef.current;
+    const nextPage = currentPage + 1;
+    setLoadingMore(true);
+    setLoadMoreFailed(false);
+
+    try {
+      const response = await fetch(
+        `${API_URL}/products/?${getCollectionParams(nextPage, category, isRetroCollection)}`,
+      );
+      if (!response.ok) throw new Error("Unable to load more products");
+      const data = await response.json();
+      if (requestId !== requestIdRef.current) return;
+
+      const items = Array.isArray(data.items) ? data.items : [];
+      setProducts((currentProducts) => [
+        ...currentProducts,
+        ...(isRetroCollection ? items.filter(isRetroProduct) : items),
+      ]);
+      setCurrentPage(nextPage);
+    } catch {
+      if (requestId === requestIdRef.current) setLoadMoreFailed(true);
+    } finally {
+      if (requestId === requestIdRef.current) setLoadingMore(false);
+    }
+  };
 
   useEffect(() => {
     if (!category) return;
@@ -77,8 +159,8 @@ export default function CollectionPage() {
           <h1 className="text-4xl font-black md:text-5xl">{isRetroCollection ? "Retro & Vintage Football Jerseys in India" : collectionHeading(category)}</h1>
           <p className="mt-4 text-lg text-gray-700">{isRetroCollection ? RETRO_COLLECTION.description : category.id === "jackets" ? collectionDescription(category) : `${category.description}. Shop football jerseys and fanwear online with delivery across India.`}</p>
         </header>
-        {loading && <p>Loading collection…</p>}
-        {failed && <p>We couldn’t load this collection right now. Please try again shortly.</p>}
+        {loading && <p role="status">Loading collection…</p>}
+        {failed && <p role="alert">We couldn’t load this collection right now. Please try again shortly.</p>}
         {!loading && !failed && visibleProducts.length === 0 && <p>No products are currently listed in this collection.</p>}
         <ul className="grid list-none grid-cols-2 gap-5 p-0 sm:grid-cols-3 lg:grid-cols-4">
           {visibleProducts.map((product) => (
@@ -90,6 +172,7 @@ export default function CollectionPage() {
                     src={product.image1}
                     alt={`${product.title} ${productImageType(product)}`}
                     loading="lazy"
+                    decoding="async"
                   />
                 </Link>
               )}
@@ -97,6 +180,21 @@ export default function CollectionPage() {
             </li>
           ))}
         </ul>
+        {!loading && !failed && currentPage < totalPages && (
+          <div className="mt-8 flex flex-col items-center gap-2">
+            <button
+              type="button"
+              onClick={handleLoadMore}
+              disabled={loadingMore}
+              aria-busy={loadingMore}
+              className="min-h-12 rounded-md bg-gray-900 px-6 py-3 font-semibold text-white transition-colors hover:bg-gray-700 disabled:cursor-wait disabled:opacity-70"
+            >
+              {loadingMore ? "Loading more jerseys…" : loadMoreFailed ? "Try again" : "Load more jerseys"}
+            </button>
+            {loadMoreFailed && <p role="status" className="text-sm text-gray-600">We couldn’t load more products. Please try again.</p>}
+            <p className="text-sm text-gray-600">Showing {visibleProducts.length} of {totalProducts} products</p>
+          </div>
+        )}
         <div className="mt-12 flex flex-wrap gap-5 border-t border-gray-300 pt-6">{!isRetroCollection && <Link className="underline" to={collectionPath(RETRO_COLLECTION.id)}>Shop retro &amp; vintage football jerseys</Link>}{CATEGORIES.filter((item) => item.id !== category.id).map((item) => <Link className="underline" key={item.id} to={collectionPath(item.id)}>Shop {item.label}</Link>)}</div>
       </div>
     </main>
