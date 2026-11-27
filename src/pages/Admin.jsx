@@ -21,7 +21,7 @@ import {
   SUB_CATEGORIES,
   supportsSubCategories,
 } from "../constants/categories";
-import ImageEraserEditor from "../components/ImageEraserEditor";
+import ImageBlurEditor from "../components/ImageBlurEditor";
 
 const Admin = () => {
   const [products, setProducts] = useState([]);
@@ -1480,7 +1480,7 @@ const Admin = () => {
       </AnimatePresence>
       <AnimatePresence>
         {imageEditor && (
-          <ImageEraserEditor
+          <ImageBlurEditor
             key={`${imageEditor.fieldName}-${imageEditor.file.name}`}
             file={imageEditor.file}
             onCancel={() => setImageEditor(null)}
