@@ -26,8 +26,10 @@ function setTagContent(html, tagPattern, content) {
   });
 }
 
-function makePage(baseHtml, { title, description, canonical, image, body, schema }) {
+function makePage(baseHtml, { title, description, canonical, image, body, schema, productData }) {
   let html = baseHtml;
+  html = html.replace(/<link\b(?=[^>]*\brel=["']preload["'])(?=[^>]*\bas=["']image["'])(?=[^>]*\bhref=["']\/kerala-hero-mobile\.webp["'])[^>]*\/?\s*>/i, "");
+  html = html.replace(/<style id="initial-home-shell-styles">[\s\S]*?<\/style>/i, "");
   html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtml(title)}</title>`);
   html = setTagContent(html, /<meta\s+name="description"[^>]*>/i, description);
   html = setTagContent(html, /<meta\s+property="og:title"[^>]*>/i, title);
@@ -39,8 +41,9 @@ function makePage(baseHtml, { title, description, canonical, image, body, schema
   html = setTagContent(html, /<meta\s+name="twitter:image"[^>]*>/i, image);
   html = html.replace(/<link\s+rel="canonical"[^>]*>/i, `<link rel="canonical" href="${escapeHtml(canonical)}" />`);
   const schemaScript = `<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, "\\u003c")}</script>`;
+  const initialProductScript = productData ? `<script id="initial-product-data" type="application/json">${JSON.stringify(productData).replace(/</g, "\\u003c")}</script>` : "";
   html = html.replace(/<div id="root">[\s\S]*?<\/div>/i, `<div id="root">${body}</div>`);
-  return html.replace("</head>", `${schemaScript}\n  </head>`);
+  return html.replace("</head>", `${schemaScript}\n${initialProductScript}\n  </head>`);
 }
 
 async function getApiUrl() {
@@ -128,14 +131,14 @@ for (const product of products) {
   const title = retroProduct ? retroProductTitle(product) : `${product.title.trim()} | Kerala Jersey`;
   const description = excerpt(isJacketProduct(product) ? jacketProductDescription(product) : productDescription);
   const images = [product.image1, product.image2, product.image3].filter(Boolean);
-  const imageMarkup = images.map((url, index) => `<img src="${escapeHtml(url)}" alt="${escapeHtml(product.title.trim())} ${productImageType(product)}${index ? ` detail ${index + 1}` : ""}" width="480"${index ? " loading=\"lazy\"" : ""} />`).join("\n");
+  const imageMarkup = images.map((url, index) => `<img src="${escapeHtml(url)}" alt="${escapeHtml(product.title.trim())} ${productImageType(product)}${index ? ` detail ${index + 1}` : ""}" width="480" fetchpriority="${index ? "low" : "high"}" loading="${index ? "lazy" : "eager"}" decoding="async" />`).join("\n");
   const productCollectionUrl = retroProduct ? `${SITE_ORIGIN}${collectionPath(RETRO_COLLECTION.id)}` : categoryUrl;
   const productCollectionName = retroProduct ? "retro and vintage football jerseys" : categoryLabel.toLowerCase();
   const body = `<main><nav aria-label="Breadcrumb"><a href="${SITE_ORIGIN}/">Home</a> / <a href="${productCollectionUrl}">${escapeHtml(productCollectionName)}</a> / ${escapeHtml(product.title.trim())}</nav><article><h1>${escapeHtml(product.title.trim())}</h1><p>${escapeHtml(product.sub_category || categoryLabel)}</p>${imageMarkup}<p><strong>₹${escapeHtml(product.price)}</strong></p><p>${escapeHtml(productDescription)}</p><p>${product.stock ? "Available to order" : "Currently out of stock"}</p><p><a href="${productCollectionUrl}">Browse more ${escapeHtml(productCollectionName)}</a></p></article></main>`;
   const schema = { "@context": "https://schema.org", "@type": "Product", name: product.title.trim(), description, image: images, sku: id, ...(category ? { category: categoryLabel } : {}), brand: { "@type": "Brand", name: "Kerala Jersey" }, offers: { "@type": "Offer", url: canonical, priceCurrency: "INR", price: String(product.price), availability: product.stock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock" } };
   const file = path.join(distDir, "products", productSlug, encodeURIComponent(id), "index.html");
   await mkdir(path.dirname(file), { recursive: true });
-  await writeFile(file, makePage(baseHtml, { title, description, canonical, image: images[0] || `${SITE_ORIGIN}/kerala-jersey-og.jpg`, body, schema }));
+  await writeFile(file, makePage(baseHtml, { title, description, canonical, image: images[0] || `${SITE_ORIGIN}/kerala-jersey-og.jpg`, body, schema, productData: product }));
   sitemapUrls.add(canonical);
   generatedProductPages += 1;
 }

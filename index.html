@@ -5,9 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#111827" />
     <link rel="preconnect" href="https://i.pinimg.com" />
+    <link rel="preconnect" href="https://cdn.imgpile.com" crossorigin />
+    <link rel="preconnect" href="https://keralajersey-backend.vercel.app" crossorigin />
     <link rel="preload" as="image" href="/kerala-hero-mobile.webp" media="(max-width: 1023px)" fetchpriority="high" />
     <title>Retro &amp; Vintage Football Jerseys in India | Kerala Jersey</title>
     <meta name="description" content="Shop retro and vintage-style football jerseys online in India. Explore classic team and season designs, with prices and availability on product pages." />
+    <style id="initial-home-shell-styles">
+      .initial-home-shell{box-sizing:border-box;min-height:100vh;margin:0 auto;padding:24px 20px 36px;max-width:1180px;background:#faf7f2;color:#111827;font-family:Arial,Helvetica,sans-serif}
+      .initial-home-brand{margin:0;font-size:13px;font-weight:800;letter-spacing:.2em}
+      .initial-home-intro{max-width:720px;margin:clamp(48px,14vh,120px) auto 32px}
+      .initial-home-kicker{margin:0 0 16px;color:#887450;font-size:12px;font-weight:700;letter-spacing:.16em}
+      .initial-home-intro h1{max-width:8ch;margin:0;font-size:clamp(42px,12vw,88px);font-weight:900;line-height:.88;letter-spacing:-.055em}
+      .initial-home-intro p:last-child{max-width:38rem;margin:20px 0 0;color:#4b5563;font-size:16px;line-height:1.6}
+      .initial-home-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:720px;margin:0 auto}
+      .initial-home-links a{display:flex;align-items:center;min-height:64px;padding:14px 16px;border:1px solid #d8d2c8;border-radius:8px;background:#fff;color:#111827;font-size:14px;font-weight:700;text-decoration:none}
+      @media(min-width:768px){.initial-home-shell{padding:32px 32px 56px}.initial-home-links{grid-template-columns:repeat(4,minmax(0,1fr))}.initial-home-links a{font-size:13px}}
+      @media(max-width:360px){.initial-home-links{grid-template-columns:1fr}.initial-home-links a{min-height:52px}}
+    </style>
     <meta name="keywords" content="retro football jerseys India, vintage football jerseys India, classic football shirts India, retro club jerseys, vintage football shirts India, football jerseys online India" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href="https://keralajersey.in/" />
@@ -50,10 +64,19 @@
   </head>
   <body>
     <div id="root">
-      <main>
-        <h1>Retro &amp; Vintage Football Jerseys in India</h1>
-        <p>Shop retro and vintage-style football jerseys online in India. Browse classic team and season designs, with current prices and availability shown on each product page.</p>
-        <p><a href="/collections/retro-vintage-football-jerseys">Browse retro football jerseys</a></p>
+      <main class="initial-home-shell">
+        <p class="initial-home-brand">KERALA JERSEY</p>
+        <section class="initial-home-intro" aria-labelledby="initial-home-heading">
+          <p class="initial-home-kicker">PREMIUM KERALA JERSEYS</p>
+          <h1 id="initial-home-heading">WEAR THE SPIRIT.</h1>
+          <p>Premium Kerala jerseys crafted with heritage, pulse, and peak performance fabric. Elevate your game and celebrate your roots in absolute style.</p>
+        </section>
+        <nav class="initial-home-links" aria-label="Shop collections">
+          <a href="/collections/top-quality">Top Quality Jerseys</a>
+          <a href="/collections/standard-quality">Standard Quality Jerseys</a>
+          <a href="/collections/jackets">Jackets &amp; Windbreakers</a>
+          <a href="/collections/retro-vintage-football-jerseys">Retro &amp; Vintage Jerseys</a>
+        </nav>
       </main>
     </div>
     <script type="module" src="/src/main.jsx"></script>

@@ -5,18 +5,28 @@ import { collectionPath, productPath, setPageMetadata, SITE_ORIGIN, RETRO_COLLEC
 
 const API_URL = (import.meta.env.VITE_API_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
 const matchesProductId = (product, id) => product && String(product.$id || product.id) === id;
+const getInitialProduct = (id) => {
+  const dataTag = document.getElementById("initial-product-data");
+  if (!dataTag) return null;
+  try {
+    const initialProduct = JSON.parse(dataTag.textContent || "null");
+    return matchesProductId(initialProduct, id) ? initialProduct : null;
+  } catch {
+    return null;
+  }
+};
 
 export default function ProductPage() {
   const { id } = useParams();
   const location = useLocation();
   const linkedProduct = location.state?.product;
-  const [product, setProduct] = useState(() => matchesProductId(linkedProduct, id) ? linkedProduct : null);
+  const [product, setProduct] = useState(() => matchesProductId(linkedProduct, id) ? linkedProduct : getInitialProduct(id));
   const [failedId, setFailedId] = useState(null);
-  const currentProduct = matchesProductId(linkedProduct, id) ? linkedProduct : matchesProductId(product, id) ? product : null;
+  const currentProduct = matchesProductId(product, id) ? product : matchesProductId(linkedProduct, id) ? linkedProduct : null;
 
   useEffect(() => {
     let active = true;
-    const cachedProduct = matchesProductId(location.state?.product, id) ? location.state.product : null;
+    const cachedProduct = matchesProductId(location.state?.product, id) ? location.state.product : getInitialProduct(id);
     fetch(`${API_URL}/products/${encodeURIComponent(id)}`)
       .then((response) => {
         if (!response.ok) throw new Error("Product not found");
@@ -85,8 +95,8 @@ export default function ProductPage() {
       </nav>
       <article className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 md:grid-cols-2">
         <div className="space-y-4">
-          {currentProduct.image1 && <img className="w-full rounded-lg bg-white object-cover" src={currentProduct.image1} alt={`${currentProduct.title.trim()} ${productImageType(currentProduct)}`} />}
-          <div className="grid grid-cols-2 gap-4">{[currentProduct.image2, currentProduct.image3].filter(Boolean).map((image) => <img key={image} className="w-full rounded-lg bg-white object-cover" src={image} alt={`${currentProduct.title.trim()} ${isJacket ? "jacket" : "jersey"} detail`} />)}</div>
+          {currentProduct.image1 && <img className="w-full rounded-lg bg-white object-cover" src={currentProduct.image1} alt={`${currentProduct.title.trim()} ${productImageType(currentProduct)}`} fetchPriority="high" loading="eager" decoding="async" />}
+          <div className="grid grid-cols-2 gap-4">{[currentProduct.image2, currentProduct.image3].filter(Boolean).map((image) => <img key={image} className="w-full rounded-lg bg-white object-cover" src={image} alt={`${currentProduct.title.trim()} ${isJacket ? "jacket" : "jersey"} detail`} loading="lazy" fetchPriority="low" decoding="async" />)}</div>
         </div>
         <div className="self-start md:sticky md:top-8">
           <p className="text-sm font-bold uppercase tracking-widest">{currentProduct.sub_category || categoryName}</p>
