@@ -13,10 +13,10 @@ import { CATEGORIES, SUB_CATEGORIES } from "../constants/categories";
 
 const Hero = ({ onSelectQuality }) => {
   const images = [
-    "https://cdn.imgpile.com/f/W9qKwiL.webp",
+    "/hero-customs.webp",
     "/kerala-hero-mobile.webp",
-    "https://i.pinimg.com/736x/48/05/35/480535935ecc2498ce5060101e298812.jpg",
-    "https://i.pinimg.com/736x/1d/d1/8d/1dd18dd3f03c5d3dcde268e489fe9fb5.jpg",
+    "/hero-sports.webp",
+    "/hero-sports.webp",
   ];
 
   const [showPopup, setShowPopup] = useState(false);
@@ -95,6 +95,8 @@ const Hero = ({ onSelectQuality }) => {
               <img
                 src={images[0]}
                 alt="Kerala football jersey from the custom collection"
+                fetchPriority="high"
+                decoding="async"
                 className="h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -110,6 +112,8 @@ const Hero = ({ onSelectQuality }) => {
               <img
                 src={images[3]}
                 alt="Close-up detail of a Kerala football jersey"
+                fetchPriority="high"
+                decoding="async"
                 className="h-full w-full object-cover"
               />
               <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
