@@ -23,6 +23,7 @@ export default function ProductPage() {
   const [product, setProduct] = useState(() => matchesProductId(linkedProduct, id) ? linkedProduct : getInitialProduct(id));
   const [failedId, setFailedId] = useState(null);
   const currentProduct = matchesProductId(product, id) ? product : matchesProductId(linkedProduct, id) ? linkedProduct : null;
+  const productImages = currentProduct ? [currentProduct.image1, currentProduct.image2, currentProduct.image3].filter(Boolean) : [];
 
   useEffect(() => {
     let active = true;
@@ -57,7 +58,7 @@ export default function ProductPage() {
       title,
       description,
       path,
-      image: currentProduct.image1 || `${SITE_ORIGIN}/kerala-jersey-og.jpg`,
+      image: currentProduct.image1 || currentProduct.image2 || currentProduct.image3 || `${SITE_ORIGIN}/kerala-jersey-og.jpg`,
       jsonLd: {
         "@context": "https://schema.org",
         "@type": "Product",
@@ -87,6 +88,7 @@ export default function ProductPage() {
   const productDescription = isRetro ? retroProductDescription(currentProduct) : currentProduct.description;
   const categoryName = collectionCategoryLabel(category) || currentProduct.category?.replaceAll("-", " ") || "Jerseys";
   const message = encodeURIComponent(`Hi, I'm interested in the ${currentProduct.title.trim()}. Price: ₹${currentProduct.price}.`);
+  const productImageAspect = isRetro ? "aspect-square" : "aspect-[3/4]";
 
   return (
     <main className="min-h-screen bg-[#faf7f2] text-gray-900">
@@ -95,8 +97,8 @@ export default function ProductPage() {
       </nav>
       <article className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 md:grid-cols-2">
         <div className="space-y-4">
-          {currentProduct.image1 && <img className="w-full rounded-lg bg-white object-cover" src={currentProduct.image1} alt={`${currentProduct.title.trim()} ${productImageType(currentProduct)}`} fetchPriority="high" loading="eager" decoding="async" />}
-          <div className="grid grid-cols-2 gap-4">{[currentProduct.image2, currentProduct.image3].filter(Boolean).map((image) => <img key={image} className="w-full rounded-lg bg-white object-cover" src={image} alt={`${currentProduct.title.trim()} ${isJacket ? "jacket" : "jersey"} detail`} loading="lazy" fetchPriority="low" decoding="async" />)}</div>
+          {productImages[0] && <div className={`${productImageAspect} overflow-hidden rounded-lg bg-white`}><img className="h-full w-full object-contain" src={productImages[0]} alt={`${currentProduct.title.trim()} ${productImageType(currentProduct)}`} fetchPriority="high" loading="eager" decoding="async" /></div>}
+          <div className="grid grid-cols-2 gap-4">{productImages.slice(1).map((image) => <div key={image} className={`${productImageAspect} overflow-hidden rounded-lg bg-white`}><img className="h-full w-full object-contain" src={image} alt={`${currentProduct.title.trim()} ${isJacket ? "jacket" : "jersey"} detail`} loading="lazy" fetchPriority="low" decoding="async" /></div>)}</div>
         </div>
         <div className="self-start md:sticky md:top-8">
           <p className="text-sm font-bold uppercase tracking-widest">{currentProduct.sub_category || categoryName}</p>
