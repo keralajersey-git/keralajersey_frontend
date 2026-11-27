@@ -213,7 +213,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                 <div
                   key={index}
                   onClick={() => product.stock && setSelectedProduct(product)}
-                  className={`group bg-[#faf7f2]/80 backdrop-blur-xl rounded-md overflow-hidden border border-[#e5e1da] shadow-xl hover:-translate-y-2 transition-all duration-500 flex flex-col cursor-pointer ${!product.stock ? "opacity-75 grayscale-[0.5]" : ""}`}
+                  className={`group bg-[#faf7f2]/80 backdrop-blur-xl rounded-md overflow-hidden border border-[#e5e1da] shadow-xl hover:shadow-2xl transition-shadow duration-300 flex flex-col cursor-pointer ${!product.stock ? "opacity-75 grayscale-[0.5]" : ""}`}
                 >
                   <div className="relative aspect-square m-3 rounded-md overflow-hidden bg-white flex items-center justify-center">
                     {product.image1 ? (
@@ -222,7 +222,7 @@ const Products = ({ externalFilter, setExternalFilter }) => {
                         alt={`${product.title} ${productImageType(product)}`}
                         loading="lazy"
                         decoding="async"
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        className="w-full h-full object-cover"
                       />
                     ) : (
                       <span className="text-gray-400">No Image</span>

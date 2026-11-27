@@ -8,8 +8,6 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [sizeError, setSizeError] = useState(false);
-  const [dragX, setDragX] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [reviewsError, setReviewsError] = useState(null);
@@ -255,11 +253,7 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
                         drag={images.length > 1 ? "x" : false}
                         dragConstraints={{ left: 0, right: 0 }}
                         dragElastic={0.2}
-                        onDragStart={() => setIsDragging(true)}
-                        onDrag={(e, info) => setDragX(info.offset.x)}
                         onDragEnd={(e, info) => {
-                          setIsDragging(false);
-                          setDragX(0);
                           const threshold = 80;
                           if (info.offset.x < -threshold) {
                             goToNextImage();
@@ -268,50 +262,16 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
                           }
                         }}
                         initial={{ opacity: 0, x: 0 }}
-                        animate={{
-                          opacity: 1,
-                          x: isDragging ? dragX : 0,
-                          scale: isDragging ? 0.96 : 1,
-                        }}
+                        animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.25, ease: "easeOut" }}
+                        dragMomentum={false}
+                        dragTransition={{ bounceStiffness: 600, bounceDamping: 40 }}
                         src={images[currentImageIndex]}
                         alt={`${product.title} ${productImageType(product)} - image ${currentImageIndex + 1}`}
                         className="w-full h-full object-contain touch-pan-y select-none"
                         style={{ cursor: images.length > 1 ? "grab" : "default" }}
                       />
-
-                      {images.length > 1 && isDragging && (
-                        <div
-                          className="absolute inset-0 pointer-events-none transition-opacity"
-                          style={{
-                            background:
-                              dragX < 0
-                                ? `linear-gradient(to right, transparent ${50 + Math.min(Math.abs(dragX) / 3, 30)}%, rgba(0,0,0,${Math.min(Math.abs(dragX) / 400, 0.15)}))`
-                                : `linear-gradient(to left, transparent ${50 + Math.min(dragX / 3, 30)}%, rgba(0,0,0,${Math.min(dragX / 400, 0.15)}))`,
-                          }}
-                        />
-                      )}
-
-                      {images.length > 1 && isDragging && Math.abs(dragX) > 80 && (
-                        <div className={`absolute top-1/2 -translate-y-1/2 z-20 ${dragX < 0 ? "right-6" : "left-6"}`}>
-                          <div className="w-12 h-12 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white">
-                            <svg
-                              className={`w-6 h-6 ${dragX < 0 ? "" : "rotate-180"}`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2.5}
-                                d="M9 5l7 7-7 7"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                      )}
 
                       <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent pointer-events-none"></div>
                       <div className="absolute inset-0 border-8 border-transparent pointer-events-none"></div>
