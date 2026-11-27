@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { MdDoubleArrow } from "react-icons/md";
 import {
@@ -19,20 +19,8 @@ const Hero = ({ onSelectQuality }) => {
     "https://i.pinimg.com/736x/1d/d1/8d/1dd18dd3f03c5d3dcde268e489fe9fb5.jpg",
   ];
 
-  const mobileImages = images.filter(
-    (img) => !img.includes("W9qKwiL.webp")
-  );
-
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState("top-quality");
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % mobileImages.length);
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [mobileImages.length]);
 
   return (
     <div className="relative min-h-[80vh] max-h-screen flex items-center pt-0 lg:pt-20 px-0 lg:px-4 overflow-hidden bg-white text-[#111827] w-full max-w-full overflow-x-hidden overflow-y-hidden">
@@ -41,32 +29,13 @@ const Hero = ({ onSelectQuality }) => {
         <div className="relative h-fit lg:h-[550px] flex items-center justify-center mt-0 lg:mt-0 order-1 lg:order-2 overflow-hidden">
           {/* MOBILE ONLY: Automatic Carousel - Full Width, No Padding, No Rounded Corners */}
           <div className="lg:hidden relative w-full aspect-square bg-gray-50 overflow-hidden">
-            <AnimatePresence mode="wait">
-              <Motion.img
-                key={currentIndex}
-                src={mobileImages[currentIndex]}
-                fetchPriority={currentIndex === 0 ? "high" : "auto"}
-                decoding="async"
-                alt={`Kerala football jersey collection image ${currentIndex + 1}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.8 }}
-                className="w-full h-full object-cover"
-              />
-            </AnimatePresence>
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-              {mobileImages.map((_, idx) => (
-                <div
-                  key={idx}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${
-                    idx === currentIndex
-                      ? "w-8 bg-[#c5bbae]"
-                      : "w-2 bg-white/50"
-                  }`}
-                />
-              ))}
-            </div>
+            <img
+              src={images[1]}
+              fetchPriority="high"
+              decoding="async"
+              alt="Kerala football jersey collection"
+              className="w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none"></div>
           </div>
 
@@ -126,7 +95,7 @@ const Hero = ({ onSelectQuality }) => {
               <img
                 src={images[0]}
                 alt="Kerala football jersey from the custom collection"
-                className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-1"
+                className="h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent text-right">
@@ -141,7 +110,7 @@ const Hero = ({ onSelectQuality }) => {
               <img
                 src={images[3]}
                 alt="Close-up detail of a Kerala football jersey"
-                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                className="h-full w-full object-cover"
               />
               <div className="absolute inset-x-0 bottom-0 p-6 bg-gradient-to-t from-black/60 to-transparent">
                 <span className="text-[10px] font-black tracking-[0.2em] text-white uppercase italic">

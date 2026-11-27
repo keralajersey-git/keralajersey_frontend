@@ -219,10 +219,10 @@ const ProductDrawer = ({ product, isOpen, onClose }) => {
           />
 
           <Motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", damping: 28, stiffness: 260 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
             ref={drawerPanelRef}
             className="fixed top-0 right-0 z-[10002] h-full w-full sm:w-[460px] md:w-[500px] lg:w-[540px] bg-[#faf9f6] shadow-2xl flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
