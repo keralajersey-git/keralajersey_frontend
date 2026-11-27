@@ -185,9 +185,7 @@ const Hero = ({ onSelectQuality }) => {
               <span className="md:block text-[#c5bbae]">SPIRIT.</span>
             </h1>
             <p className="max-w-xl text-base md:text-xl lg:text-2xl text-gray-600 font-light leading-relaxed">
-              Premium Kerala jerseys crafted with heritage, pulse, and peak
-              performance fabric. Elevate your game and celebrate your roots in
-              absolute style.
+              Kerala No. 1 online store for premium football jerseys and jackets with fast delivery across India.
             </p>
           </div>
 

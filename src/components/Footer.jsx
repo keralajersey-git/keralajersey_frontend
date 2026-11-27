@@ -14,8 +14,7 @@ const Footer = () => {
               Kerala <span className="text-[#c5bbae]">Jersey</span>
             </h3>
             <p className="max-w-xs text-sm text-gray-500 font-light leading-relaxed">
-              Premium Kerala jerseys crafted with heritage, pulse, and peak performance fabric.
-              Elevate your game and celebrate your roots in absolute style.
+              Premium football jerseys and jackets from Kerala Jersey, delivered across India.
             </p>
           </div>
 
@@ -44,7 +43,7 @@ const Footer = () => {
                 info@keralajersey.com
               </a>
               <div className="space-y-1">
-                <p className="text-[11px] text-gray-500 uppercase tracking-widest font-medium">Free shipping across Kerala</p>
+                <p className="text-[11px] text-gray-500 uppercase tracking-widest font-medium">Fast delivery across India</p>
                 <p className="text-[11px] text-gray-400 uppercase tracking-widest italic">Sustainable Production</p>
               </div>
             </div>
