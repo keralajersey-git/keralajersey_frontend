@@ -120,10 +120,17 @@ const Products = ({ externalFilter, setExternalFilter }) => {
     if (setExternalFilter) setExternalFilter(null);
   };
 
-  if (loading)
+  const visibleProducts = loading && (selectedCategory || selectedSubCategory)
+    ? filteredProducts.filter((product) =>
+        (!selectedCategory || String(product.category || "").toLowerCase() === selectedCategory.toLowerCase()) &&
+        (!selectedSubCategory || String(product.sub_category || "").toLowerCase() === selectedSubCategory.toLowerCase()),
+      )
+    : filteredProducts;
+
+  if (loading && filteredProducts.length === 0)
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-2 border-gray-300 border-t-gray-900 mx-auto mb-4"></div>
+        <div role="status" aria-label="Loading products" className="animate-spin rounded-full h-12 w-12 border-2 border-gray-300 border-t-gray-900 mx-auto mb-4"></div>
       </div>
     );
 
@@ -205,13 +212,18 @@ const Products = ({ externalFilter, setExternalFilter }) => {
         </div>
 
         {/* Products Grid */}
-        {filteredProducts.length === 0 ? (
+        {loading && <p role="status" className="mb-4 text-center text-sm text-gray-600">Updating this collection…</p>}
+        {visibleProducts.length === 0 && loading ? (
+          <div className="flex items-center justify-center py-12" role="status">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-gray-900" aria-label="Loading collection"></div>
+          </div>
+        ) : visibleProducts.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
             No products found.
           </div>
         ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map((product, index) => (
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-6" aria-busy={loading}>
+            {visibleProducts.map((product, index) => (
                 <div
                   key={index}
                   onClick={() => product.stock && setSelectedProduct(product)}
