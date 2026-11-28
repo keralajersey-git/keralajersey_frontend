@@ -21,7 +21,6 @@ import {
   SUB_CATEGORIES,
   supportsSubCategories,
 } from "../constants/categories";
-import ImageLogoStampEditor from "../components/ImageLogoStampEditor";
 
 const Admin = () => {
   const [products, setProducts] = useState([]);
@@ -151,7 +150,6 @@ const Admin = () => {
     image2: "",
     image3: "",
   });
-  const [imageEditor, setImageEditor] = useState(null);
 
   const API_URL = (
     import.meta.env.VITE_API_URL || "http://127.0.0.1:8000"
@@ -382,19 +380,10 @@ const Admin = () => {
     setFormData({ ...formData, available_sizes: updatedSizes });
   };
 
-  const openImageEditor = (e, fieldName) => {
-    const file = e.target.files?.[0];
-    e.target.value = "";
+  const handleImageUpload = async (e, fieldName) => {
+    const file = e.target.files[0];
     if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      alert("Please select an image file.");
-      return;
-    }
-    setImageEditor({ file, fieldName });
-  };
 
-  const handleImageUpload = async (file, fieldName) => {
-    if (!file) return;
     console.log(`Starting upload for ${fieldName}:`, file.name);
 
     const originalValue = formData[fieldName];
@@ -425,14 +414,8 @@ const Admin = () => {
       setFormData((prev) => ({ ...prev, [fieldName]: originalValue }));
     } finally {
       setIsSubmitting(false);
+      e.target.value = "";
     }
-  };
-
-  const handleStampedImageUpload = async (file) => {
-    if (!imageEditor) return;
-    const { fieldName } = imageEditor;
-    setImageEditor(null);
-    await handleImageUpload(file, fieldName);
   };
 
   if (!isLoggedIn) {
@@ -1442,7 +1425,7 @@ const Admin = () => {
                                   accept="image/*"
                                   className="hidden"
                                   onChange={(e) =>
-                                    openImageEditor(e, `image${num}`)
+                                    handleImageUpload(e, `image${num}`)
                                   }
                                   disabled={isSubmitting}
                                 />
@@ -1476,16 +1459,6 @@ const Admin = () => {
               </div>
             </motion.div>
           </div>
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {imageEditor && (
-          <ImageLogoStampEditor
-            key={`${imageEditor.fieldName}-${imageEditor.file.name}`}
-            file={imageEditor.file}
-            onCancel={() => setImageEditor(null)}
-            onApply={handleStampedImageUpload}
-          />
         )}
       </AnimatePresence>
     </div>
