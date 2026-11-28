@@ -21,7 +21,7 @@ import {
   SUB_CATEGORIES,
   supportsSubCategories,
 } from "../constants/categories";
-import ImageBlurEditor from "../components/ImageBlurEditor";
+import ImageLogoStampEditor from "../components/ImageLogoStampEditor";
 
 const Admin = () => {
   const [products, setProducts] = useState([]);
@@ -428,7 +428,7 @@ const Admin = () => {
     }
   };
 
-  const handleEditedImageUpload = async (file) => {
+  const handleStampedImageUpload = async (file) => {
     if (!imageEditor) return;
     const { fieldName } = imageEditor;
     setImageEditor(null);
@@ -1480,11 +1480,11 @@ const Admin = () => {
       </AnimatePresence>
       <AnimatePresence>
         {imageEditor && (
-          <ImageBlurEditor
+          <ImageLogoStampEditor
             key={`${imageEditor.fieldName}-${imageEditor.file.name}`}
             file={imageEditor.file}
             onCancel={() => setImageEditor(null)}
-            onApply={handleEditedImageUpload}
+            onApply={handleStampedImageUpload}
           />
         )}
       </AnimatePresence>
